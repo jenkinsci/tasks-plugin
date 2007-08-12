@@ -20,15 +20,24 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
     private static final long serialVersionUID = -4355362392102020724L;
     /** Ant file-set pattern to scan for FindBugs files. */
     private final String filePattern;
+    /** Scans for the tags. */
+    private final TaskScanner taskScanner;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
      *
      * @param filePattern
      *            ant file-set pattern to scan for files
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
      */
-    WorkspaceScanner(final String filePattern) {
+    WorkspaceScanner(final String filePattern, final String high, final String normal, final String low) {
         this.filePattern = filePattern;
+        taskScanner = new TaskScanner(high, normal, low);
     }
 
     /** {@inheritDoc} */
@@ -38,7 +47,6 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
             throw new AbortException("No files were found that match the pattern '" + filePattern + "'. Configuration error?");
         }
 
-        TaskScanner taskScanner = new TaskScanner();
         JavaProject javaProject = new JavaProject();
         for (String file : files) {
             File originalFile = new File(workspace, file);

@@ -57,7 +57,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     /** The actual result of the FindBugs analysis. */
     private TasksResult result;
     /** Builds a health report. */
-    private final transient HealthReportBuilder healthReportBuilder;
+    private final HealthReportBuilder healthReportBuilder;
 
     /**
      * Creates a new instance of <code>FindBugsBuildAction</code>.
@@ -78,7 +78,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     public TasksResultAction(final Build<?, ?> owner, final TasksResult result, final boolean isHealthyReportEnabled, final int healthy, final int unHealthy) {
         this.owner = owner;
         this.result = result;
-        healthReportBuilder = new HealthReportBuilder("FindBugs", "warning", isHealthyReportEnabled, healthy, unHealthy);
+        healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", isHealthyReportEnabled, healthy, unHealthy);
     }
 
     /**
@@ -126,7 +126,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
 
     /** {@inheritDoc} */
     public String getUrlName() {
-        return "findbugsResult";
+        return "taskResult";
     }
 
     /**
@@ -236,9 +236,9 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
 
         for (TasksResultAction action = this; action != null; action = action.getPreviousBuild()) {
             TasksResult taskResult = action.getResult();
-            builder.add(taskResult.getNumberOfLowPriorityTasks(), "low priority", new NumberOnlyBuildLabel(action.owner));
-            builder.add(taskResult.getNumberOfNormalPriorityTasks(), "normal priority", new NumberOnlyBuildLabel(action.owner));
-            builder.add(taskResult.getNumberOfHighPriorityTasks(), "high priority", new NumberOnlyBuildLabel(action.owner));
+            builder.add(taskResult.getNumberOfLowPriorityTasks(), "0", new NumberOnlyBuildLabel(action.owner));
+            builder.add(taskResult.getNumberOfNormalPriorityTasks(), "1", new NumberOnlyBuildLabel(action.owner));
+            builder.add(taskResult.getNumberOfHighPriorityTasks(), "2", new NumberOnlyBuildLabel(action.owner));
         }
         return builder.build();
     }
@@ -323,7 +323,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
         public String generateToolTip(final CategoryDataset dataset, final int row, final int column) {
             NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
             TasksResultAction action = label.build.getAction(TasksResultAction.class);
-            if (row == 0) {
+            if (row == 2) {
                 return Util.combine(action.getResult().getNumberOfHighPriorityTasks(), "high priority task");
             }
             else if (row == 1) {

@@ -1,6 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.util.AbortException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,9 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Scans a given input stream for open tasks.
@@ -23,9 +26,54 @@ public class TaskScanner {
      * Creates a new instance of <code>TaskScanner</code>.
      */
     public TaskScanner() {
-        patterns.put(Priority.HIGH, Pattern.compile("^.*FIXME(.*)$"));
-        patterns.put(Priority.NORMAL, Pattern.compile("^.*TODO(.*)$"));
-        patterns.put(Priority.LOW, Pattern.compile("^.*@deprecated(.*)$"));
+        this("FIXME", "TODO", "@deprecated");
+    }
+
+    /**
+     * Creates a new instance of <code>TaskScanner</code>.
+     *
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     */
+    public TaskScanner(final String high, final String normal, final String low) {
+        if (StringUtils.isNotBlank(high)) {
+            patterns.put(Priority.HIGH, compile(high));
+        }
+        if (StringUtils.isNotBlank(normal)) {
+            patterns.put(Priority.NORMAL, compile(normal));
+        }
+        if (StringUtils.isNotBlank(low)) {
+            patterns.put(Priority.LOW, compile(low));
+        }
+    }
+
+    /**
+     * Compiles a regular expression pattern to scan for tag identifiers.
+     *
+     * @param tagIdentifiers the identifiers to scan for
+     * @return the compiled pattern
+     */
+    private Pattern compile(final String tagIdentifiers) {
+        try {
+            String[] tags;
+            if (tagIdentifiers.indexOf(',') != -1) {
+                tags = StringUtils.split(tagIdentifiers, ",");
+            }
+            else {
+                tags = new String[] {tagIdentifiers};
+            }
+            for (int i = 0; i < tags.length; i++) {
+                tags[i] = tags[i].trim();
+            }
+            return Pattern.compile("^.*(?:" + StringUtils.join(tags, "|") + ")(.*)$");
+        }
+        catch (PatternSyntaxException exception) {
+            throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n");
+        }
     }
 
     /**
@@ -44,9 +92,11 @@ public class TaskScanner {
             String line = (String)lineIterator.next();
 
             for (Priority priority : Priority.values()) {
-                Matcher matcher = patterns.get(priority).matcher(line);
-                if (matcher.matches() && matcher.groupCount() == 1) {
-                    javaFile.addTask(priority, lineNumber, matcher.group(1).trim());
+                if (patterns.containsKey(priority)) {
+                    Matcher matcher = patterns.get(priority).matcher(line);
+                    if (matcher.matches() && matcher.groupCount() == 1) {
+                        javaFile.addTask(priority, lineNumber, matcher.group(1).trim());
+                    }
                 }
             }
         }

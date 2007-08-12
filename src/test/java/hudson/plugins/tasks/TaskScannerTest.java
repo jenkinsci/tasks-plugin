@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class TaskScannerTest {
     @Test
-    public void scanFileWithTasks() throws IOException {
+    public void scanFileWithTasksAndDefaults() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream("file-with-tasks.txt");
 
         JavaFile result = new TaskScanner().scan(file);
@@ -30,6 +30,51 @@ public class TaskScannerTest {
         assertEquals(1, result.getNumberOfTasks(Task.Priority.HIGH));
         assertEquals(1, result.getNumberOfTasks(Task.Priority.NORMAL));
         assertEquals(0, result.getNumberOfTasks(Task.Priority.LOW));
+    }
+
+    @Test
+    public void testHighPriority() throws IOException {
+        InputStream file = TaskScannerTest.class.getResourceAsStream("file-with-tasks.txt");
+
+        JavaFile result = new TaskScanner("FIXME", null, null).scan(file);
+
+        assertEquals(1, result.getNumberOfTasks(Task.Priority.HIGH));
+        assertEquals(0, result.getNumberOfTasks(Task.Priority.NORMAL));
+        assertEquals(0, result.getNumberOfTasks(Task.Priority.LOW));
+    }
+
+    @Test
+    public void testTwoItemsWithWhiteSpaceAndHighPriority() throws IOException {
+        InputStream file = TaskScannerTest.class.getResourceAsStream("file-with-tasks.txt");
+
+        JavaFile result = new TaskScanner(" FIXME , TODO ", null, null).scan(file);
+
+        assertEquals(2, result.getNumberOfTasks(Task.Priority.HIGH));
+        assertEquals(0, result.getNumberOfTasks(Task.Priority.NORMAL));
+        assertEquals(0, result.getNumberOfTasks(Task.Priority.LOW));
+    }
+
+    @Test
+    public void testTwoItemsWithHighPriority() throws IOException {
+        InputStream file = TaskScannerTest.class.getResourceAsStream("file-with-tasks.txt");
+
+        JavaFile result = new TaskScanner("FIXME,TODO", null, null).scan(file);
+
+        assertEquals(2, result.getNumberOfTasks(Task.Priority.HIGH));
+        assertEquals(0, result.getNumberOfTasks(Task.Priority.NORMAL));
+        assertEquals(0, result.getNumberOfTasks(Task.Priority.LOW));
+    }
+
+    @Test
+    public void testAllPriorities() throws IOException {
+        InputStream file = TaskScannerTest.class.getResourceAsStream("file-with-tasks.txt");
+
+        JavaFile result = new TaskScanner("FIXME", "FIXME,TODO", "TODO").scan(file);
+
+        assertEquals(1, result.getNumberOfTasks(Task.Priority.HIGH));
+        assertEquals(2, result.getNumberOfTasks(Task.Priority.NORMAL));
+        assertEquals(1, result.getNumberOfTasks(Task.Priority.LOW));
+
     }
 
     @Test

@@ -1,6 +1,5 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
-	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
-	xmlns:f="/lib/form">
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<f:entry title="Files to scan"
 		description="
              &lt;a href='http://ant.apache.org/manual/CoreTypes/fileset.html'>Fileset 'includes'&lt;/a>
@@ -11,6 +10,34 @@
            ">
 		<f:textbox name="tasks_pattern" value="${instance.pattern}"
 			checkUrl="'${rootURL}/publisher/TasksPublisher/checkPattern?job=${it.fullName}&amp;value='+escape(this.value)"/>
+	</f:entry>
+	<f:entry title="Tasks tags"
+		description="
+             Configure the tags identifiers that should be looked for in the workspace files.
+             For each priority a comma separated list of tags could be defined, e.g. TODO, FIXME, etc.">
+		<table>
+			<thead>
+				<tr>
+					<td width="33%">High priority</td>
+					<td width="33%">Normal priority</td>
+					<td width="33%">Low priority</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						<f:textbox name="tasks_high" value="${instance.high}"/>
+					</td>
+					<td>
+						<f:textbox name="tasks_normal" value="${instance.normal}"/>
+					</td>
+					<td>
+						<f:textbox name="tasks_low" value="${instance.low}"/>
+					</td>
+				</tr>
+			</tbody>
+
+		</table>
 	</f:entry>
 	<f:entry title="Unstable threshold"
 		description="If the number of open tasks exceeds this threshold then a build is
@@ -26,33 +53,30 @@
 		<table>
 			<thead>
 				<tr>
-					<td width="20%"></td>
-					<td width="80%">Number of Tasks</td>
+					<td width="40%"></td>
+					<td width="30%">
+						<img src="${rootURL}/images/16x16/health-80plus.gif" alt="100%"
+							title="Report health as 100% when the number of open tasks is less than this value" />
+					</td>
+					<td width="30%">
+						<img src="${rootURL}/images/16x16/health-00to19.gif" alt="0%"
+							title="Report health as 0% when the number of open tasks is greater than this value" />
+					</td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<th>
-						<img src="${rootURL}/images/16x16/health-80plus.gif"
-							alt="100%"
-							title="Report health as 100% when the number of open tasks is less than this value" />
+						Number of open tasks
 					</th>
 					<td>
 						<f:textbox name="tasks_healthy" value="${instance.healthy}"/>
 					</td>
-				</tr>
-				<tr>
-					<th>
-						<img src="${rootURL}/images/16x16/health-00to19.gif"
-							alt="0%"
-							title="Report health as 0% when the number of tasks is greater than this value" />
-					</th>
 					<td>
 						<f:textbox name="tasks_unHealthy" value="${instance.unHealthy}"/>
 					</td>
 				</tr>
 			</tbody>
-
 		</table>
 	</f:entry>
 </j:jelly>
