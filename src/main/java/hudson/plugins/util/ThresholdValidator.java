@@ -11,7 +11,8 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 /**
- * Validates the threshold parameter.
+ * Validates a threshold parameter. A threshold must be an integer value greater
+ * or equal 0.
  *
  * @author Ulli Hafner
  */
