@@ -60,11 +60,11 @@ public class TaskScanner {
     private Pattern compile(final String tagIdentifiers) {
         try {
             String[] tags;
-            if (tagIdentifiers.indexOf(',') != -1) {
-                tags = StringUtils.split(tagIdentifiers, ",");
+            if (tagIdentifiers.indexOf(',') == -1) {
+                tags = new String[] {tagIdentifiers};
             }
             else {
-                tags = new String[] {tagIdentifiers};
+                tags = StringUtils.split(tagIdentifiers, ",");
             }
             for (int i = 0; i < tags.length; i++) {
                 tags[i] = tags[i].trim();
@@ -100,6 +100,7 @@ public class TaskScanner {
                 }
             }
         }
+        file.close();
         return javaFile;
     }
 }
