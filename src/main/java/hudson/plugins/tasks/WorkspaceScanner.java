@@ -2,7 +2,7 @@ package hudson.plugins.tasks;
 
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
-import hudson.plugins.util.AbortException;
+import hudson.plugins.tasks.util.AbortException;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;

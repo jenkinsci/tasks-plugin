@@ -1,4 +1,4 @@
-package hudson.plugins.util;
+package hudson.plugins.tasks.util;
 
 import java.io.Serializable;
 

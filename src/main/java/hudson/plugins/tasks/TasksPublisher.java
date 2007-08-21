@@ -7,7 +7,7 @@ import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Project;
 import hudson.model.Result;
-import hudson.plugins.util.AbortException;
+import hudson.plugins.tasks.util.AbortException;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;

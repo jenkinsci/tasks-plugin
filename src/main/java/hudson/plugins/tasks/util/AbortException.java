@@ -1,4 +1,4 @@
-package hudson.plugins.util;
+package hudson.plugins.tasks.util;
 
 /**
  * Indicates an orderly abortion of the processing.

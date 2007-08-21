@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.plugins.tasks.Task.Priority;
-import hudson.plugins.util.AbortException;
+import hudson.plugins.tasks.util.AbortException;
 
 import java.io.IOException;
 import java.io.InputStream;
