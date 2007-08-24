@@ -21,7 +21,7 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
     /** Ant file-set pattern to scan for FindBugs files. */
     private final String filePattern;
     /** Scans for the tags. */
-    private final TaskScanner taskScanner;
+    private transient final TaskScanner taskScanner;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
