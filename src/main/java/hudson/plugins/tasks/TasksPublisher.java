@@ -8,6 +8,7 @@ import hudson.model.Descriptor;
 import hudson.model.Project;
 import hudson.model.Result;
 import hudson.plugins.tasks.util.AbortException;
+import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;
@@ -216,17 +217,18 @@ public class TasksPublisher extends Publisher {
             Build<?, ?> previousBuild = (Build<?, ?>)previous;
             TasksResultAction previousAction = previousBuild.getAction(TasksResultAction.class);
             if (previousAction == null) {
-                result = new TasksResult(build, project);
+                result = new TasksResult(build, project, high, normal, low);
             }
             else {
-                result = new TasksResult(build, project, previousAction.getResult().getNumberOfTasks());
+                result = new TasksResult(build, project, previousAction.getResult().getNumberOfTasks(), high, normal, low);
             }
         }
         else {
-            result = new TasksResult(build, project);
+            result = new TasksResult(build, project, high, normal, low);
         }
 
-        build.getActions().add(new TasksResultAction(build, result, isHealthyReportEnabled, healthyTasks, unHealthyTasks));
+        HealthReportBuilder healthReportBuilder = new HealthReportBuilder("Task Scanner", "open tasks", isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks);
+        build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
 
         int warnings = project.getNumberOfTasks();
         if (warnings > 0) {

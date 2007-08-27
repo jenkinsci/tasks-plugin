@@ -1,22 +1,68 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
-  xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
-  xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-  <l:layout>
-    <st:include it="${it.owner}" page="sidepanel.jelly" />
-    <l:main-panel>
-      <h1>${it.title}</h1>
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	<l:layout>
+		<st:include it="${it.owner}" page="sidepanel.jelly" />
+		<l:main-panel>
+			<h1>${it.title}</h1>
 
-      <j:forEach var="file" items="${it.project.files}">
-        <p>
-          <b>File:</b>
-          ${file.name}
-        </p>
-        <j:forEach var="task" items="${file.tasks}">
-          <p>${task.message}</p>
-        </j:forEach>
-        <hr />
-      </j:forEach>
+			<h1>Open Tasks</h1>
 
-    </l:main-panel>
-  </l:layout>
+		      <h2>Summary</h2>
+
+		      <table class="pane sortable" id="summary">
+		        <tr>
+			      <j:set var="priority" value="HIGH" />
+		          <td class="pane-header">High priority (${it.getTags(priority)})</td>
+			      <j:set var="priority" value="NORMAL" />
+		          <td class="pane-header">Nomal priority (${it.getTags(priority)})</td>
+			      <j:set var="priority" value="LOW" />
+		          <td class="pane-header">Low priority (${it.getTags(priority)})</td>
+		        </tr>
+		        <tbody>
+		          <tr>
+		            <td class="pane">
+		            	${it.numberOfHighPriorityTasks}
+				        <j:if test="${it.numberOfHighPriorityTasks != 0}">
+		          			(<a href="#HIGH">Details</a>)
+		          		</j:if>
+		            </td>
+		            <td class="pane">
+		            	${it.numberOfNormalPriorityTasks}
+				        <j:if test="${it.numberOfNormalPriorityTasks != 0}">
+		          			(<a href="#NORMAL">Details</a>)
+		          		</j:if>
+		           	</td>
+		            <td class="pane">
+		            	${it.numberOfLowPriorityTasks}
+				        <j:if test="${it.numberOfLowPriorityTasks != 0}">
+		          			(<a href="#LOW">Details</a>)
+		          		</j:if>
+		           	</td>
+		          </tr>
+		        </tbody>
+		      </table>
+
+		      <j:forEach var="priority" items="${it.priorities}">
+		      	<a name="${priority}"/>
+		      	<h3>Priority ${priority}: ${it.getTags(priority)}</h3>
+		      	<j:forEach var="file" items="${it.project.files}">
+		      		<j:if test="${file.hasTasks(priority)}">
+		      			<p>
+		      				<b>File:</b>
+		      				${file.name}
+		      			</p>
+		      			<j:forEach var="task" items="${file.getTasks(priority)}">
+		      				<p>
+		      					Line ${task.lineNumber}:
+		      					${task.message}
+		      				</p>
+		      			</j:forEach>
+		      			<hr />
+			      	</j:if>
+		      	</j:forEach>
+		      </j:forEach>
+
+		</l:main-panel>
+	</l:layout>
 </j:jelly>

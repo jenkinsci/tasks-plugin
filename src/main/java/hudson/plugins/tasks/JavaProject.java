@@ -15,6 +15,8 @@ public class JavaProject implements Serializable {
     private static final long serialVersionUID = 8556968267678442661L;
     /** Files with open tasks in this project. */
     private final List<WorkspaceFile> files = new ArrayList<WorkspaceFile>();
+    /** Path of the workspace. */
+    private String workspacePath;
 
     /**
      * Adds a new file to this project.
@@ -60,6 +62,15 @@ public class JavaProject implements Serializable {
             numberOfTasks += file.getNumberOfTasks(priority);
         }
         return numberOfTasks;
+    }
+
+    /**
+     * Sets the path of the workspace.
+     *
+     * @param workspacePath path to workspace
+     */
+    public void setWorkspacePath(final String workspacePath) {
+        this.workspacePath = workspacePath;
     }
 }
 

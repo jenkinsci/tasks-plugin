@@ -1,32 +1,24 @@
 package hudson.plugins.tasks;
 
-import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Build;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
+import hudson.plugins.tasks.util.ChartBuilder;
 import hudson.plugins.tasks.util.HealthReportBuilder;
+import hudson.plugins.tasks.util.PrioritiesAreaRenderer;
+import hudson.plugins.tasks.util.ResultAreaRenderer;
 import hudson.util.ChartUtil;
-import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
-import hudson.util.ShiftedCategoryAxis;
-import hudson.util.StackedAreaRenderer2;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 
-import java.awt.Color;
 import java.io.IOException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.StackedAreaRenderer;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerProxy;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -47,6 +39,8 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -3936658973355672416L;
+    /** URL to results. */
+    private static final String TASKS_RESULT_URL = "tasksResult";
     /** Height of the graph. */
     private static final int HEIGHT = 200;
     /** Width of the graph. */
@@ -66,19 +60,13 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
      *            the associated build of this action
      * @param result
      *            the result in this build
-     * @param isHealthyReportEnabled
-     *            Determines whether to use the provided healthy thresholds.
-     * @param healthy
-     *            Report health as 100% when the number of warnings is less than
-     *            this value
-     * @param unHealthy
-     *            Report health as 0% when the number of warnings is greater
-     *            than this value
+     * @param healthReportBuilder
+     *            health builder to use
      */
-    public TasksResultAction(final Build<?, ?> owner, final TasksResult result, final boolean isHealthyReportEnabled, final int healthy, final int unHealthy) {
+    public TasksResultAction(final Build<?, ?> owner, final TasksResult result, final HealthReportBuilder healthReportBuilder) {
         this.owner = owner;
         this.result = result;
-        healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", isHealthyReportEnabled, healthy, unHealthy);
+        this.healthReportBuilder = healthReportBuilder;
     }
 
     /**
@@ -126,7 +114,16 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
 
     /** {@inheritDoc} */
     public String getUrlName() {
-        return "taskResult";
+        return TASKS_RESULT_URL;
+    }
+
+    /**
+     * Returns the URL for the latest tasks results.
+     *
+     * @return URL for the latest tasks results.
+     */
+    public static String getLatestUrl() {
+        return "../lastBuild/" + TASKS_RESULT_URL;
     }
 
     /**
@@ -173,7 +170,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     }
 
     /**
-     * Sets the FindBugs result for this build. The specified result will be persisted in the build folder
+     * Sets the Tasks result for this build. The specified result will be persisted in the build folder
      * as an XML file.
      *
      * @param result the result to set
@@ -198,11 +195,10 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
             response.sendRedirect2(request.getContextPath() + "/images/headless.png");
             return;
         }
-
         if (request.checkIfModified(owner.getTimestamp(), response)) {
             return;
         }
-        ChartUtil.generateGraph(request, response, createChart(request), WIDTH, HEIGHT);
+        ChartUtil.generateGraph(request, response, createChart(), WIDTH, HEIGHT);
     }
 
     /**
@@ -220,118 +216,44 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
         if (request.checkIfModified(owner.getTimestamp(), response)) {
             return;
         }
-        ChartUtil.generateClickableMap(request, response, createChart(request), WIDTH, HEIGHT);
+        ChartUtil.generateClickableMap(request, response, createChart(), WIDTH, HEIGHT);
+    }
+
+    /**
+     * Creates the chart for this action.
+     *
+     * @return the chart for this action.
+     */
+    private JFreeChart createChart() {
+        ChartBuilder chartBuilder = new ChartBuilder();
+        StackedAreaRenderer renderer;
+        if (!healthReportBuilder.isHealthyReportEnabled() && !healthReportBuilder.isFailureThresholdEnabled()) {
+            renderer = new PrioritiesAreaRenderer(TASKS_RESULT_URL, "open task");
+        }
+        else {
+            renderer = new ResultAreaRenderer(TASKS_RESULT_URL, "open task");
+        }
+        return chartBuilder.createChart(buildDataSet(), renderer, healthReportBuilder.getThreshold(),
+                healthReportBuilder.isHealthyReportEnabled() || !healthReportBuilder.isFailureThresholdEnabled());
     }
 
     /**
      * Returns the data set that represents the result. For each build, the
-     * number of tasks is used as result value.
+     * number of warnings is used as result value.
      *
-     * @param request
-     *            Stapler request
      * @return the data set
      */
-    private CategoryDataset buildDataSet(final StaplerRequest request) {
-        DataSetBuilder<String, NumberOnlyBuildLabel> builder = new DataSetBuilder<String, NumberOnlyBuildLabel>();
-
+    private CategoryDataset buildDataSet() {
+        DataSetBuilder<Integer, NumberOnlyBuildLabel> builder = new DataSetBuilder<Integer, NumberOnlyBuildLabel>();
         for (TasksResultAction action = this; action != null; action = action.getPreviousBuild()) {
-            TasksResult taskResult = action.getResult();
-            builder.add(taskResult.getNumberOfLowPriorityTasks(), "0", new NumberOnlyBuildLabel(action.owner));
-            builder.add(taskResult.getNumberOfNormalPriorityTasks(), "1", new NumberOnlyBuildLabel(action.owner));
-            builder.add(taskResult.getNumberOfHighPriorityTasks(), "2", new NumberOnlyBuildLabel(action.owner));
+            TasksResult current = action.getResult();
+            List<Integer> series = healthReportBuilder.createSeries(current.getNumberOfHighPriorityTasks(), current.getNumberOfNormalPriorityTasks(), current.getNumberOfLowPriorityTasks());
+            int level = 0;
+            for (Integer integer : series) {
+                builder.add(integer, level, new NumberOnlyBuildLabel(action.owner));
+                level++;
+            }
         }
         return builder.build();
-    }
-
-    /**
-     * Creates the actual chart for the open tasks trend.
-     *
-     * @param request
-     *            Stapler Request
-     * @return the chart
-     */
-    private JFreeChart createChart(final StaplerRequest request) {
-        CategoryDataset dataset = buildDataSet(request);
-        JFreeChart chart = ChartFactory.createStackedAreaChart(
-            null,                     // chart title
-            null,                     // unused
-            "count",                  // range axis label
-            dataset,                  // data
-            PlotOrientation.VERTICAL, // orientation
-            false,                    // include legend
-            true,                     // tooltips
-            false                     // urls
-        );
-
-        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-
-        chart.setBackgroundPaint(Color.white);
-
-        final CategoryPlot plot = chart.getCategoryPlot();
-
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setOutlinePaint(null);
-        plot.setForegroundAlpha(0.8f);
-        plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlinePaint(Color.black);
-
-        CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
-        plot.setDomainAxis(domainAxis);
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-        domainAxis.setLowerMargin(0.0);
-        domainAxis.setUpperMargin(0.0);
-        domainAxis.setCategoryMargin(0.0);
-
-        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        StackedAreaRenderer renderer = new AreaRenderer();
-        plot.setRenderer(renderer);
-        renderer.setSeriesPaint(0, ColorPalette.BLUE);
-        renderer.setSeriesPaint(1, new Color(240, 240, 10));
-        renderer.setSeriesPaint(2, ColorPalette.RED);
-
-        // crop extra space around the graph
-        plot.setInsets(new RectangleInsets(0, 0, 0, 5.0));
-
-        return chart;
-    }
-
-    /**
-     * Renderer that provides access to the individual open tasks results.
-     */
-    static final class AreaRenderer extends StackedAreaRenderer2 {
-        /** Unique identifier of this class. */
-        private static final long serialVersionUID = -4683951507836348304L;
-
-        /** {@inheritDoc} */
-        @Override
-        public String generateURL(final CategoryDataset dataset, final int row, final int column) {
-            NumberOnlyBuildLabel label = (NumberOnlyBuildLabel)dataset.getColumnKey(column);
-            TasksResultAction action = label.build.getAction(TasksResultAction.class);
-
-            if (action.getResult().getNumberOfTasks() > 0) {
-                return label.build.getNumber() + "/tasksResult/";
-            }
-            else {
-                return null;
-            }
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public String generateToolTip(final CategoryDataset dataset, final int row, final int column) {
-            NumberOnlyBuildLabel label = (NumberOnlyBuildLabel) dataset.getColumnKey(column);
-            TasksResultAction action = label.build.getAction(TasksResultAction.class);
-            if (row == 2) {
-                return Util.combine(action.getResult().getNumberOfHighPriorityTasks(), "high priority task");
-            }
-            else if (row == 1) {
-                return Util.combine(action.getResult().getNumberOfNormalPriorityTasks(), "normal task");
-            }
-            else {
-                return Util.combine(action.getResult().getNumberOfLowPriorityTasks(), "low priority task");
-            }
-        }
     }
 }

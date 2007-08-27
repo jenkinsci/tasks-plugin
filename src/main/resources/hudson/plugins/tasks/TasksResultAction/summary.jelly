@@ -4,7 +4,7 @@
 	<t:summary icon="/plugin/tasks/icons/tasks-48x48.png">
 	    <j:if test="${it.result.numberOfTasks > 0}">
 	    	Task Scanner: a total of
-    	<a href="taskResult">${it.result.numberOfTasks} open tasks</a> have been found
+    	<a href="tasksResult">${it.result.numberOfTasks} open tasks</a> have been found
 	    	<j:choose>
 	    		<j:when test="${it.result.delta > 0}">
 	    			(+${it.result.delta}).

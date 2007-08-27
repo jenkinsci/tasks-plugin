@@ -11,8 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -53,27 +57,45 @@ public class TasksResult implements ModelObject, Serializable {
     private final int lowPriorityTasks;
     /** The number of normal priority tasks in this build. */
     private final int normalPriorityTasks;
+    /** Tag identifiers indicating high priority. */
+    private final String high;
+    /** Tag identifiers indicating normal priority. */
+    private final String normal;
+    /** Tag identifiers indicating low priority. */
+    private final String low;
 
     /**
-     * Creates a new instance of <code>FindBugsResult</code>.
+     * Creates a new instance of <code>TasksResult</code>.
      *
      * @param build
      *            the current build as owner of this action
      * @param project
      *            the parsed FindBugs result
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
      */
-    public TasksResult(final Build<?, ?> build, final JavaProject project) {
-        this(build, project, project.getNumberOfTasks());
+    public TasksResult(final Build<?, ?> build, final JavaProject project, final String high, final String normal, final String low) {
+        this(build, project, project.getNumberOfTasks(), high, normal, low);
     }
 
     /**
-     * Creates a new instance of <code>FindBugsResult</code>.
+     * Creates a new instance of <code>TasksResult</code>.
      *
      * @param build the current build as owner of this action
      * @param project the parsed FindBugs result
      * @param previousNumberOfTasks the previous number of open tasks
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
      */
-    public TasksResult(final Build<?, ?> build, final JavaProject project, final int previousNumberOfTasks) {
+    public TasksResult(final Build<?, ?> build, final JavaProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
         owner = build;
         highPriorityTasks = project.getNumberOfTasks(Priority.HIGH);
         lowPriorityTasks = project.getNumberOfTasks(Priority.LOW);
@@ -81,6 +103,9 @@ public class TasksResult implements ModelObject, Serializable {
         numberOfTasks = project.getNumberOfTasks();
         this.project = new WeakReference<JavaProject>(project);
         delta = numberOfTasks - previousNumberOfTasks;
+        this.high = high;
+        this.normal = normal;
+        this.low = low;
 
         try {
             getDataFile().write(project);
@@ -170,7 +195,6 @@ public class TasksResult implements ModelObject, Serializable {
      * get removed by the garbage collector.
      */
     private void loadResult() {
-        LOGGER.log(Level.WARNING, "Project loaded!!!" + getDataFile());
         JavaProject result;
         try {
             result = (JavaProject)getDataFile().read();
@@ -189,5 +213,44 @@ public class TasksResult implements ModelObject, Serializable {
      */
     private XmlFile getDataFile() {
         return new XmlFile(XSTREAM, new File(owner.getRootDir(), "openTasks.xml"));
+    }
+
+    /**
+     * Returns the tags for the specified priority.
+     *
+     * @param priority
+     *            the priority
+     * @return the tags for priority high
+     */
+    public String getTags(final String priority) {
+        Priority converted = Priority.valueOf(priority);
+        if (converted == Priority.HIGH) {
+            return high;
+        }
+        else if (converted == Priority.NORMAL) {
+            return normal;
+        }
+        else {
+            return low;
+        }
+    }
+
+    /**
+     * Returns the defined priorities.
+     *
+     * @return the defined priorities.
+     */
+    public List<String> getPriorities() {
+        ArrayList<String> priorities = new ArrayList<String>();
+        if (StringUtils.isNotEmpty(high)) {
+            priorities.add(Priority.HIGH.name());
+        }
+        if (StringUtils.isNotEmpty(normal)) {
+            priorities.add(Priority.NORMAL.name());
+        }
+        if (StringUtils.isNotEmpty(low)) {
+            priorities.add(Priority.LOW.name());
+        }
+        return priorities;
     }
 }

@@ -53,7 +53,22 @@ public class TasksProjectAction implements Action {
 
     /** {@inheritDoc} */
     public String getIconFileName() {
+        Object lastBuild = project.getLastBuild();
+        if ((lastBuild instanceof Build) && hasResult((Build<?, ?>)lastBuild)) {
+            return TasksDescriptor.TASKS_ACTION_LOGO;
+        }
         return null;
+    }
+
+    /**
+     * Returns whether a result is available for the last build.
+     *
+     * @param build
+     *            the build to check
+     * @return <code>true</code> if a result is available for the last build.
+     */
+    public boolean hasResult(final Build<?, ?> build) {
+        return build.getAction(TasksResultAction.class) != null;
     }
 
     /** {@inheritDoc} */
@@ -78,6 +93,20 @@ public class TasksProjectAction implements Action {
             }
         }
         return false;
+    }
+
+    /**
+     * Redirects the index page to the last FindBugs result.
+     *
+     * @param request
+     *            Stapler request
+     * @param response
+     *            Stapler response
+     * @throws IOException
+     *             in case of an error in
+     */
+    public void doIndex(final StaplerRequest request, final StaplerResponse response) throws IOException {
+        response.sendRedirect2(TasksResultAction.getLatestUrl());
     }
 
     /**

@@ -91,6 +91,29 @@ public class WorkspaceFile implements Serializable {
     }
 
     /**
+     * Returns all open tasks with the specified priority in this file.
+     *
+     * @param priority
+     *            the priority of the tasks
+     * @return open tasks in this file.
+     */
+    public List<Task> getTasks(final String priority) {
+        return Collections.unmodifiableList(tasks.get(Priority.valueOf(priority)));
+    }
+
+    /**
+     * Returns whether this file has some open tasks with the specified priority
+     * in this file.
+     *
+     * @param priority
+     *            the priority of the tasks
+     * @return <code>true</code> if this file has some open tasks.
+     */
+    public boolean hasTasks(final String priority) {
+        return !tasks.get(Priority.valueOf(priority)).isEmpty();
+    }
+
+    /**
      * Returns whether this file has some open tasks.
      *
      * @return <code>true</code> if this file has some open tasks.
