@@ -1,13 +1,22 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
-	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
-	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-	<l:layout>
-		<st:include it="${it.owner}" page="sidepanel.jelly" />
-		<l:main-panel>
-			<h1>${it.title}</h1>
+  xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+  xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+  <l:layout>
+    <st:include it="${it.owner}" page="sidepanel.jelly" />
+    <l:main-panel>
+      <h1>${it.title}</h1>
 
-			<j:set var="prev" value="${it.previousResult}" />
+      <j:forEach var="file" items="${it.project.files}">
+        <p>
+          <b>File:</b>
+          ${file.name}
+        </p>
+        <j:forEach var="task" items="${file.tasks}">
+          <p>${task.message}</p>
+        </j:forEach>
+        <hr />
+      </j:forEach>
 
-		</l:main-panel>
-	</l:layout>
+    </l:main-panel>
+  </l:layout>
 </j:jelly>

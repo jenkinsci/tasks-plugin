@@ -7,7 +7,6 @@ import hudson.tasks.BuildStep;
  * Registers the task scanner plug-in publisher.
  *
  * @author Ulli Hafner
- * @plugin
  */
 public class TasksPlugin extends Plugin {
     /** {@inheritDoc} */

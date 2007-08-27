@@ -1,11 +1,20 @@
 package hudson.plugins.tasks;
 
+import hudson.XmlFile;
 import hudson.model.Build;
 import hudson.model.ModelObject;
 import hudson.plugins.tasks.Task.Priority;
+import hudson.util.StringConverter2;
+import hudson.util.XStream2;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.thoughtworks.xstream.XStream;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -18,6 +27,16 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class TasksResult implements ModelObject, Serializable {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -344808345805935004L;
+    /** Error logger. */
+    private static final Logger LOGGER = Logger.getLogger(TasksResult.class.getName());
+    /** Serialization provider. */
+    private static final XStream XSTREAM = new XStream2();
+
+    static {
+        XSTREAM.alias("project", JavaProject.class);
+        XSTREAM.registerConverter(new StringConverter2(), 100);
+    }
+
     /** The current build as owner of this action. */
     @SuppressWarnings("Se")
     private final Build<?, ?> owner;
@@ -62,6 +81,13 @@ public class TasksResult implements ModelObject, Serializable {
         numberOfTasks = project.getNumberOfTasks();
         this.project = new WeakReference<JavaProject>(project);
         delta = numberOfTasks - previousNumberOfTasks;
+
+        try {
+            getDataFile().write(project);
+        }
+        catch (IOException exception) {
+            LOGGER.log(Level.WARNING, "Failed to serialize the open tasks result.", exception);
+        }
     }
 
     /** {@inheritDoc} */
@@ -144,8 +170,24 @@ public class TasksResult implements ModelObject, Serializable {
      * get removed by the garbage collector.
      */
     private void loadResult() {
-        JavaProject result = new JavaProject();
+        LOGGER.log(Level.WARNING, "Project loaded!!!" + getDataFile());
+        JavaProject result;
+        try {
+            result = (JavaProject)getDataFile().read();
+        }
+        catch (IOException exception) {
+            LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
+            result = new JavaProject();
+        }
         project = new WeakReference<JavaProject>(result);
-        // FIXME not implemented yet
+    }
+
+    /**
+     * Returns the serialization file.
+     *
+     * @return the serialization file.
+     */
+    private XmlFile getDataFile() {
+        return new XmlFile(XSTREAM, new File(owner.getRootDir(), "openTasks.xml"));
     }
 }

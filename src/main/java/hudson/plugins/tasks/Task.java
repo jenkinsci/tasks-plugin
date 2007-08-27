@@ -1,9 +1,13 @@
 package hudson.plugins.tasks;
 
+import java.io.Serializable;
+
 /**
- * Java Bean class representing an  open task.
+ * Java Bean class representing an open task.
  */
-public class Task {
+public class Task implements Serializable {
+    /** Unique identifier of this class. */
+    private static final long serialVersionUID = 5171661552905752370L;
     /** Defines the priority of a task. */
     enum Priority { HIGH, NORMAL, LOW }
     /** The message of this task. */

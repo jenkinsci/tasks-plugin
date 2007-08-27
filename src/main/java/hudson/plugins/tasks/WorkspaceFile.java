@@ -1,7 +1,11 @@
 package hudson.plugins.tasks;
 
+
 import hudson.plugins.tasks.Task.Priority;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,16 +15,37 @@ import java.util.Map;
 /**
  * Java Bean class representing a java file.
  */
-public class JavaFile {
+public class WorkspaceFile implements Serializable {
+    /** Unique identifier of this class. */
+    private static final long serialVersionUID = 601361940925156719L;
     /** The tasks found in this file. Tasks are grouped by priority. */
-    private final Map<Priority, List<Task>> tasks = new HashMap<Priority, List<Task>>();
+    private transient Map<Priority, List<Task>> tasks;
     /** All tasks of this file. */
     private final List<Task> allTasks = new ArrayList<Task>();
+    /** The absolute filename of this file. */
+    private String name;
 
     /**
      * Creates a new instance of <code>JavaFile</code>.
      */
-    public JavaFile() {
+    public WorkspaceFile() {
+        initializePriorityMapping();
+    }
+
+    /**
+     * Returns the name of this file.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Initializes the priorities mapping.
+     */
+    private void initializePriorityMapping() {
+        tasks = new HashMap<Priority, List<Task>>();
         for (Priority priority : Priority.values()) {
             tasks.put(priority, new ArrayList<Task>());
         }
@@ -42,9 +67,12 @@ public class JavaFile {
     /**
      * Adds a new task to this file.
      *
-     * @param priority the task priority
-     * @param lineNumber the line number of this task
-     * @param message the message of this task
+     * @param priority
+     *            the task priority
+     * @param lineNumber
+     *            the line number of this task
+     * @param message
+     *            the message of this task
      */
     public void addTask(final Priority priority, final int lineNumber, final String message) {
         Task task = new Task(priority, lineNumber, message);
@@ -80,6 +108,31 @@ public class JavaFile {
      */
     public int getNumberOfTasks(final Priority priority) {
         return tasks.get(priority).size();
+    }
+
+    /**
+     * Sets the name of this file.
+     *
+     * @param name the name of this file
+     */
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    /**
+     * Deserializes this instance. Uses the default deserialization and restores the priorities mapping.
+     *
+     * @param input input stream
+     * @throws IOException in case of an IO error
+     * @throws ClassNotFoundException in case of an class not found error
+     */
+    private void readObject(final ObjectInputStream input) throws IOException, ClassNotFoundException {
+        input.defaultReadObject();
+
+        initializePriorityMapping();
+        for (Task task : allTasks) {
+            tasks.get(task.getPriority()).add(task);
+        }
     }
 }
 

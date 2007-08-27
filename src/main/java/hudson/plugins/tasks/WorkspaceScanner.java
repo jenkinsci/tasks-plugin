@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import org.apache.tools.ant.types.FileSet;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Scans the workspace and records the found tasks.
  *
@@ -21,7 +23,8 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
     /** Ant file-set pattern to scan for FindBugs files. */
     private final String filePattern;
     /** Scans for the tags. */
-    private transient final TaskScanner taskScanner;
+    @SuppressWarnings("Se")
+    private final transient TaskScanner taskScanner;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -50,8 +53,9 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
         JavaProject javaProject = new JavaProject();
         for (String file : files) {
             File originalFile = new File(workspace, file);
-            JavaFile javaFile = taskScanner.scan(new FilePath(originalFile).read());
+            WorkspaceFile javaFile = taskScanner.scan(new FilePath(originalFile).read());
             if (javaFile.hasTasks()) {
+                javaFile.setName(originalFile.getAbsolutePath());
                 javaProject.addFile(javaFile);
             }
         }

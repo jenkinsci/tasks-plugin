@@ -72,7 +72,7 @@ public class TaskScanner {
             return Pattern.compile("^.*(?:" + StringUtils.join(tags, "|") + ")(.*)$");
         }
         catch (PatternSyntaxException exception) {
-            throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n");
+            throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n", exception);
         }
     }
 
@@ -85,8 +85,8 @@ public class TaskScanner {
      * @throws IOException
      *             if we can't read the file
      */
-    public JavaFile scan(final InputStream file) throws IOException {
-        JavaFile javaFile = new JavaFile();
+    public WorkspaceFile scan(final InputStream file) throws IOException {
+        WorkspaceFile javaFile = new WorkspaceFile();
         LineIterator lineIterator = IOUtils.lineIterator(file, null);
         for (int lineNumber = 0; lineIterator.hasNext(); lineNumber++) {
             String line = (String)lineIterator.next();
@@ -95,7 +95,8 @@ public class TaskScanner {
                 if (patterns.containsKey(priority)) {
                     Matcher matcher = patterns.get(priority).matcher(line);
                     if (matcher.matches() && matcher.groupCount() == 1) {
-                        javaFile.addTask(priority, lineNumber, matcher.group(1).trim());
+                        String message = matcher.group(1).trim();
+                        javaFile.addTask(priority, lineNumber, StringUtils.remove(message, ":").trim());
                     }
                 }
             }

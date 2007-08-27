@@ -1,24 +1,37 @@
 package hudson.plugins.tasks;
 
+
 import hudson.plugins.tasks.Task.Priority;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Java Bean class representing a java project.
  */
-public class JavaProject {
+public class JavaProject implements Serializable {
+    /** Unique identifier of this class. */
+    private static final long serialVersionUID = 8556968267678442661L;
     /** Files with open tasks in this project. */
-    private final List<JavaFile> files = new ArrayList<JavaFile>();
+    private final List<WorkspaceFile> files = new ArrayList<WorkspaceFile>();
 
     /**
      * Adds a new file to this project.
      *
      * @param javaFile the file to add
      */
-    public void addFile(final JavaFile javaFile) {
+    public void addFile(final WorkspaceFile javaFile) {
         files.add(javaFile);
+    }
+
+    /**
+     * Returns the files.
+     *
+     * @return the files
+     */
+    public List<WorkspaceFile> getFiles() {
+        return files;
     }
 
     /**
@@ -28,7 +41,7 @@ public class JavaProject {
      */
     public int getNumberOfTasks() {
         int numberOfTasks  = 0;
-        for (JavaFile file : files) {
+        for (WorkspaceFile file : files) {
             numberOfTasks += file.getNumberOfTasks();
         }
         return numberOfTasks;
@@ -43,7 +56,7 @@ public class JavaProject {
      */
     public int getNumberOfTasks(final Priority priority) {
         int numberOfTasks  = 0;
-        for (JavaFile file : files) {
+        for (WorkspaceFile file : files) {
             numberOfTasks += file.getNumberOfTasks(priority);
         }
         return numberOfTasks;
