@@ -247,11 +247,13 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
         DataSetBuilder<Integer, NumberOnlyBuildLabel> builder = new DataSetBuilder<Integer, NumberOnlyBuildLabel>();
         for (TasksResultAction action = this; action != null; action = action.getPreviousBuild()) {
             TasksResult current = action.getResult();
-            List<Integer> series = healthReportBuilder.createSeries(current.getNumberOfHighPriorityTasks(), current.getNumberOfNormalPriorityTasks(), current.getNumberOfLowPriorityTasks());
-            int level = 0;
-            for (Integer integer : series) {
-                builder.add(integer, level, new NumberOnlyBuildLabel(action.owner));
-                level++;
+            if (healthReportBuilder != null && current != null) {
+                List<Integer> series = healthReportBuilder.createSeries(current.getNumberOfHighPriorityTasks(), current.getNumberOfNormalPriorityTasks(), current.getNumberOfLowPriorityTasks());
+                int level = 0;
+                for (Integer integer : series) {
+                    builder.add(integer, level, new NumberOnlyBuildLabel(action.owner));
+                    level++;
+                }
             }
         }
         return builder.build();
