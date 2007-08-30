@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Java Bean class representing a java file.
  */
@@ -98,7 +100,7 @@ public class WorkspaceFile implements Serializable {
      * @return open tasks in this file.
      */
     public List<Task> getTasks(final String priority) {
-        return Collections.unmodifiableList(tasks.get(Priority.valueOf(priority)));
+        return Collections.unmodifiableList(tasks.get(Priority.valueOf(StringUtils.upperCase(priority))));
     }
 
     /**
@@ -110,7 +112,7 @@ public class WorkspaceFile implements Serializable {
      * @return <code>true</code> if this file has some open tasks.
      */
     public boolean hasTasks(final String priority) {
-        return !tasks.get(Priority.valueOf(priority)).isEmpty();
+        return !tasks.get(Priority.valueOf(StringUtils.upperCase(priority))).isEmpty();
     }
 
     /**
