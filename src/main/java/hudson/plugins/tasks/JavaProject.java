@@ -72,5 +72,14 @@ public class JavaProject implements Serializable {
     public void setWorkspacePath(final String workspacePath) {
         this.workspacePath = workspacePath;
     }
+
+    /**
+     * Returns the workspace path.
+     *
+     * @return the workspace path
+     */
+    public String getWorkspacePath() {
+        return workspacePath;
+    }
 }
 
