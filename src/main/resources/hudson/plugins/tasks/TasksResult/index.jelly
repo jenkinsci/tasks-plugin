@@ -36,7 +36,7 @@
 
       <j:forEach var="priority" items="${it.priorities}">
         <a name="${priority}" />
-        <h3>${priority} Priority: ${it.getTags(priority)}</h3>
+        <h2>${priority} Priority: ${it.getTags(priority)}</h2>
         <j:forEach var="file" items="${it.project.files}">
           <j:if test="${file.hasTasks(priority)}">
             <p>
