@@ -139,6 +139,26 @@ public class TasksResult implements ModelObject, Serializable {
     }
 
     /**
+     * Returns the number of tasks with the specified priority.
+     *
+     * @param  priority the priority
+     *
+     * @return the number of tasks with the specified priority
+     */
+    public int getNumberOfTasks(final String priority) {
+        Priority converted = Priority.valueOf(StringUtils.upperCase(priority));
+        if (converted == Priority.HIGH) {
+            return highPriorityTasks;
+        }
+        else if (converted == Priority.NORMAL) {
+            return normalPriorityTasks;
+        }
+        else {
+            return lowPriorityTasks;
+        }
+    }
+
+    /**
      * Returns the highPriorityTasks.
      *
      * @return the highPriorityTasks
@@ -223,7 +243,7 @@ public class TasksResult implements ModelObject, Serializable {
      * @return the tags for priority high
      */
     public String getTags(final String priority) {
-        Priority converted = Priority.valueOf(priority);
+        Priority converted = Priority.valueOf(StringUtils.upperCase(priority));
         if (converted == Priority.HIGH) {
             return high;
         }
@@ -243,14 +263,23 @@ public class TasksResult implements ModelObject, Serializable {
     public List<String> getPriorities() {
         ArrayList<String> priorities = new ArrayList<String>();
         if (StringUtils.isNotEmpty(high)) {
-            priorities.add(Priority.HIGH.name());
+            priorities.add(StringUtils.capitalize(StringUtils.lowerCase(Priority.HIGH.name())));
         }
         if (StringUtils.isNotEmpty(normal)) {
-            priorities.add(Priority.NORMAL.name());
+            priorities.add(StringUtils.capitalize(StringUtils.lowerCase(Priority.NORMAL.name())));
         }
         if (StringUtils.isNotEmpty(low)) {
-            priorities.add(Priority.LOW.name());
+            priorities.add(StringUtils.capitalize(StringUtils.lowerCase(Priority.LOW.name())));
         }
         return priorities;
+    }
+
+    /**
+     * Returns whether this result belongs to the last build.
+     *
+     * @return <code>true</code> if this result belongs to the last build
+     */
+    public boolean isCurrent() {
+        return owner.getProject().getLastBuild().number == owner.number;
     }
 }
