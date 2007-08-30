@@ -195,7 +195,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
             response.sendRedirect2(request.getContextPath() + "/images/headless.png");
             return;
         }
-        if (request.checkIfModified(owner.getTimestamp(), response)) {
+        if (request.checkIfModified(owner.getTimestamp(), response) || healthReportBuilder == null) {
             return;
         }
         ChartUtil.generateGraph(request, response, createChart(), WIDTH, HEIGHT);
@@ -213,7 +213,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
      *             {@link TasksResultAction#doGraph(StaplerRequest, StaplerResponse)}
      */
     public void doGraphMap(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        if (request.checkIfModified(owner.getTimestamp(), response)) {
+        if (request.checkIfModified(owner.getTimestamp(), response) || healthReportBuilder == null) {
             return;
         }
         ChartUtil.generateClickableMap(request, response, createChart(), WIDTH, HEIGHT);
@@ -227,11 +227,11 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     private JFreeChart createChart() {
         ChartBuilder chartBuilder = new ChartBuilder();
         StackedAreaRenderer renderer;
-        if (!healthReportBuilder.isHealthyReportEnabled() && !healthReportBuilder.isFailureThresholdEnabled()) {
-            renderer = new PrioritiesAreaRenderer(TASKS_RESULT_URL, "open task");
+        if (healthReportBuilder.isHealthyReportEnabled() || healthReportBuilder.isFailureThresholdEnabled()) {
+            renderer = new ResultAreaRenderer(TASKS_RESULT_URL, "open task");
         }
         else {
-            renderer = new ResultAreaRenderer(TASKS_RESULT_URL, "open task");
+            renderer = new PrioritiesAreaRenderer(TASKS_RESULT_URL, "open task");
         }
         return chartBuilder.createChart(buildDataSet(), renderer, healthReportBuilder.getThreshold(),
                 healthReportBuilder.isHealthyReportEnabled() || !healthReportBuilder.isFailureThresholdEnabled());
