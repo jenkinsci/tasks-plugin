@@ -1,0 +1,64 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+  xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+  xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+  <l:layout>
+    <st:include it="${it.owner}" page="sidepanel.jelly" />
+    <l:main-panel>
+      <h1>${it.title}</h1>
+
+      <h1>Open Tasks</h1>
+
+      <h2>Summary</h2>
+
+      <table class="pane sortable" id="summary">
+        <tr>
+          <j:forEach var="priority" items="${it.priorities}">
+            <td class="pane-header">
+              ${priority} Priority (${it.getTags(priority)})
+            </td>
+          </j:forEach>
+        </tr>
+        <tbody>
+          <tr>
+            <j:forEach var="priority" items="${it.priorities}">
+            <td class="pane">
+              ${it.getNumberOfTasks(priority)}
+              <j:if test="${it.getNumberOfTasks(priority) != 0}">
+                (
+                <a href="#${priority}">Details</a>
+                )
+              </j:if>
+            </td>
+            </j:forEach>
+          </tr>
+        </tbody>
+      </table>
+
+      <j:forEach var="priority" items="${it.priorities}">
+        <a name="${priority}" />
+        <h2>${priority} Priority: ${it.getTags(priority)}</h2>
+        <j:forEach var="file" items="${it.project.files}">
+          <j:if test="${file.hasTasks(priority)}">
+            <p>
+              <b>File: </b>
+              <j:if test="${!it.isCurrent()}">
+                ${file.name}
+              </j:if>
+              <j:if test="${it.isCurrent()}">
+                <a href="../../ws/${file.name}/*view*">${file.name}</a>
+              </j:if>
+            </p>
+            <j:forEach var="task" items="${file.getTasks(priority)}">
+              <p>
+               <b>Line ${task.lineNumber}:</b>
+               ${task.message}
+              </p>
+            </j:forEach>
+            <hr />
+          </j:if>
+        </j:forEach>
+      </j:forEach>
+
+    </l:main-panel>
+  </l:layout>
+</j:jelly>
