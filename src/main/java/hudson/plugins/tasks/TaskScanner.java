@@ -88,7 +88,7 @@ public class TaskScanner {
     public WorkspaceFile scan(final InputStream file) throws IOException {
         WorkspaceFile javaFile = new WorkspaceFile();
         LineIterator lineIterator = IOUtils.lineIterator(file, null);
-        for (int lineNumber = 0; lineIterator.hasNext(); lineNumber++) {
+        for (int lineNumber = 1; lineIterator.hasNext(); lineNumber++) {
             String line = (String)lineIterator.next();
 
             for (Priority priority : Priority.values()) {

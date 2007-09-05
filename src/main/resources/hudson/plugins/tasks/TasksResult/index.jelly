@@ -40,17 +40,18 @@
         <j:forEach var="file" items="${it.project.files}">
           <j:if test="${file.hasTasks(priority)}">
             <p>
-              <b>File: </b>
-              <j:if test="${!it.isCurrent()}">
-                ${file.name}
-              </j:if>
-              <j:if test="${it.isCurrent()}">
-                <a href="../../ws/${file.name}/*view*">${file.name}</a>
-              </j:if>
+              File: ${file.name}
             </p>
             <j:forEach var="task" items="${file.getTasks(priority)}">
               <p>
-               <b>Line ${task.lineNumber}:</b>
+		    	<j:choose>
+		    		<j:when test="${it.isCurrent()}">
+		                 <a href="${file.linkName}!${task.lineNumber}">Line ${task.lineNumber}:</a>
+		    		</j:when>
+		    		<j:otherwise>
+		    			Line ${task.lineNumber}:
+	    			</j:otherwise>
+		    	</j:choose>
                ${task.message}
               </p>
             </j:forEach>

@@ -145,6 +145,15 @@ public class WorkspaceFile implements Serializable {
     }
 
     /**
+     * Creates a synthetic link.
+     *
+     * @return a synthetic link.
+     */
+    public String getLinkName() {
+        return name.replace('/', '!');
+    }
+
+    /**
      * Deserializes this instance. Uses the default deserialization and restores the priorities mapping.
      *
      * @param input input stream

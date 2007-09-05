@@ -9,7 +9,7 @@
 	    		<j:when test="${it.result.delta > 0}">
 	    			(+${it.result.delta}).
 	    		</j:when>
-	    		<j:when test="${it.result.delta == 0}">(+/-0).</j:when>
+	    		<j:when test="${it.result.delta == 0}">(±0).</j:when>
 	    		<j:otherwise>(${it.result.delta}).</j:otherwise>
 	    	</j:choose>
 	    </j:if>

@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -281,5 +283,19 @@ public class TasksResult implements ModelObject, Serializable {
      */
     public boolean isCurrent() {
         return owner.getProject().getLastBuild().number == owner.number;
+    }
+
+    /**
+     * Returns the dynamic result of the FindBugs analysis (detail page for a package).
+     *
+     * @param packageName the package name to get the result for
+     * @param request
+     *            Stapler request
+     * @param response
+     *            Stapler response
+     * @return the dynamic result of the FindBugs analysis (detail page for a package).
+     */
+    public Object getDynamic(final String packageName, final StaplerRequest request, final StaplerResponse response) {
+        return new TaskDetail(owner, packageName);
     }
 }
