@@ -46,7 +46,7 @@
               <p>
 		    	<j:choose>
 		    		<j:when test="${it.isCurrent()}">
-		                 <a href="${file.linkName}!${task.lineNumber}">Line ${task.lineNumber}:</a>
+		                 <a href="${file.linkName}/#${task.lineNumber}">Line ${task.lineNumber}:</a>
 		    		</j:when>
 		    		<j:otherwise>
 		    			Line ${task.lineNumber}:

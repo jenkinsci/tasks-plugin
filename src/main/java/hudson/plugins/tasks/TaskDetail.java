@@ -28,8 +28,6 @@ public class TaskDetail implements ModelObject, Serializable {
     private final Build<?, ?> owner;
     /** Link to the file containing the corresponding task. */
     private final String linkName;
-    /** Line number of the corresponding task. */
-    private final String lineNumber;
     /** Relative file name containing the corresponding task. */
     private final String fileName;
 
@@ -43,9 +41,8 @@ public class TaskDetail implements ModelObject, Serializable {
      */
     public TaskDetail(final Build<?, ?> owner, final String link) {
         this.owner = owner;
-        linkName = StringUtils.substringBeforeLast(link, "!").replace('!', '/');
-        lineNumber = StringUtils.substringAfterLast(link, "!");
-        fileName = StringUtils.substringAfterLast(linkName, "/");
+        linkName = link.replace('!', '/');
+        fileName = StringUtils.substringAfterLast(link, "!");
     }
 
     /** {@inheritDoc} */
@@ -95,15 +92,6 @@ public class TaskDetail implements ModelObject, Serializable {
      */
     public Build<?, ?> getOwner() {
         return owner;
-    }
-
-    /**
-     * Returns the lineNumber.
-     *
-     * @return the lineNumber
-     */
-    public String getLineNumber() {
-        return lineNumber;
     }
 
     /**

@@ -288,14 +288,14 @@ public class TasksResult implements ModelObject, Serializable {
     /**
      * Returns the dynamic result of the FindBugs analysis (detail page for a package).
      *
-     * @param packageName the package name to get the result for
+     * @param link the link to the source code
      * @param request
      *            Stapler request
      * @param response
      *            Stapler response
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
-    public Object getDynamic(final String packageName, final StaplerRequest request, final StaplerResponse response) {
-        return new TaskDetail(owner, packageName);
+    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        return new TaskDetail(owner, link);
     }
 }
