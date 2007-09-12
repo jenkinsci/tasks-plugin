@@ -51,7 +51,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     /** The actual result of the FindBugs analysis. */
     private TasksResult result;
     /** Builds a health report. */
-    private final HealthReportBuilder healthReportBuilder;
+    private HealthReportBuilder healthReportBuilder;
 
     /**
      * Creates a new instance of <code>FindBugsBuildAction</code>.
@@ -195,7 +195,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
             response.sendRedirect2(request.getContextPath() + "/images/headless.png");
             return;
         }
-        if (request.checkIfModified(owner.getTimestamp(), response) || healthReportBuilder == null) {
+        if (request.checkIfModified(owner.getTimestamp(), response)) {
             return;
         }
         ChartUtil.generateGraph(request, response, createChart(), WIDTH, HEIGHT);
@@ -213,7 +213,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
      *             {@link TasksResultAction#doGraph(StaplerRequest, StaplerResponse)}
      */
     public void doGraphMap(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        if (request.checkIfModified(owner.getTimestamp(), response) || healthReportBuilder == null) {
+        if (request.checkIfModified(owner.getTimestamp(), response)) {
             return;
         }
         ChartUtil.generateClickableMap(request, response, createChart(), WIDTH, HEIGHT);
@@ -227,6 +227,9 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     private JFreeChart createChart() {
         ChartBuilder chartBuilder = new ChartBuilder();
         StackedAreaRenderer renderer;
+        if (healthReportBuilder == null) {
+            healthReportBuilder = new HealthReportBuilder("Task Scanner", "open tasks", false, 0, false, 0, 0);
+        }
         if (healthReportBuilder.isHealthyReportEnabled() || healthReportBuilder.isFailureThresholdEnabled()) {
             renderer = new ResultAreaRenderer(TASKS_RESULT_URL, "open task");
         }
@@ -247,7 +250,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
         DataSetBuilder<Integer, NumberOnlyBuildLabel> builder = new DataSetBuilder<Integer, NumberOnlyBuildLabel>();
         for (TasksResultAction action = this; action != null; action = action.getPreviousBuild()) {
             TasksResult current = action.getResult();
-            if (healthReportBuilder != null && current != null) {
+            if (current != null) {
                 List<Integer> series = healthReportBuilder.createSeries(current.getNumberOfHighPriorityTasks(), current.getNumberOfNormalPriorityTasks(), current.getNumberOfLowPriorityTasks());
                 int level = 0;
                 for (Integer integer : series) {
