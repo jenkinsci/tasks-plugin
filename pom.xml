@@ -65,4 +65,8 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <scm>
+    <tag>tasks-1_9</tag>
+  </scm>
 </project>
