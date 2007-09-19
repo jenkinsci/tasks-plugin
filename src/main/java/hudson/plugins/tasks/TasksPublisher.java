@@ -227,7 +227,7 @@ public class TasksPublisher extends Publisher {
             result = new TasksResult(build, project, high, normal, low);
         }
 
-        HealthReportBuilder healthReportBuilder = new HealthReportBuilder("Task Scanner", "open tasks", isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks);
+        HealthReportBuilder healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks);
         build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
 
         int warnings = project.getNumberOfTasks();

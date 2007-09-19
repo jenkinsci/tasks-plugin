@@ -222,7 +222,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
         ChartBuilder chartBuilder = new ChartBuilder();
         StackedAreaRenderer renderer;
         if (healthReportBuilder == null) {
-            healthReportBuilder = new HealthReportBuilder("Task Scanner", "open tasks", false, 0, false, 0, 0);
+            healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", false, 0, false, 0, 0);
         }
         if (healthReportBuilder.isHealthyReportEnabled() || healthReportBuilder.isFailureThresholdEnabled()) {
             renderer = new ResultAreaRenderer(TASKS_RESULT_URL, "open task");
