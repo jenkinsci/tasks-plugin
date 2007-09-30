@@ -51,12 +51,12 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
         }
 
         JavaProject javaProject = new JavaProject();
-        for (String file : files) {
-            File originalFile = new File(workspace, file);
-            WorkspaceFile javaFile = taskScanner.scan(new FilePath(originalFile).read());
-            if (javaFile.hasTasks()) {
-                javaFile.setName(file.replace('\\', '/'));
-                javaProject.addFile(javaFile);
+        for (String fileName : files) {
+            File originalFile = new File(workspace, fileName);
+            WorkspaceFile workspaceFile = taskScanner.scan(new FilePath(originalFile).read());
+            if (workspaceFile.hasTasks()) {
+                workspaceFile.setName(fileName.replace('\\', '/'));
+                javaProject.addFile(workspaceFile);
             }
             javaProject.setWorkspacePath(workspace.getAbsolutePath());
         }

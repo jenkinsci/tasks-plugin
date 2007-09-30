@@ -26,6 +26,8 @@ public class WorkspaceFile implements Serializable {
     private final List<Task> allTasks = new ArrayList<Task>();
     /** The absolute filename of this file. */
     private String name;
+    /** Mapping of classifications to values. */
+    private final Map<String, String> classifications = new HashMap<String, String>();
 
     /**
      * Creates a new instance of <code>JavaFile</code>.
@@ -167,6 +169,26 @@ public class WorkspaceFile implements Serializable {
         for (Task task : allTasks) {
             tasks.get(task.getPriority()).add(task);
         }
+    }
+
+    /**
+     * Returns the classification property with the specified key.
+     *
+     * @param key the property key
+     * @return the property value
+     */
+    public String getProperty(final String key) {
+        return classifications.get(key);
+    }
+
+    /**
+     * Sets the classification property with the specified key to the given value.
+     *
+     * @param key the property key
+     * @param value the property value
+     */
+    public void setProperty(final String key, final String value) {
+        classifications.put(key, value);
     }
 }
 
