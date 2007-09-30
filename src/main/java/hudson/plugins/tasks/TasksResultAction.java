@@ -7,6 +7,7 @@ import hudson.model.HealthReportingAction;
 import hudson.plugins.tasks.util.ChartBuilder;
 import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.plugins.tasks.util.PrioritiesAreaRenderer;
+import hudson.plugins.tasks.util.ResultAction;
 import hudson.plugins.tasks.util.ResultAreaRenderer;
 import hudson.util.ChartUtil;
 import hudson.util.DataSetBuilder;
@@ -36,7 +37,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author Ulli Hafner
  */
-public class TasksResultAction implements StaplerProxy, HealthReportingAction {
+public class TasksResultAction implements StaplerProxy, HealthReportingAction, ResultAction<TasksResult> {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -3936658973355672416L;
     /** URL to results. */
@@ -118,9 +119,9 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
     }
 
     /**
-     * Returns the URL for the latest tasks results.
+     * Returns the URL for the results of the last build.
      *
-     * @return URL for the latest tasks results.
+     * @return URL for the results of the last build
      */
     public static String getLatestUrl() {
         return "../lastBuild/" + TASKS_RESULT_URL;
@@ -132,7 +133,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
      * @return the FindBugs result of the previous build.
      * @throws NoSuchElementException if there is no previous build for this action
      */
-    public TasksResultAction getPreviousResult() {
+    public TasksResultAction getPreviousResultAction() {
         TasksResultAction previousBuild = getPreviousBuild();
         if (previousBuild == null) {
             throw new NoSuchElementException("There is no previous build for action " + this);
@@ -165,7 +166,7 @@ public class TasksResultAction implements StaplerProxy, HealthReportingAction {
      * @return <code>true</code> if a previous build already did run with
      *         FindBugs.
      */
-    public boolean hasPreviousResult() {
+    public boolean hasPreviousResultAction() {
         return getPreviousBuild() != null;
     }
 
