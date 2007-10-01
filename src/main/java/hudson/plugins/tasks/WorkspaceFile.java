@@ -26,8 +26,10 @@ public class WorkspaceFile implements Serializable {
     private final List<Task> allTasks = new ArrayList<Task>();
     /** The absolute filename of this file. */
     private String name;
-    /** Mapping of classifications to values. */
-    private final Map<String, String> classifications = new HashMap<String, String>();
+    /** Package name of this task. */
+    private String packageName;
+    /** Module name of this task. */
+    private String moduleName;
 
     /**
      * Creates a new instance of <code>JavaFile</code>.
@@ -172,23 +174,39 @@ public class WorkspaceFile implements Serializable {
     }
 
     /**
-     * Returns the classification property with the specified key.
+     * Sets the package name to the specified value.
      *
-     * @param key the property key
-     * @return the property value
+     * @param packageName the package name
      */
-    public String getProperty(final String key) {
-        return classifications.get(key);
+    public void setPackageName(final String packageName) {
+        this.packageName = packageName;
     }
 
     /**
-     * Sets the classification property with the specified key to the given value.
+     * Returns the packageName.
      *
-     * @param key the property key
-     * @param value the property value
+     * @return the packageName
      */
-    public void setProperty(final String key, final String value) {
-        classifications.put(key, value);
+    public String getPackageName() {
+        return packageName;
+    }
+
+    /**
+     * Sets the module name to the specified value.
+     *
+     * @param moduleName the module name
+     */
+    public void setModuleName(final String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    /**
+     * Returns the moduleName.
+     *
+     * @return the moduleName
+     */
+    public String getModuleName() {
+        return moduleName;
     }
 }
 

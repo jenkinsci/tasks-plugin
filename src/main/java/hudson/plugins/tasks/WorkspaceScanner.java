@@ -38,7 +38,7 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
      * @param low
      *            tag identifiers indicating low priority
      */
-    WorkspaceScanner(final String filePattern, final String high, final String normal, final String low) {
+    public WorkspaceScanner(final String filePattern, final String high, final String normal, final String low) {
         this.filePattern = filePattern;
         taskScanner = new TaskScanner(high, normal, low);
     }
@@ -50,12 +50,15 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
             throw new AbortException("No files were found that match the pattern '" + filePattern + "'. Configuration error?");
         }
 
+        MavenJavaClassifier classifier = new MavenJavaClassifier();
         JavaProject javaProject = new JavaProject();
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
             WorkspaceFile workspaceFile = taskScanner.scan(new FilePath(originalFile).read());
             if (workspaceFile.hasTasks()) {
                 workspaceFile.setName(fileName.replace('\\', '/'));
+                classifier.classify(workspaceFile, new FilePath(originalFile).read());
+
                 javaProject.addFile(workspaceFile);
             }
             javaProject.setWorkspacePath(workspace.getAbsolutePath());

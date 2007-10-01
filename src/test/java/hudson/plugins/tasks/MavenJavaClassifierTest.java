@@ -46,7 +46,7 @@ public class MavenJavaClassifierTest {
         MavenJavaClassifier classifier = new MavenJavaClassifier();
         classifier.classify(file, stream);
 
-        assertEquals("Wrong packag name guessed.", "hudson.plugins.tasks.util", file.getProperty("package"));
-        assertEquals("Wrong module name guessed", "com.avaloq.adt.core", file.getProperty("module"));
+        assertEquals("Wrong packag name guessed.", "hudson.plugins.tasks.util", file.getPackageName());
+        assertEquals("Wrong module name guessed", "com.avaloq.adt.core", file.getModuleName());
     }
 }

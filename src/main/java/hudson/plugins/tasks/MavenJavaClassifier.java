@@ -13,6 +13,11 @@ import org.apache.commons.lang.StringUtils;
  * classification properties "package" and "module".
  */
 public class MavenJavaClassifier {
+    /** Maven module classification. */
+    private static final String MODULE_CLASSIFICATION = "module";
+    /** Java package classification. */
+    private static final String PACKAGE_CLASSIFICATION = "package";
+
     /**
      * Classifies the specified workspace file. The provided stream is closed
      * afterwards.
@@ -30,7 +35,7 @@ public class MavenJavaClassifier {
             while (iterator.hasNext()) {
                 String line = iterator.nextLine();
                 if (line.matches("^package .*;$")) {
-                    file.setProperty("package", StringUtils.substringBetween(line, " ", ";").trim());
+                    file.setPackageName(StringUtils.substringBetween(line, " ", ";").trim());
                     break;
                 }
             }
@@ -43,7 +48,7 @@ public class MavenJavaClassifier {
             module = StringUtils.substringAfterLast(module, "/");
         }
         if (StringUtils.isNotBlank(module)) {
-            file.setProperty("module", module);
+            file.setModuleName(module);
         }
     }
 }

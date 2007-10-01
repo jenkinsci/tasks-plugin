@@ -5,7 +5,11 @@ import hudson.plugins.tasks.Task.Priority;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Java Bean class representing a java project.
@@ -14,17 +18,34 @@ public class JavaProject implements Serializable {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 8556968267678442661L;
     /** Files with open tasks in this project. */
-    private final List<WorkspaceFile> files = new ArrayList<WorkspaceFile>();
+    private final List<WorkspaceFile> files;
+    /** Files with open tasks in this project. */
+    private final Map<String, MavenModule> filesPerModule;
     /** Path of the workspace. */
     private String workspacePath;
 
     /**
+     * Creates a new instance of <code>JavaProject</code>.
+     */
+    public JavaProject() {
+        filesPerModule = new HashMap<String, MavenModule>();
+        files = new ArrayList<WorkspaceFile>();
+    }
+
+    /**
      * Adds a new file to this project.
      *
-     * @param javaFile the file to add
+     * @param workspaceFile the file to add
      */
-    public void addFile(final WorkspaceFile javaFile) {
-        files.add(javaFile);
+    public void addFile(final WorkspaceFile workspaceFile) {
+        files.add(workspaceFile);
+        String moduleName = workspaceFile.getModuleName();
+        if (moduleName != null) {
+            if (!filesPerModule.containsKey(moduleName)) {
+                filesPerModule.put(moduleName, new MavenModule(moduleName));
+            }
+            filesPerModule.get(moduleName).add(workspaceFile);
+        }
     }
 
     /**
@@ -34,6 +55,10 @@ public class JavaProject implements Serializable {
      */
     public List<WorkspaceFile> getFiles() {
         return files;
+    }
+
+    public Collection<MavenModule> getModules() {
+        return Collections.unmodifiableCollection(filesPerModule.values());
     }
 
     /**
