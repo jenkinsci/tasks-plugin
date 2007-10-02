@@ -15,12 +15,16 @@ import java.util.Map;
  * Java Bean class representing a java project.
  */
 public class JavaProject implements Serializable {
+
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 8556968267678442661L;
+
     /** Files with open tasks in this project. */
     private final List<WorkspaceFile> files;
+
     /** Files with open tasks in this project. */
     private final Map<String, MavenModule> filesPerModule;
+
     /** Path of the workspace. */
     private String workspacePath;
 
@@ -57,6 +61,11 @@ public class JavaProject implements Serializable {
         return files;
     }
 
+    /**
+     * Gets the modules of this project that have open tasks.
+     *
+     * @return the modules
+     */
     public Collection<MavenModule> getModules() {
         return Collections.unmodifiableCollection(filesPerModule.values());
     }
@@ -77,7 +86,7 @@ public class JavaProject implements Serializable {
     /**
      * Returns the number of tasks with the specified priority in this project.
      *
-     * @param  priority the priority
+     * @param priority the priority
      *
      * @return the number of tasks with the specified priority in this project.
      */
@@ -105,6 +114,30 @@ public class JavaProject implements Serializable {
      */
     public String getWorkspacePath() {
         return workspacePath;
+    }
+
+    /**
+     * Returns the specified maven module.
+     *
+     * @param moduleName the module to get
+     *
+     * @return the module
+     */
+    public MavenModule getModule(final String moduleName) {
+        return filesPerModule.get(moduleName);
+    }
+
+    /**
+     * Gets the maximum number of tasks in a module.
+     *
+     * @return the maximum number of tasks
+     */
+    public int getTaskBound() {
+        int tasks = 0;
+        for (MavenModule module : filesPerModule.values()) {
+            tasks = Math.max(tasks, module.getNumberOfTasks());
+        }
+        return tasks;
     }
 }
 

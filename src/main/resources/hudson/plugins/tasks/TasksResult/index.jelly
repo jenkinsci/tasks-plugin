@@ -34,36 +34,32 @@
         </tbody>
       </table>
 
-      <h2>Maven Module Statistics</h2>
+      <j:if test="${it.project.modules.size() > 1}">
+	      <h2>Module Statistics</h2>
 
-      <table class="pane sortable" id="tasks">
-      	<tr>
-      		<td class="pane-header">Module</td>
-      		<td class="pane-header" style="width:5em">Total</td>
-			<j:forEach var="priority" items="${it.priorities}">
-		      	<td class="pane-header" style="width:8em">${priority} Priority</td>
-  			</j:forEach>
-      	</tr>
-      	<tbody>
-      		<j:forEach var="module" items="${it.project.modules}">
-      			<tr>
-      				<td class="pane">
-      					${module.name}
-      				</td>
-      				<td class="pane">
-      					${module.numberOfTasks}
-      				</td>
-      				<j:forEach var="priority"
-      					items="${it.priorities}">
-      					<td class="pane">
-      						${module.getNumberOfTasks(priority)}
-      					</td>
-      				</j:forEach>
-      			</tr>
-      		</j:forEach>
-      	</tbody>
-      </table>
-
+	      <table class="pane sortable" id="tasks">
+	      	<tr>
+	      		<td class="pane-header">Module</td>
+	      		<td class="pane-header" style="width:2em">Total</td>
+		      	<td class="pane-header" >Distribution</td>
+	      	</tr>
+	      	<tbody>
+	      		<j:forEach var="module" items="${it.project.modules}">
+	      			<tr>
+	      				<td class="pane">
+	      					${module.name}
+	      				</td>
+	      				<td class="pane">
+	      					${module.numberOfTasks}
+	      				</td>
+	      				<td class="pane">
+						  	<img src="moduleStatistics?module=${module.name}"/>
+	      				</td>
+	      			</tr>
+	      		</j:forEach>
+	      	</tbody>
+	      </table>
+      </j:if>
 
       <j:forEach var="priority" items="${it.priorities}">
         <a name="${priority}" />

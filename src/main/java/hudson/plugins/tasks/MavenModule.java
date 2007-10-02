@@ -78,10 +78,20 @@ public class MavenModule implements Serializable {
      * @return the number of tasks with the specified priority in this project.
      */
     public int getNumberOfTasks(final String priority) {
-        Priority converted = Priority.valueOf(StringUtils.upperCase(priority));
+        return getNumberOfTasks(Priority.valueOf(StringUtils.upperCase(priority)));
+    }
+
+    /**
+     * Returns the number of tasks with the specified priority in this project.
+     *
+     * @param  priority the priority
+     *
+     * @return the number of tasks with the specified priority in this project.
+     */
+    public int getNumberOfTasks(final Priority priority) {
         int numberOfTasks  = 0;
         for (WorkspaceFile file : files) {
-            numberOfTasks += file.getNumberOfTasks(converted);
+            numberOfTasks += file.getNumberOfTasks(priority);
         }
         return numberOfTasks;
     }

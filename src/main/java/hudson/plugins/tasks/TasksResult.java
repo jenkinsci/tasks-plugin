@@ -4,6 +4,8 @@ import hudson.XmlFile;
 import hudson.model.Build;
 import hudson.model.ModelObject;
 import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.util.ChartBuilder;
+import hudson.util.ChartUtil;
 import hudson.util.StringConverter2;
 import hudson.util.XStream2;
 
@@ -17,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -115,6 +118,32 @@ public class TasksResult implements ModelObject, Serializable {
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to serialize the open tasks result.", exception);
         }
+    }
+
+    /**
+     * Generates a PNG image for high/normal/low distribution of a maven module.
+     *
+     * @param request
+     *            Stapler request
+     * @param response
+     *            Stapler response
+     * @throws IOException
+     *             in case of an error
+     */
+    public final void doModuleStatistics(final StaplerRequest request,
+            final StaplerResponse response) throws IOException {
+        if (ChartUtil.awtProblem) {
+            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
+            return;
+        }
+        MavenModule module = getProject().getModule(request.getParameter("module"));
+
+        ChartBuilder chartBuilder = new ChartBuilder();
+        JFreeChart chart = chartBuilder.createHighNormalLowChart(
+                module.getNumberOfTasks(Priority.HIGH),
+                module.getNumberOfTasks(Priority.NORMAL),
+                module.getNumberOfTasks(Priority.LOW), getProject().getTaskBound());
+        ChartUtil.generateGraph(request, response, chart, 500, 25);
     }
 
     /** {@inheritDoc} */
