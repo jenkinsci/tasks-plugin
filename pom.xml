@@ -10,7 +10,7 @@
   <artifactId>tasks</artifactId>
   <packaging>hpi</packaging>
   <name>Hudson Task Scanner Plug-in</name>
-  <version>1.10</version>
+  <version>1.11-SNAPSHOT</version>
   <licenses>
   	<license><name>MIT license</name><comments>All source code is under the MIT license.</comments></license>
   	<license><name>LGPL</name><comments>All icons are made by Carlitus (Carles Carbonell Bernado) and are under the LGPL.</comments></license>
@@ -65,8 +65,4 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <scm>
-    <tag>tasks-1_10</tag>
-  </scm>
 </project>
