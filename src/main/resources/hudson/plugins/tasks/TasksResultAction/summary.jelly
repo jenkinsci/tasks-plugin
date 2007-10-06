@@ -1,7 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
 	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-	<t:summary icon="/plugin/tasks/icons/tasks-48x48.png">
+	<t:summary icon="/plugin/tasks/icons/tasks-48x48.gif">
 	    <j:if test="${it.result.numberOfTasks > 0}">
 	    	Task Scanner: a total of
     	<a href="tasksResult">${it.result.numberOfTasks} open tasks</a> have been found
