@@ -158,6 +158,15 @@ public class WorkspaceFile implements Serializable {
     }
 
     /**
+     * Returns a readable name of this workspace file.
+     *
+     * @return a readable name of this workspace file.
+     */
+    public String getShortName() {
+        return StringUtils.substringAfterLast(name, "/");
+    }
+
+    /**
      * Deserializes this instance. Uses the default deserialization and restores the priorities mapping.
      *
      * @param input input stream
