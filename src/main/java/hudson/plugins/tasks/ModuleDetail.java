@@ -1,21 +1,16 @@
 package hudson.plugins.tasks;
 
-import hudson.model.Build;
 import hudson.plugins.tasks.Task.Priority;
 import hudson.plugins.tasks.util.ChartBuilder;
 import hudson.util.ChartUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * Represents the details of a maven module.
@@ -23,36 +18,23 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class ModuleDetail extends AbstractTasksResult {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -3743047168363581305L;
-    /** The current build as owner of this object. */
-    @SuppressWarnings("Se")
-    private final TasksResult tasksResult;
     /** The selected module to show. */
     private final MavenModule module;
+    /** The root of the tasks results. */
+    private final AbstractTasksResult root;
 
     /**
-     * Creates a new instance of <code>TaskDetail</code>.
+     * Creates a new instance of <code>PackageDetail</code>.
      *
-     * @param owner
-     *            the current build as owner of this action
-     * @param tasksResult
-     *            the current build as owner of this action
+     * @param root
+     *            the root result object that is used to get the available tasks
      * @param module
-     *            the selected package to show
+     *            the selected module to show
      */
-    public ModuleDetail(final Build<?, ?> owner, final TasksResult tasksResult, final MavenModule module) {
-        super(owner);
-
-        this.tasksResult = tasksResult;
+    public ModuleDetail(final AbstractTasksResult root, final MavenModule module) {
+        super(root);
+        this.root = root;
         this.module = module;
-    }
-
-    /**
-     * Returns the owner.
-     *
-     * @return the owner
-     */
-    public TasksResult getTasksResult() {
-        return tasksResult;
     }
 
     /** {@inheritDoc} */
@@ -79,48 +61,14 @@ public class ModuleDetail extends AbstractTasksResult {
     }
 
     /**
-     * Returns the defined priorities.
-     *
-     * @return the defined priorities.
-     */
-    public List<String> getPriorities() {
-        List<String> priorities = new ArrayList<String>();
-        for (String priority : tasksResult.getPriorities()) {
-            if (getNumberOfTasks(priority) > 0) {
-                priorities.add(priority);
-            }
-        }
-        return priorities;
-    }
-
-    /**
-     * Returns the tags for the specified priority.
-     *
-     * @param priority
-     *            the priority
-     * @return the tags for priority high
-     */
-    public String getTags(final String priority) {
-        return tasksResult.getTags(priority);
-    }
-
-    /**
-     * Returns the total number of tasks in this project.
-     *
-     * @return total number of tasks in this project.
-     */
-    public int getNumberOfTasks() {
-        return module.getNumberOfTasks();
-    }
-
-    /**
-     * Returns the number of tasks with the specified priority in this project.
+     * Returns the number of tasks with the specified priority in this module.
      *
      * @param  priority the priority
      *
      * @return the number of tasks with the specified priority in this project.
      */
-    public int getNumberOfTasks(final String priority) {
+    @Override
+    public int getNumberOfTasks(final Priority priority) {
         return module.getNumberOfTasks(priority);
     }
 
@@ -150,21 +98,27 @@ public class ModuleDetail extends AbstractTasksResult {
     }
 
     /**
-     * Returns the dynamic result of the FindBugs analysis (detail page for a package).
+     * Returns the dynamic result of this module detail view, which is either a
+     * task detail object for a single workspace file or a package detail
+     * object.
      *
-     * @param link the link to the source code
+     * @param link
+     *            the link containing the path to the selected workspace file
+     *            (or package)
      * @param request
      *            Stapler request
      * @param response
      *            Stapler response
-     * @return the dynamic result of the FindBugs analysis (detail page for a package).
+     * @return the dynamic result of the FindBugs analysis (detail page for a
+     *         package).
+     * @see #isSinglePackageModule()
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSinglePackageModule()) {
             return new TaskDetail(getOwner(), link);
         }
         else {
-            return new PackageDetail(getOwner(), tasksResult, module.getPackage(link));
+            return new PackageDetail(root, module.getPackage(link));
         }
     }
 

@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.Build;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
+import hudson.plugins.tasks.Task.Priority;
 import hudson.plugins.tasks.util.AbstractResultAction;
 import hudson.plugins.tasks.util.ChartBuilder;
 import hudson.plugins.tasks.util.HealthReportBuilder;
@@ -192,7 +193,10 @@ public class TasksResultAction extends AbstractResultAction implements StaplerPr
         for (TasksResultAction action = this; action != null; action = action.getPreviousBuild()) {
             TasksResult current = action.getResult();
             if (current != null) {
-                List<Integer> series = healthReportBuilder.createSeries(current.getNumberOfHighPriorityTasks(), current.getNumberOfNormalPriorityTasks(), current.getNumberOfLowPriorityTasks());
+                List<Integer> series = healthReportBuilder.createSeries(
+                        current.getNumberOfTasks(Priority.HIGH),
+                        current.getNumberOfTasks(Priority.NORMAL),
+                        current.getNumberOfTasks(Priority.LOW));
                 int level = 0;
                 for (Integer integer : series) {
                     builder.add(integer, level, new NumberOnlyBuildLabel(action.getOwner()));

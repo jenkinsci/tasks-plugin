@@ -1,49 +1,33 @@
 package hudson.plugins.tasks;
 
-import hudson.model.Build;
+import hudson.plugins.tasks.Task.Priority;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 /**
- * Represents the details of a Java package.
+ * Represents the tasks details of a Java package.
  */
 public class PackageDetail extends AbstractTasksResult {
-    /** The current build as owner of this object. */
-    @SuppressWarnings("Se")
-    private final TasksResult tasksResult;
+    /** Unique identifier of this class. */
+    private static final long serialVersionUID = 3082184559129569059L;
     /** The selected package to show. */
     private final JavaPackage javaPackage;
+
     /**
-     * Creates a new instance of <code>TaskDetail</code>.
+     * Creates a new instance of <code>PackageDetail</code>.
      *
-     * @param owner
-     *            the current build as owner of this action
-     * @param tasksResult
-     *            the current build as owner of this action
+     * @param root
+     *            the root result object that is used to get the available tasks
      * @param javaPackage
      *            the selected package to show
      */
-    public PackageDetail(final Build<?, ?> owner, final TasksResult tasksResult, final JavaPackage javaPackage) {
-        super(owner);
+    public PackageDetail(final AbstractTasksResult root, final JavaPackage javaPackage) {
+        super(root);
 
-        this.tasksResult = tasksResult;
         this.javaPackage = javaPackage;
-    }
-
-    /**
-     * Returns the owner.
-     *
-     * @return the owner
-     */
-    public TasksResult getTasksResult() {
-        return tasksResult;
     }
 
     /** {@inheritDoc} */
@@ -61,63 +45,32 @@ public class PackageDetail extends AbstractTasksResult {
     }
 
     /**
-     * Returns the defined priorities.
-     *
-     * @return the defined priorities.
-     */
-    public List<String> getPriorities() {
-        List<String> priorities = new ArrayList<String>();
-        for (String priority : tasksResult.getPriorities()) {
-            if (getNumberOfTasks(priority) > 0) {
-                priorities.add(priority);
-            }
-        }
-        return priorities;
-    }
-
-    /**
-     * Returns the tags for the specified priority.
-     *
-     * @param priority
-     *            the priority
-     * @return the tags for priority high
-     */
-    public String getTags(final String priority) {
-        return tasksResult.getTags(priority);
-    }
-
-    /**
-     * Returns the total number of tasks in this project.
-     *
-     * @return total number of tasks in this project.
-     */
-    public int getNumberOfTasks() {
-        return javaPackage.getNumberOfTasks();
-    }
-
-    /**
      * Returns the number of tasks with the specified priority in this project.
      *
      * @param  priority the priority
      *
      * @return the number of tasks with the specified priority in this project.
      */
-    public int getNumberOfTasks(final String priority) {
+    @Override
+    public int getNumberOfTasks(final Priority priority) {
         return javaPackage.getNumberOfTasks(priority);
     }
 
     /**
-     * Returns the dynamic result of the FindBugs analysis (detail page for a package).
+     * Returns the dynamic result of this package detail view, which is a task
+     * detail object for a single workspace file.
      *
-     * @param link the link to the source code
+     * @param link
+     *            the link containing the path to the selected workspace file
      * @param request
      *            Stapler request
      * @param response
      *            Stapler response
-     * @return the dynamic result of the FindBugs analysis (detail page for a package).
+     * @return the dynamic result of the FindBugs analysis (detail page for a
+     *         package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TaskDetail(tasksResult.getOwner(), link);
+        return new TaskDetail(getOwner(), link);
     }
 }
 
