@@ -143,8 +143,18 @@ public class TasksResult extends AbstractTasksResult {
      *
      * @return the packages in this project
      */
-    public Collection<JavaPackage> getPackages () {
+    public Collection<JavaPackage> getPackages() {
         return getProject().getPackages();
+    }
+
+
+    /**
+     * Returns the files in this project.
+     *
+     * @return the files in this project
+     */
+    public Collection<WorkspaceFile> getFiles() {
+        return getProject().getFiles();
     }
 
     /**

@@ -40,31 +40,7 @@
 	      </j:if>
 
 	      <j:if test="${it.isSinglePackageProject()}">
-	      <j:forEach var="priority" items="${it.priorities}">
-	        <a name="${priority}" />
-	        <h2>${priority} Priority: ${it.getTags(priority)}</h2>
-	        <j:forEach var="file" items="${it.project.files}">
-	          <j:if test="${file.hasTasks(priority)}">
-	            <p>
-	              File: ${file.name}
-	            </p>
-	            <j:forEach var="task" items="${file.getTasks(priority)}">
-	              <p>
-			    	<j:choose>
-			    		<j:when test="${it.isCurrent()}">
-			                 <a href="${file.linkName}/#${task.lineNumber}">Line ${task.lineNumber}:</a>
-			    		</j:when>
-			    		<j:otherwise>
-			    			Line ${task.lineNumber}:
-		    			</j:otherwise>
-			    	</j:choose>
-	               ${task.message}
-	              </p>
-	            </j:forEach>
-	            <hr />
-	          </j:if>
-	        </j:forEach>
-	      </j:forEach>
+		      <st:include page="filesTable.jelly" />
 		  </j:if>
       </j:if>
 
