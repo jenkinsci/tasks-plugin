@@ -1,13 +1,11 @@
 package hudson.plugins.tasks;
 
 import hudson.model.Build;
-import hudson.model.ModelObject;
 import hudson.plugins.tasks.Task.Priority;
 import hudson.plugins.tasks.util.ChartBuilder;
 import hudson.util.ChartUtil;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +20,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * Represents the details of a maven module.
  */
-public class ModuleDetail implements ModelObject, Serializable {
+public class ModuleDetail extends AbstractTasksResult {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -3743047168363581305L;
     /** The current build as owner of this object. */
@@ -30,9 +28,6 @@ public class ModuleDetail implements ModelObject, Serializable {
     private final TasksResult tasksResult;
     /** The selected module to show. */
     private final MavenModule module;
-    /** The current build as owner of this action. */
-    @SuppressWarnings("Se")
-    private final Build<?, ?> owner;
 
     /**
      * Creates a new instance of <code>TaskDetail</code>.
@@ -45,7 +40,8 @@ public class ModuleDetail implements ModelObject, Serializable {
      *            the selected package to show
      */
     public ModuleDetail(final Build<?, ?> owner, final TasksResult tasksResult, final MavenModule module) {
-        this.owner = owner;
+        super(owner);
+
         this.tasksResult = tasksResult;
         this.module = module;
     }
@@ -57,15 +53,6 @@ public class ModuleDetail implements ModelObject, Serializable {
      */
     public TasksResult getTasksResult() {
         return tasksResult;
-    }
-
-    /**
-     * Returns the owner.
-     *
-     * @return the owner
-     */
-    public Build<?,?> getOwner() {
-        return owner;
     }
 
     /** {@inheritDoc} */
@@ -174,20 +161,11 @@ public class ModuleDetail implements ModelObject, Serializable {
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSinglePackageModule()) {
-            return new TaskDetail(owner, link);
+            return new TaskDetail(getOwner(), link);
         }
         else {
-            return new PackageDetail(owner, tasksResult, module.getPackage(link));
+            return new PackageDetail(getOwner(), tasksResult, module.getPackage(link));
         }
-    }
-
-    /**
-     * Returns whether this result belongs to the last build.
-     *
-     * @return <code>true</code> if this result belongs to the last build
-     */
-    public boolean isCurrent() {
-        return owner.getProject().getLastBuild().number == owner.number;
     }
 
     /**
@@ -200,4 +178,3 @@ public class ModuleDetail implements ModelObject, Serializable {
         return module.getPackages().size() == 1;
     }
 }
-

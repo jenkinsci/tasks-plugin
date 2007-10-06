@@ -1,9 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.model.Build;
-import hudson.model.ModelObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -16,16 +14,12 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * Represents the details of a Java package.
  */
-public class PackageDetail implements ModelObject, Serializable {
+public class PackageDetail extends AbstractTasksResult {
     /** The current build as owner of this object. */
     @SuppressWarnings("Se")
     private final TasksResult tasksResult;
     /** The selected package to show. */
     private final JavaPackage javaPackage;
-    /** The current build as owner of this action. */
-    @SuppressWarnings("Se")
-    private final Build<?, ?> owner;
-
     /**
      * Creates a new instance of <code>TaskDetail</code>.
      *
@@ -36,8 +30,9 @@ public class PackageDetail implements ModelObject, Serializable {
      * @param javaPackage
      *            the selected package to show
      */
-    public PackageDetail(final Build<?,?> owner, final TasksResult tasksResult, final JavaPackage javaPackage) {
-        this.owner = owner;
+    public PackageDetail(final Build<?, ?> owner, final TasksResult tasksResult, final JavaPackage javaPackage) {
+        super(owner);
+
         this.tasksResult = tasksResult;
         this.javaPackage = javaPackage;
     }
@@ -49,15 +44,6 @@ public class PackageDetail implements ModelObject, Serializable {
      */
     public TasksResult getTasksResult() {
         return tasksResult;
-    }
-
-    /**
-     * Returns the owner.
-     *
-     * @return the owner
-     */
-    public Build<?,?> getOwner() {
-        return owner;
     }
 
     /** {@inheritDoc} */
@@ -132,15 +118,6 @@ public class PackageDetail implements ModelObject, Serializable {
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         return new TaskDetail(tasksResult.getOwner(), link);
-    }
-
-    /**
-     * Returns whether this result belongs to the last build.
-     *
-     * @return <code>true</code> if this result belongs to the last build
-     */
-    public boolean isCurrent() {
-        return tasksResult.getOwner().getProject().getLastBuild().number == tasksResult.getOwner().number;
     }
 }
 

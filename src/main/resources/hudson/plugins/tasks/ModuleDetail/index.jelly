@@ -6,32 +6,7 @@
     <l:main-panel>
       <h1>Open Tasks of Module ${it.displayName}</h1>
 
-      <h2>Summary</h2>
-
-      <table class="pane sortable" id="tasks.summary">
-        <tr>
-            <td class="pane-header">
-              Total
-            </td>
-          <j:forEach var="priority" items="${it.tasksResult.priorities}">
-            <td class="pane-header">
-              ${priority} Priority (${it.getTags(priority)})
-            </td>
-          </j:forEach>
-        </tr>
-        <tbody>
-          <tr>
-            <td class="pane">
-              ${it.numberOfTasks}
-            </td>
-            <j:forEach var="priority" items="${it.tasksResult.priorities}">
-            <td class="pane">
-              ${it.getNumberOfTasks(priority)}
-            </td>
-            </j:forEach>
-          </tr>
-        </tbody>
-      </table>
+      <st:include page="summaryTable.jelly" />
 
       <j:if test="${!it.isSinglePackageModule()}">
       <h2>Package Statistics</h2>
