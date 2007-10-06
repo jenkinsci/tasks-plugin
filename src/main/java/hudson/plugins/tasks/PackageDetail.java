@@ -5,6 +5,8 @@ import hudson.model.ModelObject;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -108,7 +110,17 @@ public class PackageDetail implements ModelObject, Serializable {
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        Logger.getLogger(PackageDetail.class.getName()).log(Level.INFO, "Link: " + link);
         return new TaskDetail(owner.getOwner(), link);
+    }
+
+    /**
+     * Returns whether this result belongs to the last build.
+     *
+     * @return <code>true</code> if this result belongs to the last build
+     */
+    public boolean isCurrent() {
+        return owner.getOwner().getProject().getLastBuild().number == owner.getOwner().number;
     }
 }
 

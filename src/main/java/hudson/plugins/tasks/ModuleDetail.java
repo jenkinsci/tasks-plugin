@@ -126,8 +126,7 @@ public class ModuleDetail implements ModelObject, Serializable {
      * @throws IOException
      *             in case of an error
      */
-    public final void doPackageStatistics(final StaplerRequest request,
-            final StaplerResponse response) throws IOException {
+    public final void doPackageStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
         if (ChartUtil.awtProblem) {
             response.sendRedirect2(request.getContextPath() + "/images/headless.png");
             return;
@@ -153,15 +152,19 @@ public class ModuleDetail implements ModelObject, Serializable {
      *            Stapler response
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
-    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        String type = request.getParameter("type");
-        Logger.getLogger(ModuleDetail.class.getName()).log(Level.INFO, "Link: " + link + ", type: " + type);
-        if ("package".equals(type)) {
-            return new PackageDetail(getOwner(), module.getPackage(link));
-        }
-        else {
-            return new TaskDetail(owner.getOwner(), link);
-        }
+    public PackageDetail getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        Logger.getLogger(ModuleDetail.class.getName()).log(Level.INFO, "Link: " + link);
+        return new PackageDetail(getOwner(), module.getPackage(link));
     }
+
+    /**
+     * Returns whether this result belongs to the last build.
+     *
+     * @return <code>true</code> if this result belongs to the last build
+     */
+    public boolean isCurrent() {
+        return owner.getOwner().getProject().getLastBuild().number == owner.getOwner().number;
+    }
+
 }
 

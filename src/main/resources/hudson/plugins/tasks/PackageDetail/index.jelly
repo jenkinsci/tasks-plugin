@@ -4,9 +4,7 @@
   <l:layout>
     <st:include it="${it.owner.owner}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>${it.title}</h1>
-
-      <h1>Open Tasks</h1>
+      <h1>Open Tasks of Package ${displayName}</h1>
 
       <h2>Summary</h2>
 

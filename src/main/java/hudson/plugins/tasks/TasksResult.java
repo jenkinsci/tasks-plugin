@@ -120,64 +120,6 @@ public class TasksResult implements ModelObject, Serializable {
         }
     }
 
-    /**
-     * Generates a PNG image for high/normal/low distribution of a maven module.
-     *
-     * @param request
-     *            Stapler request
-     * @param response
-     *            Stapler response
-     * @throws IOException
-     *             in case of an error
-     */
-    public final void doModuleStatistics(final StaplerRequest request,
-            final StaplerResponse response) throws IOException {
-        if (ChartUtil.awtProblem) {
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
-        String moduleName = request.getParameter("module");
-        MavenModule module = getProject().getModule(moduleName);
-
-        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Module name: " + moduleName);
-
-        ChartBuilder chartBuilder = new ChartBuilder();
-        JFreeChart chart = chartBuilder.createHighNormalLowChart(
-                module.getNumberOfTasks(Priority.HIGH),
-                module.getNumberOfTasks(Priority.NORMAL),
-                module.getNumberOfTasks(Priority.LOW), getProject().getTaskBound());
-        ChartUtil.generateGraph(request, response, chart, 500, 20);
-    }
-
-    /**
-     * Generates a PNG image for high/normal/low distribution of a java package.
-     *
-     * @param request
-     *            Stapler request
-     * @param response
-     *            Stapler response
-     * @throws IOException
-     *             in case of an error
-     */
-    public final void doPackageStatistics(final StaplerRequest request,
-            final StaplerResponse response) throws IOException {
-        if (ChartUtil.awtProblem) {
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
-        String packageName = request.getParameter("package");
-        JavaPackage javaPackage = getProject().getPackage(packageName);
-
-        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Package name: " + packageName);
-
-        ChartBuilder chartBuilder = new ChartBuilder();
-        JFreeChart chart = chartBuilder.createHighNormalLowChart(
-                javaPackage.getNumberOfTasks(Priority.HIGH),
-                javaPackage.getNumberOfTasks(Priority.NORMAL),
-                javaPackage.getNumberOfTasks(Priority.LOW), getProject().getModules().iterator().next().getTaskBound());
-        ChartUtil.generateGraph(request, response, chart, 500, 20);
-    }
-
     /** {@inheritDoc} */
     public String getDisplayName() {
         return "Open Tasks";
@@ -356,14 +298,66 @@ public class TasksResult implements ModelObject, Serializable {
      *            Stapler response
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
-    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        String type = request.getParameter("type");
-        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Link: " + link + ", type: " + type);
-        if ("module".equals(type)) {
-            return new ModuleDetail(this, getProject().getModule(link));
+    public ModuleDetail getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Link: " + link);
+
+        return new ModuleDetail(this, getProject().getModule(link));
+    }
+    /**
+     * Generates a PNG image for high/normal/low distribution of a maven module.
+     *
+     * @param request
+     *            Stapler request
+     * @param response
+     *            Stapler response
+     * @throws IOException
+     *             in case of an error
+     */
+    public final void doModuleStatistics(final StaplerRequest request,
+            final StaplerResponse response) throws IOException {
+        if (ChartUtil.awtProblem) {
+            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
+            return;
         }
-        else {
-            return new PackageDetail(this, getProject().getPackage(link));
+        String moduleName = request.getParameter("module");
+        MavenModule module = getProject().getModule(moduleName);
+
+        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Module name: " + moduleName);
+
+        ChartBuilder chartBuilder = new ChartBuilder();
+        JFreeChart chart = chartBuilder.createHighNormalLowChart(
+                module.getNumberOfTasks(Priority.HIGH),
+                module.getNumberOfTasks(Priority.NORMAL),
+                module.getNumberOfTasks(Priority.LOW), getProject().getTaskBound());
+        ChartUtil.generateGraph(request, response, chart, 500, 20);
+    }
+
+    /**
+     * Generates a PNG image for high/normal/low distribution of a java package.
+     *
+     * @param request
+     *            Stapler request
+     * @param response
+     *            Stapler response
+     * @throws IOException
+     *             in case of an error
+     */
+    public final void doPackageStatistics(final StaplerRequest request,
+            final StaplerResponse response) throws IOException {
+        if (ChartUtil.awtProblem) {
+            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
+            return;
         }
+        String packageName = request.getParameter("package");
+        JavaPackage javaPackage = getProject().getPackage(packageName);
+
+        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Package name: " + packageName);
+
+        ChartBuilder chartBuilder = new ChartBuilder();
+        JFreeChart chart = chartBuilder.createHighNormalLowChart(
+                javaPackage.getNumberOfTasks(Priority.HIGH),
+                javaPackage.getNumberOfTasks(Priority.NORMAL),
+                javaPackage.getNumberOfTasks(Priority.LOW), getProject().getModules().iterator().next().getTaskBound());
+        ChartUtil.generateGraph(request, response, chart, 500, 20);
     }
 }

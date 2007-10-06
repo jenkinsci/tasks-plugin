@@ -27,58 +27,30 @@
         </tbody>
       </table>
 
-      <j:if test="${it.project.modules.size() > 1}">
-	      <h2>Module Statistics</h2>
+      <h2>Module Statistics</h2>
 
-	      <table class="pane sortable" id="tasks.modules">
-	      	<tr>
-	      		<td class="pane-header">Module</td>
-	      		<td class="pane-header" style="width:2em">Total</td>
-		      	<td class="pane-header" >Distribution</td>
-	      	</tr>
-	      	<tbody>
-	      		<j:forEach var="module" items="${it.project.modules}">
-	      			<tr>
-	      				<td class="pane">
-	      					<a href="${module.name}/?type=module">${module.name}</a>
-	      				</td>
-	      				<td class="pane">
-	      					${module.numberOfTasks}
-	      				</td>
-	      				<td class="pane">
-						  	<img src="moduleStatistics?module=${module.name}"/>
-	      				</td>
-	      			</tr>
-	      		</j:forEach>
-	      	</tbody>
-	      </table>
-      </j:if>
-      <j:if test="${it.project.modules.size() == 1}">
-	      <h2>Package Statistics</h2>
-
-	      <table class="pane sortable" id="tasks.packages">
-	      	<tr>
-	      		<td class="pane-header">Package</td>
-	      		<td class="pane-header" style="width:2em">Total</td>
-		      	<td class="pane-header" >Distribution</td>
-	      	</tr>
-	      	<tbody>
-	      		<j:forEach var="package" items="${it.project.packages}">
-	      			<tr>
-	      				<td class="pane">
-	      					<a href="${package.name}/?type=package">${package.name}</a>
-	      				</td>
-	      				<td class="pane">
-	      					${package.numberOfTasks}
-	      				</td>
-	      				<td class="pane">
-						  	<img src="packageStatistics?package=${package.name}"/>
-	      				</td>
-	      			</tr>
-	      		</j:forEach>
-	      	</tbody>
-	      </table>
-      </j:if>
+      <table class="pane sortable" id="tasks.modules">
+      	<tr>
+      		<td class="pane-header">Module</td>
+      		<td class="pane-header" style="width:2em">Total</td>
+	      	<td class="pane-header" >Distribution</td>
+      	</tr>
+      	<tbody>
+      		<j:forEach var="module" items="${it.project.modules}">
+      			<tr>
+      				<td class="pane">
+      					<a href="${module.name}">${module.name}</a>
+      				</td>
+      				<td class="pane">
+      					${module.numberOfTasks}
+      				</td>
+      				<td class="pane">
+					  	<img src="moduleStatistics?module=${module.name}"/>
+      				</td>
+      			</tr>
+      		</j:forEach>
+      	</tbody>
+      </table>
 
     </l:main-panel>
   </l:layout>

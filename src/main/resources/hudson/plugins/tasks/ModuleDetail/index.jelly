@@ -4,9 +4,7 @@
   <l:layout>
     <st:include it="${it.owner.owner}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>${it.title}</h1>
-
-      <h1>Open Tasks</h1>
+      <h1>Open Tasks of Module ${displayName}</h1>
 
       <h2>Summary</h2>
 
@@ -34,60 +32,30 @@
         </tbody>
       </table>
 
-      <j:if test="${it.packages.size() > 1}">
-	      <h2>Package Statistics</h2>
+      <h2>Package Statistics</h2>
 
-	      <table class="pane sortable" id="tasks">
-	      	<tr>
-	      		<td class="pane-header">Package</td>
-	      		<td class="pane-header" style="width:2em">Total</td>
-		      	<td class="pane-header" >Distribution</td>
-	      	</tr>
-	      	<tbody>
-	      		<j:forEach var="package" items="${it.packages}">
-	      			<tr>
-	      				<td class="pane">
-	      					<a href="${package.name}/?type=package">${package.name}</a>
-	      				</td>
-	      				<td class="pane">
-	      					${package.numberOfTasks}
-	      				</td>
-	      				<td class="pane">
-						  	<img src="packageStatistics?package=${package.name}"/>
-	      				</td>
-	      			</tr>
-	      		</j:forEach>
-	      	</tbody>
-	      </table>
-      </j:if>
-
-      <j:if test="${it.packages.size() == 1}">
-      <j:forEach var="priority" items="${it.priorities}">
-        <a name="${priority}" />
-        <h2>${priority} Priority: ${it.getTags(priority)}</h2>
-        <j:forEach var="file" items="${it.files}">
-          <j:if test="${file.hasTasks(priority)}">
-            <p>
-              File: ${file.name}
-            </p>
-            <j:forEach var="task" items="${file.getTasks(priority)}">
-              <p>
-		    	<j:choose>
-		    		<j:when test="${it.isCurrent()}">
-		                 <a href="${file.linkName}/#${task.lineNumber}">Line ${task.lineNumber}:</a>
-		    		</j:when>
-		    		<j:otherwise>
-		    			Line ${task.lineNumber}:
-	    			</j:otherwise>
-		    	</j:choose>
-               ${task.message}
-              </p>
-            </j:forEach>
-            <hr />
-          </j:if>
-        </j:forEach>
-      </j:forEach>
-      </j:if>
+      <table class="pane sortable" id="tasks">
+      	<tr>
+      		<td class="pane-header">Package</td>
+      		<td class="pane-header" style="width:2em">Total</td>
+	      	<td class="pane-header" >Distribution</td>
+      	</tr>
+      	<tbody>
+      		<j:forEach var="package" items="${it.packages}">
+      			<tr>
+      				<td class="pane">
+      					<a href="${package.name}">${package.name}</a>
+      				</td>
+      				<td class="pane">
+      					${package.numberOfTasks}
+      				</td>
+      				<td class="pane">
+					  	<img src="packageStatistics?package=${package.name}"/>
+      				</td>
+      			</tr>
+      		</j:forEach>
+      	</tbody>
+      </table>
 
     </l:main-panel>
   </l:layout>
