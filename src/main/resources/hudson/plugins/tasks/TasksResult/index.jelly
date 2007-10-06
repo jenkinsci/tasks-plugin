@@ -8,8 +8,11 @@
 
       <h2>Summary</h2>
 
-      <table class="pane sortable" id="summary">
+      <table class="pane sortable" id="tasks.summary">
         <tr>
+            <td class="pane-header">
+              Total
+            </td>
           <j:forEach var="priority" items="${it.priorities}">
             <td class="pane-header">
               ${priority} Priority (${it.getTags(priority)})
@@ -18,6 +21,9 @@
         </tr>
         <tbody>
           <tr>
+            <td class="pane">
+              ${it.numberOfTasks}
+            </td>
             <j:forEach var="priority" items="${it.priorities}">
             <td class="pane">
               ${it.getNumberOfTasks(priority)}

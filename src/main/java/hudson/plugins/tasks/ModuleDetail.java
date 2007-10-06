@@ -7,6 +7,7 @@ import hudson.util.ChartUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -82,7 +83,13 @@ public class ModuleDetail implements ModelObject, Serializable {
      * @return the defined priorities.
      */
     public List<String> getPriorities() {
-        return owner.getPriorities();
+        List<String> priorities = new ArrayList<String>();
+        for (String priority : owner.getPriorities()) {
+            if (getNumberOfTasks(priority) > 0) {
+                priorities.add(priority);
+            }
+        }
+        return priorities;
     }
 
     /**
@@ -152,9 +159,13 @@ public class ModuleDetail implements ModelObject, Serializable {
      *            Stapler response
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
-    public PackageDetail getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        Logger.getLogger(ModuleDetail.class.getName()).log(Level.INFO, "Link: " + link);
-        return new PackageDetail(getOwner(), module.getPackage(link));
+    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        if (isSinglePackageModule()) {
+            return new TaskDetail(owner.getOwner(), link);
+        }
+        else {
+            return new PackageDetail(getOwner(), module.getPackage(link));
+        }
     }
 
     /**
@@ -166,5 +177,14 @@ public class ModuleDetail implements ModelObject, Serializable {
         return owner.getOwner().getProject().getLastBuild().number == owner.getOwner().number;
     }
 
+    /**
+     * Returns whether we only have a single module. In this case the module
+     * statistics are suppressed and only the package statistics are shown.
+     *
+     * @return <code>true</code> for single module projects
+     */
+    public boolean isSinglePackageModule() {
+        return module.getPackages().size() == 1;
+    }
 }
 

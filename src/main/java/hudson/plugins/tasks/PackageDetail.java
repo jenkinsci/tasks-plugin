@@ -3,6 +3,7 @@ package hudson.plugins.tasks;
 import hudson.model.ModelObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -65,7 +66,13 @@ public class PackageDetail implements ModelObject, Serializable {
      * @return the defined priorities.
      */
     public List<String> getPriorities() {
-        return owner.getPriorities();
+        List<String> priorities = new ArrayList<String>();
+        for (String priority : owner.getPriorities()) {
+            if (getNumberOfTasks(priority) > 0) {
+                priorities.add(priority);
+            }
+        }
+        return priorities;
     }
 
     /**

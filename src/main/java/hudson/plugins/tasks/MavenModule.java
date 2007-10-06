@@ -43,7 +43,7 @@ public class MavenModule implements Serializable {
      */
     public void add(final WorkspaceFile workspaceFile) {
         files.add(workspaceFile);
-        String packageName = workspaceFile.getPackageName();
+        String packageName = StringUtils.defaultIfEmpty(workspaceFile.getPackageName(), "Dummy");
         if (packageName != null) {
             if (!filesPerPackage.containsKey(packageName)) {
                 filesPerPackage.put(packageName, new JavaPackage(packageName));
