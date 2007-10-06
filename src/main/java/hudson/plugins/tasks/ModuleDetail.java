@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
@@ -140,7 +138,6 @@ public class ModuleDetail implements ModelObject, Serializable {
         }
         String packageName = request.getParameter("package");
         JavaPackage javaPackage = module.getPackage(packageName);
-        Logger.getLogger(ModuleDetail.class.getName()).log(Level.WARNING, "Package name: " + packageName);
         ChartBuilder chartBuilder = new ChartBuilder();
         JFreeChart chart = chartBuilder.createHighNormalLowChart(
                 javaPackage.getNumberOfTasks(Priority.HIGH),

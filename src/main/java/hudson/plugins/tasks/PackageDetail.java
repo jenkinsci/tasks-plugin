@@ -117,7 +117,6 @@ public class PackageDetail implements ModelObject, Serializable {
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        Logger.getLogger(PackageDetail.class.getName()).log(Level.INFO, "Link: " + link);
         return new TaskDetail(owner.getOwner(), link);
     }
 

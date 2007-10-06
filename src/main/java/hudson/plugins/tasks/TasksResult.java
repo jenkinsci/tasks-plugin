@@ -299,9 +299,13 @@ public class TasksResult implements ModelObject, Serializable {
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Link: " + link);
         if (isSingleModuleProject()) {
-            return new PackageDetail(this, getProject().getPackage(link));
+            if (isSinglePackageProject()) {
+                return new TaskDetail(owner, link);
+            }
+            else {
+                return new PackageDetail(this, getProject().getPackage(link));
+            }
         }
         else {
             return new ModuleDetail(this, getProject().getModule(link));
@@ -316,6 +320,16 @@ public class TasksResult implements ModelObject, Serializable {
      */
     public boolean isSingleModuleProject() {
         return getProject().getModules().size() == 1;
+    }
+
+    /**
+     * Returns whether we only have a single package. In this case the module
+     * and package statistics are suppressed and only the tasks are shown.
+     *
+     * @return <code>true</code> for single module projects
+     */
+    public boolean isSinglePackageProject() {
+        return isSingleModuleProject() && getProject().getPackages().size() == 1;
     }
 
     /**
@@ -336,8 +350,6 @@ public class TasksResult implements ModelObject, Serializable {
         }
         String moduleName = request.getParameter("module");
         MavenModule module = getProject().getModule(moduleName);
-
-        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Module name: " + moduleName);
 
         ChartBuilder chartBuilder = new ChartBuilder();
         JFreeChart chart = chartBuilder.createHighNormalLowChart(
@@ -365,8 +377,6 @@ public class TasksResult implements ModelObject, Serializable {
         }
         String packageName = request.getParameter("package");
         JavaPackage javaPackage = getProject().getPackage(packageName);
-
-        Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Package name: " + packageName);
 
         ChartBuilder chartBuilder = new ChartBuilder();
         JFreeChart chart = chartBuilder.createHighNormalLowChart(
