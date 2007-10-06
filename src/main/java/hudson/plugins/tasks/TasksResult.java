@@ -42,6 +42,7 @@ public class TasksResult extends AbstractTasksResult {
     /** The parsed FindBugs result. */
     @SuppressWarnings("Se")
     private transient WeakReference<JavaProject> project;
+    /** The total number of tasks. */
     private final int numberOfTasks;
     /** Difference between this and the previous build. */
     private final int delta;
