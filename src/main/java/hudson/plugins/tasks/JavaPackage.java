@@ -3,37 +3,31 @@ package hudson.plugins.tasks;
 import hudson.plugins.tasks.Task.Priority;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
- * A maven module.
+ * A Java package.
  */
-public class MavenModule implements Serializable {
+public class JavaPackage implements Serializable {
     /** Unique identifier of this class. */
-    private static final long serialVersionUID = 5467122420572804130L;
+    private static final long serialVersionUID = 4034932648975191723L;
     /** Name of the module. */
-    private final String moduleName;
+    private final String packageName;
     /** Files with task in this module. */
     private final Set<WorkspaceFile> files = new HashSet<WorkspaceFile>();
-    /** Files with open tasks in this project. */
-    private final Map<String, JavaPackage> filesPerPackage;
 
     /**
-     * Creates a new instance of <code>MavenModule</code>.
+     * Creates a new instance of <code>JavaPackage</code>.
      *
-     * @param moduleName
-     *            name of the module
+     * @param packageName
+     *            name of the package
      */
-    public MavenModule(final String moduleName) {
-        this.moduleName = moduleName;
-        filesPerPackage = new HashMap<String, JavaPackage>();
+    public JavaPackage(final String packageName) {
+        this.packageName = packageName;
     }
 
     /**
@@ -43,13 +37,6 @@ public class MavenModule implements Serializable {
      */
     public void add(final WorkspaceFile workspaceFile) {
         files.add(workspaceFile);
-        String packageName = workspaceFile.getPackageName();
-        if (packageName != null) {
-            if (!filesPerPackage.containsKey(packageName)) {
-                filesPerPackage.put(packageName, new JavaPackage(packageName));
-            }
-            filesPerPackage.get(packageName).add(workspaceFile);
-        }
     }
 
     /**
@@ -58,7 +45,7 @@ public class MavenModule implements Serializable {
      * @return the module name
      */
     public String getName() {
-        return moduleName;
+        return packageName;
     }
 
     /**
@@ -68,26 +55,6 @@ public class MavenModule implements Serializable {
      */
     public Set<WorkspaceFile> getFiles() {
         return Collections.unmodifiableSet(files);
-    }
-
-    /**
-     * Gets the modules of this project that have open tasks.
-     *
-     * @return the modules
-     */
-    public Collection<JavaPackage> getPackages() {
-        return Collections.unmodifiableCollection(filesPerPackage.values());
-    }
-
-    /**
-     * Gets the packages of this project that have open tasks.
-     *
-     * @param name
-     *            the name of the package
-     * @return the modules
-     */
-    public JavaPackage getPackage(final String name) {
-        return filesPerPackage.get(name);
     }
 
     /**
@@ -127,19 +94,6 @@ public class MavenModule implements Serializable {
             numberOfTasks += file.getNumberOfTasks(priority);
         }
         return numberOfTasks;
-    }
-
-    /**
-     * Gets the maximum number of tasks in a module.
-     *
-     * @return the maximum number of tasks
-     */
-    public int getTaskBound() {
-        int tasks = 0;
-        for (JavaPackage javaPackage : filesPerPackage.values()) {
-            tasks = Math.max(tasks, javaPackage.getNumberOfTasks());
-        }
-        return tasks;
     }
 }
 

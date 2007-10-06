@@ -11,20 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Java Bean class representing a java project.
  */
 public class JavaProject implements Serializable {
-
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 8556968267678442661L;
-
     /** Files with open tasks in this project. */
     private final List<WorkspaceFile> files;
-
     /** Files with open tasks in this project. */
     private final Map<String, MavenModule> filesPerModule;
-
     /** Path of the workspace. */
     private String workspacePath;
 
@@ -43,13 +41,11 @@ public class JavaProject implements Serializable {
      */
     public void addFile(final WorkspaceFile workspaceFile) {
         files.add(workspaceFile);
-        String moduleName = workspaceFile.getModuleName();
-        if (moduleName != null) {
-            if (!filesPerModule.containsKey(moduleName)) {
-                filesPerModule.put(moduleName, new MavenModule(moduleName));
-            }
-            filesPerModule.get(moduleName).add(workspaceFile);
+        String moduleName = StringUtils.defaultIfEmpty(workspaceFile.getModuleName(), "Single Module");
+        if (!filesPerModule.containsKey(moduleName)) {
+            filesPerModule.put(moduleName, new MavenModule(moduleName));
         }
+        filesPerModule.get(moduleName).add(workspaceFile);
     }
 
     /**
@@ -68,6 +64,19 @@ public class JavaProject implements Serializable {
      */
     public Collection<MavenModule> getModules() {
         return Collections.unmodifiableCollection(filesPerModule.values());
+    }
+
+    /**
+     * Gets the packages of this project that have open tasks.
+     *
+     * @return the modules
+     */
+    public Collection<JavaPackage> getPackages() {
+        List<JavaPackage> packages = new ArrayList<JavaPackage>();
+        for (MavenModule module : filesPerModule.values()) {
+            packages.addAll(module.getPackages());
+        }
+        return packages;
     }
 
     /**
@@ -138,6 +147,16 @@ public class JavaProject implements Serializable {
             tasks = Math.max(tasks, module.getNumberOfTasks());
         }
         return tasks;
+    }
+
+    /**
+     * Returns the package with the given name.
+     *
+     * @param name the package name
+     * @return the package with the given name.
+     */
+    public JavaPackage getPackage(final String name) {
+        return filesPerModule.values().iterator().next().getPackage(name);
     }
 }
 
