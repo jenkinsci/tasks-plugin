@@ -3,13 +3,19 @@ package hudson.plugins.tasks;
 import hudson.model.Build;
 import hudson.model.ModelObject;
 import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.util.ChartBuilder;
+import hudson.util.ChartUtil;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.jfree.chart.JFreeChart;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -54,6 +60,29 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      */
     public AbstractTasksResult(final AbstractTasksResult root) {
         this(root.owner, root.high, root.normal, root.low);
+    }
+
+    /**
+     * Returns the files of this result object.
+     *
+     * @return the files of this result object
+     */
+    public abstract Collection<WorkspaceFile> getFiles();
+
+    /**
+     * Returns the package category name for the scanned files. Currently, only
+     * java and c# files are supported.
+     *
+     * @return the package category name for the scanned files
+     */
+    public String getPackageCategoryName() {
+        if (!getFiles().isEmpty()) {
+            WorkspaceFile file = getFiles().iterator().next();
+            if (file.getShortName().endsWith(".cs")) {
+                return "Namespace";
+            }
+        }
+        return "Package";
     }
 
     /**
@@ -133,7 +162,7 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      *
      * @return total number of tasks in this project.
      */
-    public final int getNumberOfTasks() {
+    public int getNumberOfTasks() {
         int numberOfTasks = 0;
         for (Priority priority : Priority.values()) {
             numberOfTasks += getNumberOfTasks(priority);
@@ -159,5 +188,33 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      */
     public final int getNumberOfTasks(final String priority) {
         return getNumberOfTasks(Priority.valueOf(StringUtils.upperCase(priority)));
+    }
+
+    /**
+     * Creates a detail graph for the specified detail object.
+     *
+     * @param request
+     *            Stapler request
+     * @param response
+     *            Stapler response
+     * @param detailObject
+     *            the detail object to compute the graph for
+     * @param upperBound
+     *            the upper bound of all tasks
+     * @throws IOException
+     *             in case of an error
+     */
+    protected final void createDetailGraph(final StaplerRequest request, final StaplerResponse response,
+            final TasksProvider detailObject, final int upperBound) throws IOException {
+        if (ChartUtil.awtProblem) {
+            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
+            return;
+        }
+        ChartBuilder chartBuilder = new ChartBuilder();
+        JFreeChart chart = chartBuilder.createHighNormalLowChart(
+                detailObject.getNumberOfTasks(Priority.HIGH),
+                detailObject.getNumberOfTasks(Priority.NORMAL),
+                detailObject.getNumberOfTasks(Priority.LOW), upperBound);
+        ChartUtil.generateGraph(request, response, chart, 400, 20);
     }
 }

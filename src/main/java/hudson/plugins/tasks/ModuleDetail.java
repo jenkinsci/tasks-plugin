@@ -1,14 +1,11 @@
 package hudson.plugins.tasks;
 
 import hudson.plugins.tasks.Task.Priority;
-import hudson.plugins.tasks.util.ChartBuilder;
-import hudson.util.ChartUtil;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 
-import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -56,6 +53,7 @@ public class ModuleDetail extends AbstractTasksResult {
      *
      * @return the files
      */
+    @Override
     public Set<WorkspaceFile> getFiles() {
         return module.getFiles();
     }
@@ -83,18 +81,7 @@ public class ModuleDetail extends AbstractTasksResult {
      *             in case of an error
      */
     public final void doPackageStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        if (ChartUtil.awtProblem) {
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
-        String packageName = request.getParameter("package");
-        JavaPackage javaPackage = module.getPackage(packageName);
-        ChartBuilder chartBuilder = new ChartBuilder();
-        JFreeChart chart = chartBuilder.createHighNormalLowChart(
-                javaPackage.getNumberOfTasks(Priority.HIGH),
-                javaPackage.getNumberOfTasks(Priority.NORMAL),
-                javaPackage.getNumberOfTasks(Priority.LOW), module.getTaskBound());
-        ChartUtil.generateGraph(request, response, chart, 500, 20);
+        createDetailGraph(request, response, module.getPackage(request.getParameter("package")), module.getTaskBound());
     }
 
     /**

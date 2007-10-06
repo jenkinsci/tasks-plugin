@@ -3,8 +3,6 @@ package hudson.plugins.tasks;
 import hudson.XmlFile;
 import hudson.model.Build;
 import hudson.plugins.tasks.Task.Priority;
-import hudson.plugins.tasks.util.ChartBuilder;
-import hudson.util.ChartUtil;
 import hudson.util.StringConverter2;
 import hudson.util.XStream2;
 
@@ -15,7 +13,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jfree.chart.JFreeChart;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -45,7 +42,6 @@ public class TasksResult extends AbstractTasksResult {
     /** The parsed FindBugs result. */
     @SuppressWarnings("Se")
     private transient WeakReference<JavaProject> project;
-    /** The number of tasks in this build. */
     private final int numberOfTasks;
     /** Difference between this and the previous build. */
     private final int delta;
@@ -105,6 +101,12 @@ public class TasksResult extends AbstractTasksResult {
     }
 
     /** {@inheritDoc} */
+    @Override
+    public int getNumberOfTasks() {
+        return numberOfTasks;
+    }
+
+    /** {@inheritDoc} */
     public String getDisplayName() {
         return "Open Tasks";
     }
@@ -153,6 +155,7 @@ public class TasksResult extends AbstractTasksResult {
      *
      * @return the files in this project
      */
+    @Override
     public Collection<WorkspaceFile> getFiles() {
         return getProject().getFiles();
     }
@@ -166,7 +169,7 @@ public class TasksResult extends AbstractTasksResult {
         if (project == null) {
             loadResult();
         }
-        JavaProject result = project.get();
+        TasksProvider result = project.get();
         if (result == null) {
             loadResult();
         }
@@ -263,21 +266,9 @@ public class TasksResult extends AbstractTasksResult {
      * @throws IOException
      *             in case of an error
      */
-    public final void doModuleStatistics(final StaplerRequest request,
-            final StaplerResponse response) throws IOException {
-        if (ChartUtil.awtProblem) {
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
-        String moduleName = request.getParameter("module");
-        MavenModule module = getProject().getModule(moduleName);
-
-        ChartBuilder chartBuilder = new ChartBuilder();
-        JFreeChart chart = chartBuilder.createHighNormalLowChart(
-                module.getNumberOfTasks(Priority.HIGH),
-                module.getNumberOfTasks(Priority.NORMAL),
-                module.getNumberOfTasks(Priority.LOW), getProject().getTaskBound());
-        ChartUtil.generateGraph(request, response, chart, 500, 20);
+    public final void doModuleStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
+        createDetailGraph(request, response, getProject().getModule(request.getParameter("module")),
+                getProject().getTaskBound());
     }
 
     /**
@@ -290,20 +281,8 @@ public class TasksResult extends AbstractTasksResult {
      * @throws IOException
      *             in case of an error
      */
-    public final void doPackageStatistics(final StaplerRequest request,
-            final StaplerResponse response) throws IOException {
-        if (ChartUtil.awtProblem) {
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
-        String packageName = request.getParameter("package");
-        JavaPackage javaPackage = getProject().getPackage(packageName);
-
-        ChartBuilder chartBuilder = new ChartBuilder();
-        JFreeChart chart = chartBuilder.createHighNormalLowChart(
-                javaPackage.getNumberOfTasks(Priority.HIGH),
-                javaPackage.getNumberOfTasks(Priority.NORMAL),
-                javaPackage.getNumberOfTasks(Priority.LOW), getProject().getModules().iterator().next().getTaskBound());
-        ChartUtil.generateGraph(request, response, chart, 500, 20);
+    public final void doPackageStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
+        createDetailGraph(request, response, getProject().getPackage(request.getParameter("package")),
+                getProject().getModules().iterator().next().getTaskBound());
     }
 }

@@ -8,27 +8,10 @@ import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Classifies a Java workspace file that is part of a maven module. This
- * classification is used to group the workspace files. This class uses the
- * classification properties "package" and "module".
+ * Classifies a Java workspace file that is part of a maven module.
  */
-public class MavenJavaClassifier {
-    /** Maven module classification. */
-    private static final String MODULE_CLASSIFICATION = "module";
-    /** Java package classification. */
-    private static final String PACKAGE_CLASSIFICATION = "package";
-
-    /**
-     * Classifies the specified workspace file. The provided stream is closed
-     * afterwards.
-     *
-     * @param file
-     *            the workspace file model
-     * @param stream
-     *            the content of the workspace file
-     * @throws IOException
-     *             if the file could not be read
-     */
+public class MavenJavaClassifier implements FileClassifier {
+    /** {@inheritDoc} */
     public void classify(final WorkspaceFile file, final InputStream stream) throws IOException {
         try {
             LineIterator iterator = IOUtils.lineIterator(stream, "UTF-8");
@@ -50,6 +33,11 @@ public class MavenJavaClassifier {
         if (StringUtils.isNotBlank(module)) {
             file.setModuleName(module);
         }
+    }
+
+    /** {@inheritDoc} */
+    public boolean accepts(final String fileName) {
+        return fileName.endsWith(".java");
     }
 }
 

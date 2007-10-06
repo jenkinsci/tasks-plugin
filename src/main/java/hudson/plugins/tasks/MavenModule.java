@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * A maven module.
  */
-public class MavenModule implements Serializable {
+public class MavenModule implements Serializable, TasksProvider {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 5467122420572804130L;
     /** Name of the module. */

@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * A Java package.
  */
-public class JavaPackage implements Serializable {
+public class JavaPackage implements Serializable, TasksProvider {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 4034932648975191723L;
     /** Name of the module. */

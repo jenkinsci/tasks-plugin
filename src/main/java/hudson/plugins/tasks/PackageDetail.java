@@ -40,6 +40,7 @@ public class PackageDetail extends AbstractTasksResult {
      *
      * @return the files
      */
+    @Override
     public Set<WorkspaceFile> getFiles() {
         return javaPackage.getFiles();
     }

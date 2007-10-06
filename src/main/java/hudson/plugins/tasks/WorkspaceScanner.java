@@ -7,13 +7,16 @@ import hudson.remoting.VirtualChannel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.types.FileSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
- * Scans the workspace and records the found tasks.
+ * Scans the workspace and records the found tasks. Each file is then
+ * classified, i.e., a module and package is guessed and assigned.
  *
  * @author Ulli Hafner
  */
@@ -50,15 +53,21 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
             throw new AbortException("No files were found that match the pattern '" + filePattern + "'. Configuration error?");
         }
 
-        MavenJavaClassifier classifier = new MavenJavaClassifier();
+        List<FileClassifier> classifiers = new ArrayList<FileClassifier>();
+        classifiers.add(new MavenJavaClassifier());
+        classifiers.add(new CsharpClassifier());
+
         JavaProject javaProject = new JavaProject();
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
             WorkspaceFile workspaceFile = taskScanner.scan(new FilePath(originalFile).read());
             if (workspaceFile.hasTasks()) {
                 workspaceFile.setName(fileName.replace('\\', '/'));
-                classifier.classify(workspaceFile, new FilePath(originalFile).read());
-
+                for (FileClassifier fileClassifier : classifiers) {
+                    if (fileClassifier.accepts(fileName)) {
+                        fileClassifier.classify(workspaceFile, new FilePath(originalFile).read());
+                    }
+                }
                 javaProject.addFile(workspaceFile);
             }
             javaProject.setWorkspacePath(workspace.getAbsolutePath());

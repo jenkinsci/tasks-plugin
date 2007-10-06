@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Java Bean class representing a java project.
  */
-public class JavaProject implements Serializable {
+public class JavaProject implements Serializable, TasksProvider {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 8556968267678442661L;
     /** Files with open tasks in this project. */
@@ -79,11 +79,7 @@ public class JavaProject implements Serializable {
         return packages;
     }
 
-    /**
-     * Returns the total number of tasks in this project.
-     *
-     * @return total number of tasks in this project.
-     */
+    /** {@inheritDoc} */
     public int getNumberOfTasks() {
         int numberOfTasks  = 0;
         for (WorkspaceFile file : files) {
@@ -92,13 +88,7 @@ public class JavaProject implements Serializable {
         return numberOfTasks;
     }
 
-    /**
-     * Returns the number of tasks with the specified priority in this project.
-     *
-     * @param priority the priority
-     *
-     * @return the number of tasks with the specified priority in this project.
-     */
+    /** {@inheritDoc} */
     public int getNumberOfTasks(final Priority priority) {
         int numberOfTasks  = 0;
         for (WorkspaceFile file : files) {
