@@ -1,13 +1,12 @@
 package hudson.plugins.tasks;
 
+import hudson.model.Build;
 import hudson.model.ModelObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -20,20 +19,26 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public class PackageDetail implements ModelObject, Serializable {
     /** The current build as owner of this object. */
     @SuppressWarnings("Se")
-    private final TasksResult owner;
+    private final TasksResult tasksResult;
     /** The selected package to show. */
     private final JavaPackage javaPackage;
+    /** The current build as owner of this action. */
+    @SuppressWarnings("Se")
+    private final Build<?, ?> owner;
 
     /**
      * Creates a new instance of <code>TaskDetail</code>.
      *
+     * @param owner
+     *            the current build as owner of this action
      * @param tasksResult
      *            the current build as owner of this action
      * @param javaPackage
      *            the selected package to show
      */
-    public PackageDetail(final TasksResult tasksResult, final JavaPackage javaPackage) {
-        owner = tasksResult;
+    public PackageDetail(final Build<?,?> owner, final TasksResult tasksResult, final JavaPackage javaPackage) {
+        this.owner = owner;
+        this.tasksResult = tasksResult;
         this.javaPackage = javaPackage;
     }
 
@@ -42,7 +47,16 @@ public class PackageDetail implements ModelObject, Serializable {
      *
      * @return the owner
      */
-    public TasksResult getOwner() {
+    public TasksResult getTasksResult() {
+        return tasksResult;
+    }
+
+    /**
+     * Returns the owner.
+     *
+     * @return the owner
+     */
+    public Build<?,?> getOwner() {
         return owner;
     }
 
@@ -67,7 +81,7 @@ public class PackageDetail implements ModelObject, Serializable {
      */
     public List<String> getPriorities() {
         List<String> priorities = new ArrayList<String>();
-        for (String priority : owner.getPriorities()) {
+        for (String priority : tasksResult.getPriorities()) {
             if (getNumberOfTasks(priority) > 0) {
                 priorities.add(priority);
             }
@@ -83,7 +97,7 @@ public class PackageDetail implements ModelObject, Serializable {
      * @return the tags for priority high
      */
     public String getTags(final String priority) {
-        return owner.getTags(priority);
+        return tasksResult.getTags(priority);
     }
 
     /**
@@ -117,7 +131,7 @@ public class PackageDetail implements ModelObject, Serializable {
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TaskDetail(owner.getOwner(), link);
+        return new TaskDetail(tasksResult.getOwner(), link);
     }
 
     /**
@@ -126,7 +140,7 @@ public class PackageDetail implements ModelObject, Serializable {
      * @return <code>true</code> if this result belongs to the last build
      */
     public boolean isCurrent() {
-        return owner.getOwner().getProject().getLastBuild().number == owner.getOwner().number;
+        return tasksResult.getOwner().getProject().getLastBuild().number == tasksResult.getOwner().number;
     }
 }
 

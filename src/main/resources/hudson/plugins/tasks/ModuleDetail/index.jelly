@@ -2,7 +2,7 @@
   xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
   xmlns:f="/lib/form" xmlns:i="jelly:fmt">
   <l:layout>
-    <st:include it="${it.owner.owner}" page="sidepanel.jelly" />
+    <st:include it="${it.owner}" page="sidepanel.jelly" />
     <l:main-panel>
       <h1>Open Tasks of Module ${it.displayName}</h1>
 
@@ -13,7 +13,7 @@
             <td class="pane-header">
               Total
             </td>
-          <j:forEach var="priority" items="${it.owner.priorities}">
+          <j:forEach var="priority" items="${it.tasksResult.priorities}">
             <td class="pane-header">
               ${priority} Priority (${it.getTags(priority)})
             </td>
@@ -24,7 +24,7 @@
             <td class="pane">
               ${it.numberOfTasks}
             </td>
-            <j:forEach var="priority" items="${it.owner.priorities}">
+            <j:forEach var="priority" items="${it.tasksResult.priorities}">
             <td class="pane">
               ${it.getNumberOfTasks(priority)}
             </td>

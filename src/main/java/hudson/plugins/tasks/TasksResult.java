@@ -304,11 +304,11 @@ public class TasksResult implements ModelObject, Serializable {
                 return new TaskDetail(owner, link);
             }
             else {
-                return new PackageDetail(this, getProject().getPackage(link));
+                return new PackageDetail(owner, this, getProject().getPackage(link));
             }
         }
         else {
-            return new ModuleDetail(this, getProject().getModule(link));
+            return new ModuleDetail(owner, this, getProject().getModule(link));
         }
     }
 

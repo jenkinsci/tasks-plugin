@@ -1,5 +1,6 @@
 package hudson.plugins.tasks;
 
+import hudson.model.Build;
 import hudson.model.ModelObject;
 import hudson.plugins.tasks.Task.Priority;
 import hudson.plugins.tasks.util.ChartBuilder;
@@ -26,20 +27,26 @@ public class ModuleDetail implements ModelObject, Serializable {
     private static final long serialVersionUID = -3743047168363581305L;
     /** The current build as owner of this object. */
     @SuppressWarnings("Se")
-    private final TasksResult owner;
+    private final TasksResult tasksResult;
     /** The selected module to show. */
     private final MavenModule module;
+    /** The current build as owner of this action. */
+    @SuppressWarnings("Se")
+    private final Build<?, ?> owner;
 
     /**
      * Creates a new instance of <code>TaskDetail</code>.
      *
+     * @param owner
+     *            the current build as owner of this action
      * @param tasksResult
      *            the current build as owner of this action
      * @param module
      *            the selected package to show
      */
-    public ModuleDetail(final TasksResult tasksResult, final MavenModule module) {
-        owner = tasksResult;
+    public ModuleDetail(final Build<?, ?> owner, final TasksResult tasksResult, final MavenModule module) {
+        this.owner = owner;
+        this.tasksResult = tasksResult;
         this.module = module;
     }
 
@@ -48,7 +55,16 @@ public class ModuleDetail implements ModelObject, Serializable {
      *
      * @return the owner
      */
-    public TasksResult getOwner() {
+    public TasksResult getTasksResult() {
+        return tasksResult;
+    }
+
+    /**
+     * Returns the owner.
+     *
+     * @return the owner
+     */
+    public Build<?,?> getOwner() {
         return owner;
     }
 
@@ -82,7 +98,7 @@ public class ModuleDetail implements ModelObject, Serializable {
      */
     public List<String> getPriorities() {
         List<String> priorities = new ArrayList<String>();
-        for (String priority : owner.getPriorities()) {
+        for (String priority : tasksResult.getPriorities()) {
             if (getNumberOfTasks(priority) > 0) {
                 priorities.add(priority);
             }
@@ -98,7 +114,7 @@ public class ModuleDetail implements ModelObject, Serializable {
      * @return the tags for priority high
      */
     public String getTags(final String priority) {
-        return owner.getTags(priority);
+        return tasksResult.getTags(priority);
     }
 
     /**
@@ -158,10 +174,10 @@ public class ModuleDetail implements ModelObject, Serializable {
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSinglePackageModule()) {
-            return new TaskDetail(owner.getOwner(), link);
+            return new TaskDetail(owner, link);
         }
         else {
-            return new PackageDetail(getOwner(), module.getPackage(link));
+            return new PackageDetail(owner, tasksResult, module.getPackage(link));
         }
     }
 
@@ -171,7 +187,7 @@ public class ModuleDetail implements ModelObject, Serializable {
      * @return <code>true</code> if this result belongs to the last build
      */
     public boolean isCurrent() {
-        return owner.getOwner().getProject().getLastBuild().number == owner.getOwner().number;
+        return owner.getProject().getLastBuild().number == owner.number;
     }
 
     /**
