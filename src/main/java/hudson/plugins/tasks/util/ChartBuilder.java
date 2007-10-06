@@ -167,6 +167,9 @@ public class ChartBuilder {
         plot.getRenderer().setSeriesPaint(0, ColorPalette.RED);
         plot.getRenderer().setSeriesPaint(1, ColorPalette.YELLOW);
         plot.getRenderer().setSeriesPaint(2, ColorPalette.BLUE);
+        plot.getRenderer().setSeriesOutlineStroke(0, new BasicStroke(0));
+        plot.getRenderer().setSeriesOutlineStroke(1, new BasicStroke(0));
+        plot.getRenderer().setSeriesOutlineStroke(2, new BasicStroke(0));
 
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
