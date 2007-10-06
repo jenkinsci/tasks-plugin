@@ -298,11 +298,26 @@ public class TasksResult implements ModelObject, Serializable {
      *            Stapler response
      * @return the dynamic result of the FindBugs analysis (detail page for a package).
      */
-    public ModuleDetail getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         Logger.getLogger(TasksResult.class.getName()).log(Level.INFO, "Link: " + link);
-
-        return new ModuleDetail(this, getProject().getModule(link));
+        if (isSingleModuleProject()) {
+            return new PackageDetail(this, getProject().getPackage(link));
+        }
+        else {
+            return new ModuleDetail(this, getProject().getModule(link));
+        }
     }
+
+    /**
+     * Returns whether we only have a single module. In this case the module
+     * statistics are suppressed and only the package statistics are shown.
+     *
+     * @return <code>true</code> for single module projects
+     */
+    public boolean isSingleModuleProject() {
+        return getProject().getModules().size() == 1;
+    }
+
     /**
      * Generates a PNG image for high/normal/low distribution of a maven module.
      *

@@ -41,7 +41,7 @@ public class JavaProject implements Serializable {
      */
     public void addFile(final WorkspaceFile workspaceFile) {
         files.add(workspaceFile);
-        String moduleName = StringUtils.defaultIfEmpty(workspaceFile.getModuleName(), "Single Module");
+        String moduleName = StringUtils.defaultIfEmpty(workspaceFile.getModuleName(), "Dummy");
         if (!filesPerModule.containsKey(moduleName)) {
             filesPerModule.put(moduleName, new MavenModule(moduleName));
         }

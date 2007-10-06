@@ -4,7 +4,7 @@
   <l:layout>
     <st:include it="${it.owner.owner}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>Open Tasks of Module ${displayName}</h1>
+      <h1>Open Tasks of Module ${it.displayName}</h1>
 
       <h2>Summary</h2>
 
@@ -33,7 +33,6 @@
       </table>
 
       <h2>Package Statistics</h2>
-
       <table class="pane sortable" id="tasks">
       	<tr>
       		<td class="pane-header">Package</td>

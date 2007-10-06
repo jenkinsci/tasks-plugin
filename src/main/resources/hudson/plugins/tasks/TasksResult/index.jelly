@@ -27,8 +27,8 @@
         </tbody>
       </table>
 
+      <j:if test="${!it.isSingleModuleProject()}">
       <h2>Module Statistics</h2>
-
       <table class="pane sortable" id="tasks.modules">
       	<tr>
       		<td class="pane-header">Module</td>
@@ -51,6 +51,33 @@
       		</j:forEach>
       	</tbody>
       </table>
+      </j:if>
+
+      <j:if test="${it.isSingleModuleProject()}">
+      <h2>Package Statistics</h2>
+      <table class="pane sortable" id="tasks">
+      	<tr>
+      		<td class="pane-header">Package</td>
+      		<td class="pane-header" style="width:2em">Total</td>
+	      	<td class="pane-header" >Distribution</td>
+      	</tr>
+      	<tbody>
+      		<j:forEach var="package" items="${it.project.packages}">
+      			<tr>
+      				<td class="pane">
+      					<a href="${package.name}">${package.name}</a>
+      				</td>
+      				<td class="pane">
+      					${package.numberOfTasks}
+      				</td>
+      				<td class="pane">
+					  	<img src="packageStatistics?package=${package.name}"/>
+      				</td>
+      			</tr>
+      		</j:forEach>
+      	</tbody>
+      </table>
+      </j:if>
 
     </l:main-panel>
   </l:layout>
