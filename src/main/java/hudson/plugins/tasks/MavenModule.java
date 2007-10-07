@@ -130,7 +130,7 @@ public class MavenModule implements Serializable, TasksProvider {
     }
 
     /**
-     * Gets the maximum number of tasks in a module.
+     * Gets the maximum number of tasks in a package of this module.
      *
      * @return the maximum number of tasks
      */
