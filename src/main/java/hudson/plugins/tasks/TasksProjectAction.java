@@ -34,5 +34,11 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
     public String getUrlName() {
         return TASKS_URL;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    protected String getCookieName() {
+        return "Tasks_displayMode";
+    }
 }
 
