@@ -2,8 +2,6 @@ package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
 import hudson.model.Build;
-import hudson.model.HealthReport;
-import hudson.model.HealthReportingAction;
 import hudson.plugins.tasks.Task.Priority;
 import hudson.plugins.tasks.util.AbstractResultAction;
 import hudson.plugins.tasks.util.HealthReportBuilder;
@@ -18,7 +16,6 @@ import java.util.NoSuchElementException;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.CategoryDataset;
-import org.kohsuke.stapler.StaplerProxy;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -33,15 +30,13 @@ import org.kohsuke.stapler.StaplerResponse;
  *
  * @author Ulli Hafner
  */
-public class TasksResultAction extends AbstractResultAction implements StaplerProxy, HealthReportingAction, ResultAction<TasksResult> {
+public class TasksResultAction extends AbstractResultAction implements ResultAction<TasksResult> {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -3936658973355672416L;
     /** URL to results. */
     private static final String TASKS_RESULT_URL = "tasksResult";
     /** The actual result of the FindBugs analysis. */
     private TasksResult result;
-    /** Builds a health report. */
-    private HealthReportBuilder healthReportBuilder;
 
     /**
      * Creates a new instance of <code>FindBugsBuildAction</code>.
@@ -54,9 +49,8 @@ public class TasksResultAction extends AbstractResultAction implements StaplerPr
      *            health builder to use
      */
     public TasksResultAction(final Build<?, ?> owner, final TasksResult result, final HealthReportBuilder healthReportBuilder) {
-        super(owner);
+        super(owner, healthReportBuilder);
         this.result = result;
-        this.healthReportBuilder = healthReportBuilder;
     }
 
     /** {@inheritDoc} */
@@ -74,8 +68,9 @@ public class TasksResultAction extends AbstractResultAction implements StaplerPr
     }
 
     /** {@inheritDoc} */
-    public HealthReport getBuildHealth() {
-        return healthReportBuilder.computeHealth(getResult().getNumberOfTasks());
+    @Override
+    protected int getHealthCounter() {
+        return getResult().getNumberOfTasks();
     }
 
     /** {@inheritDoc} */
@@ -171,12 +166,9 @@ public class TasksResultAction extends AbstractResultAction implements StaplerPr
      */
     @Override
     protected JFreeChart createChart(final StaplerRequest request, final StaplerResponse response) {
-        if (healthReportBuilder == null) {
-            healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", false, 0, false, 0, 0);
-        }
         String parameter = request.getParameter("useHealthBuilder");
         boolean useHealthBuilder = Boolean.valueOf(StringUtils.defaultIfEmpty(parameter, "true"));
-        return healthReportBuilder.createGraph(useHealthBuilder, TASKS_RESULT_URL, buildDataSet(useHealthBuilder));
+        return getHealthReportBuilder().createGraph(useHealthBuilder, TASKS_RESULT_URL, buildDataSet(useHealthBuilder));
     }
 
     /**
@@ -194,8 +186,8 @@ public class TasksResultAction extends AbstractResultAction implements StaplerPr
             TasksResult current = action.getResult();
             if (current != null) {
                 List<Integer> series;
-                if (useHealthBuilder && healthReportBuilder.isEnabled()) {
-                    series = healthReportBuilder.createSeries(current.getNumberOfTasks());
+                if (useHealthBuilder && getHealthReportBuilder().isEnabled()) {
+                    series = getHealthReportBuilder().createSeries(current.getNumberOfTasks());
                 }
                 else {
                     series = new ArrayList<Integer>();
