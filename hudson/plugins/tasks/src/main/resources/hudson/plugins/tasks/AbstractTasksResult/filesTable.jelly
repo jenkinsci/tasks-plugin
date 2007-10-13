@@ -1,0 +1,37 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form">
+	<j:forEach var="priority" items="${it.priorities}">
+		<a name="${priority}" />
+		<h2>${priority} Priority: ${it.getTags(priority)}</h2>
+		<j:forEach var="file" items="${it.files}">
+			<j:if test="${file.hasTasks(priority)}">
+				<table class="pane">
+					<tr class="pane">
+						<td class="pane-header">
+							<p>File: ${file.shortName}</p>
+			            </td>
+		            </tr>
+					<j:forEach var="task" items="${file.getTasks(priority)}">
+			            <tr>
+				            <td class="pane">
+								<p>
+									<j:choose>
+										<j:when test="${it.isCurrent()}">
+											<a href="${file.linkName}/#${task.lineNumber}">Line ${task.lineNumber}:</a>
+										</j:when>
+										<j:otherwise>
+											Line ${task.lineNumber}:
+										</j:otherwise>
+									</j:choose>
+									${task.message}
+								</p>
+				            </td>
+			            </tr>
+					</j:forEach>
+				</table>
+				<p/>
+			</j:if>
+		</j:forEach>
+	</j:forEach>
+</j:jelly>

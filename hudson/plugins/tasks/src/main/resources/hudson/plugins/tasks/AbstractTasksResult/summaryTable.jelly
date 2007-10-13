@@ -1,0 +1,25 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form">
+	<h2>Summary</h2>
+	<table class="pane sortable" id="tasks.summary">
+		<tr>
+			<td class="pane-header">Total</td>
+			<j:forEach var="priority" items="${it.availablePriorities}">
+				<td class="pane-header">
+					${priority} Priority (${it.getTags(priority)})
+				</td>
+			</j:forEach>
+		</tr>
+		<tbody>
+			<tr>
+				<td class="pane">${it.numberOfTasks}</td>
+				<j:forEach var="priority" items="${it.availablePriorities}">
+					<td class="pane">
+						${it.getNumberOfTasks(priority)}
+					</td>
+				</j:forEach>
+			</tr>
+		</tbody>
+	</table>
+</j:jelly>
