@@ -15,18 +15,20 @@
 		  <div>
 		    <img src="tasks/trend${trendQueryParameter}" lazymap="tasks/trendMap${trendQueryParameter}"/>
 		  </div>
-  	      <div style="text-align:right">
-	        <a href="tasks/flipTrend">
-	          <j:choose>
-	            <j:when test="${mode}">
-	              (show priorities)
-	            </j:when>
-	            <j:otherwise>
-	              (show healthiness)
-	            </j:otherwise>
-	          </j:choose>
-	        </a>
-	      </div>
+	      <j:if test="${from.isHealthinessEnabled()}">
+	  	      <div style="text-align:right">
+		        <a href="tasks/flipTrend">
+		          <j:choose>
+		            <j:when test="${mode}">
+		              (show priorities)
+		            </j:when>
+		            <j:otherwise>
+		              (show healthiness)
+		            </j:otherwise>
+		          </j:choose>
+		        </a>
+		      </div>
+	      </j:if>
 	   	</div>
 	</j:if>
 </j:jelly>
