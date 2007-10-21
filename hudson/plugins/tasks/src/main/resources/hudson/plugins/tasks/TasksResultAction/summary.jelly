@@ -1,0 +1,20 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	<t:summary icon="/plugin/tasks/icons/tasks-48x48.gif">
+	    <j:if test="${it.result.numberOfTasks > 0}">
+	    	Task Scanner: a total of
+    	<a href="tasksResult">${it.result.numberOfTasks} open tasks</a> have been found
+	    	<j:choose>
+	    		<j:when test="${it.result.delta > 0}">
+	    			(+${it.result.delta}).
+	    		</j:when>
+	    		<j:when test="${it.result.delta == 0}">(±0).</j:when>
+	    		<j:otherwise>(${it.result.delta}).</j:otherwise>
+	    	</j:choose>
+	    </j:if>
+	    <j:if test="${it.result.numberOfWarnings == 0}">
+	    	Task Scanner: no open tasks have been found.
+	    </j:if>
+	</t:summary>
+</j:jelly>
