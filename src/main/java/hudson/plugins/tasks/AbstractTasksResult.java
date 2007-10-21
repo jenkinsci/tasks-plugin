@@ -49,6 +49,7 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      * @param low
      *            tag identifiers indicating low priority
      * @param files
+     *            all the files that contain tasks
      */
     public AbstractTasksResult(final Build<?, ?> owner, final String high, final String normal, final String low, final Collection<WorkspaceFile> files) {
         this.owner = owner;
