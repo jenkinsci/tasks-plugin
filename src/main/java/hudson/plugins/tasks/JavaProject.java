@@ -148,5 +148,17 @@ public class JavaProject implements Serializable, TasksProvider {
     public JavaPackage getPackage(final String name) {
         return filesPerModule.values().iterator().next().getPackage(name);
     }
+
+    /**
+     * Creates unique keys for all available task to be referenced by links.
+     */
+    public void computeIndex() {
+        int index = 0;
+        for (WorkspaceFile file : getFiles()) {
+            for (Task task : file.getTasks()) {
+                task.setKey(index++);
+            }
+        }
+    }
 }
 

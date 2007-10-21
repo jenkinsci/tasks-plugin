@@ -72,6 +72,8 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
             }
             javaProject.setWorkspacePath(workspace.getAbsolutePath());
         }
+        javaProject.computeIndex();
+
         return javaProject;
     }
 

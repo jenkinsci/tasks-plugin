@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +33,9 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
+    /** All tasks of this result. */
+    @SuppressWarnings("Se")
+    private transient Task[] tasks;
 
     /**
      * Creates a new instance of <code>AbstractTasksDetail</code>.
@@ -44,12 +48,29 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
+     * @param files
      */
-    public AbstractTasksResult(final Build<?, ?> owner, final String high, final String normal, final String low) {
+    public AbstractTasksResult(final Build<?, ?> owner, final String high, final String normal, final String low, final Collection<WorkspaceFile> files) {
         this.owner = owner;
         this.high = high;
         this.normal = normal;
         this.low = low;
+
+        initializeTasks(files);
+    }
+
+    /**
+     * Initializes the array of available tasks.
+     *
+     * @param files the files with the tasks
+     */
+    private void initializeTasks(final Collection<WorkspaceFile> files) {
+        List<Task> sortedTasks = new ArrayList<Task>();
+        for (WorkspaceFile file : files) {
+            sortedTasks.addAll(file.getTasks());
+        }
+        Collections.sort(sortedTasks);
+        tasks = sortedTasks.toArray(new Task[sortedTasks.size()]);
     }
 
     /**
@@ -59,7 +80,39 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      *            the root result object that is used to get the available tasks
      */
     public AbstractTasksResult(final AbstractTasksResult root) {
-        this(root.owner, root.high, root.normal, root.low);
+        this(root.owner, root.high, root.normal, root.low, root.getFiles());
+    }
+
+    /**
+     * Returns the task with the specified key.
+     *
+     * @param key
+     *            the key of the task
+     * @return the task
+     */
+    public final Task getTask(final int key) {
+        if (tasks == null) {
+            initializeTasks(getFiles());
+        }
+        return tasks[key];
+    }
+
+    /**
+     * Returns the task with the specified key.
+     *
+     * @param key
+     *            the key of the task
+     * @return the task
+     */
+    public final Task getTask(final String key) {
+        int integer;
+        try {
+            integer = Integer.valueOf(key);
+        }
+        catch (NumberFormatException exception) {
+            integer = 0;
+        }
+        return getTask(integer);
     }
 
     /**

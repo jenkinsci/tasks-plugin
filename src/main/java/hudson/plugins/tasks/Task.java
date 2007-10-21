@@ -1,11 +1,15 @@
 package hudson.plugins.tasks;
 
+import hudson.plugins.tasks.util.FileAnnotation;
+
 import java.io.Serializable;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Java Bean class representing an open task.
  */
-public class Task implements Serializable {
+public class Task implements Serializable, FileAnnotation, Comparable<Task> {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 5171661552905752370L;
     /** Defines the priority of a task. */
@@ -16,6 +20,10 @@ public class Task implements Serializable {
     private final Priority priority;
     /** Line number of the task in the corresponding file. */
     private final int lineNumber;
+    /** Unique key of this task. */
+    private int key;
+    /** Filename of this task. */
+    private String fileName;
 
     /**
      * Creates a new instance of <code>Task</code>.
@@ -32,12 +40,22 @@ public class Task implements Serializable {
     }
 
     /**
-     * Returns the message.
+     * Returns the detail message of the task (the text after the task keyword).
      *
-     * @return the message
+     * @return the detail message of the task
      */
-    public String getMessage() {
+    public String getDetailMessage() {
         return message;
+    }
+
+    /** {@inheritDoc} */
+    public String getMessage() {
+        return StringUtils.EMPTY;
+    }
+
+    /** {@inheritDoc} */
+    public String getToolTip() {
+        return "Priority: " + priority.name();
     }
 
     /**
@@ -56,6 +74,76 @@ public class Task implements Serializable {
      */
     public int getLineNumber() {
         return lineNumber;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isLineAnnotation() {
+        return true;
+    }
+
+    /**
+     * Sets the unique key of this task.
+     *
+     * @param key the key
+     */
+    public void setKey(final int key) {
+        this.key = key;
+    }
+
+    /**
+     * Returns the key of this task.
+     *
+     * @return the key
+     */
+    public int getKey() {
+        return key;
+    }
+
+    /**
+     * Sets the file name for this task.
+     *
+     * @param fileName the file name for this task
+     */
+    public void setFileName(final String fileName) {
+        this.fileName = fileName;
+    }
+
+    /** {@inheritDoc} */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /** {@inheritDoc} */
+    public int compareTo(final Task otherTask) {
+        return key - otherTask.key;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + key;
+        return result;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Task other = (Task)obj;
+        if (key != other.key) {
+            return false;
+        }
+        return true;
     }
 }
 

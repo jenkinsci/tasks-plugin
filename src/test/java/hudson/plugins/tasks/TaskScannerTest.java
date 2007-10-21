@@ -33,8 +33,8 @@ public class TaskScannerTest {
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.getNumberOfTasks());
         List<Task> tasks = result.getTasks();
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, tasks.size());
-        assertEquals(WRONG_MESSAGE_ERROR, "here we have a task with priority NORMAL", tasks.get(0).getMessage());
-        assertEquals(WRONG_MESSAGE_ERROR, "here another task with priority HIGH", tasks.get(1).getMessage());
+        assertEquals(WRONG_MESSAGE_ERROR, "here we have a task with priority NORMAL", tasks.get(0).getDetailMessage());
+        assertEquals(WRONG_MESSAGE_ERROR, "here another task with priority HIGH", tasks.get(1).getDetailMessage());
     }
 
     /**

@@ -3,6 +3,7 @@ package hudson.plugins.tasks;
 import hudson.XmlFile;
 import hudson.model.Build;
 import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.util.SourceDetail;
 import hudson.util.StringConverter2;
 import hudson.util.XStream2;
 
@@ -85,7 +86,7 @@ public class TasksResult extends AbstractTasksResult {
      *            tag identifiers indicating low priority
      */
     public TasksResult(final Build<?, ?> build, final JavaProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
-        super(build, high, normal, low);
+        super(build, high, normal, low, project.getFiles());
         highPriorityTasks = project.getNumberOfTasks(Priority.HIGH);
         lowPriorityTasks = project.getNumberOfTasks(Priority.LOW);
         normalPriorityTasks = project.getNumberOfTasks(Priority.NORMAL);
@@ -185,6 +186,7 @@ public class TasksResult extends AbstractTasksResult {
         JavaProject result;
         try {
             result = (JavaProject)getDataFile().read();
+            result.computeIndex();
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
@@ -226,7 +228,7 @@ public class TasksResult extends AbstractTasksResult {
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSingleModuleProject()) {
             if (isSinglePackageProject()) {
-                return new TaskDetail(getOwner(), link);
+                return new SourceDetail(getOwner(), getTask(link));
             }
             else {
                 return new PackageDetail(this, getProject().getPackage(link));

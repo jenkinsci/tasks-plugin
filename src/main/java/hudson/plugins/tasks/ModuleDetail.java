@@ -1,6 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.util.SourceDetail;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -102,7 +103,7 @@ public class ModuleDetail extends AbstractTasksResult {
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSinglePackageModule()) {
-            return new TaskDetail(getOwner(), link);
+            return new SourceDetail(getOwner(), getTask(link));
         }
         else {
             return new PackageDetail(root, module.getPackage(link));

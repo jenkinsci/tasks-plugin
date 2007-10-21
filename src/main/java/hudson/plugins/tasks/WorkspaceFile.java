@@ -146,6 +146,9 @@ public class WorkspaceFile implements Serializable {
      */
     public void setName(final String name) {
         this.name = name;
+        for (Task task : getTasks()) {
+            task.setFileName(name);
+        }
     }
 
     /**
