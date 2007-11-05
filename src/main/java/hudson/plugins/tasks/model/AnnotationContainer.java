@@ -97,12 +97,12 @@ public class AnnotationContainer implements AnnotationProvider {
     }
 
     /** {@inheritDoc} */
-    public final int getNumberOfAnnotations() {
+    public int getNumberOfAnnotations() {
         return annotations.size();
     }
 
     /** {@inheritDoc} */
-    public final int getNumberOfAnnotations(final Priority priority) {
+    public int getNumberOfAnnotations(final Priority priority) {
         return annotationsByPriority.get(priority).size();
     }
 

@@ -38,6 +38,7 @@ public class TasksResult extends AbstractTasksResult {
     /** Serialization provider. */
     private static final XStream XSTREAM = new XStream2();
 
+    // FIXME: we should use another serialization mechanism
     static {
         XSTREAM.alias("project", JavaProject.class);
         XSTREAM.registerConverter(new StringConverter2(), 100);
@@ -109,38 +110,29 @@ public class TasksResult extends AbstractTasksResult {
     }
 
     /** {@inheritDoc} */
-    public int getNumberOfTasks() {
+    @Override
+    public int getNumberOfAnnotations() {
         return numberOfTasks;
     }
 
-    /**
-     * Returns the lowPriorityTasks.
-     *
-     * @return the lowPriorityTasks
-     */
-    public int getLowPriorityTasks() {
-        return lowPriorityTasks;
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfAnnotations(final Priority priority) {
+        if (priority == Priority.HIGH) {
+            return highPriorityTasks;
+        }
+        else if (priority == Priority.NORMAL) {
+            return normalPriorityTasks;
+        }
+        else {
+            return lowPriorityTasks;
+        }
     }
-
     /**
-     * Returns the highPriorityTasks.
+     * Returns the display name (bread crumb name) of this result.
      *
-     * @return the highPriorityTasks
+     * @return the display name (bread crumb name) of this result.
      */
-    public int getHighPriorityTasks() {
-        return highPriorityTasks;
-    }
-
-    /**
-     * Returns the normalPriorityTasks.
-     *
-     * @return the normalPriorityTasks
-     */
-    public int getNormalPriorityTasks() {
-        return normalPriorityTasks;
-    }
-
-
     public String getDisplayName() {
         return "Open Tasks";
     }

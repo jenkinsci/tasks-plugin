@@ -222,7 +222,7 @@ public class TasksPublisher extends Publisher {
                 result = new TasksResult(build, project, high, normal, low);
             }
             else {
-                result = new TasksResult(build, project, previousAction.getResult().getNumberOfTasks(), high, normal, low);
+                result = new TasksResult(build, project, previousAction.getResult().getNumberOfAnnotations(), high, normal, low);
             }
         }
         else {

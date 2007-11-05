@@ -52,7 +52,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     /** {@inheritDoc} */
     @Override
     protected int getHealthCounter() {
-        return getResult().getNumberOfTasks();
+        return getResult().getNumberOfAnnotations();
     }
 
     /** {@inheritDoc} */
@@ -147,7 +147,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
             if (current != null) {
                 List<Integer> series;
                 if (useHealthBuilder && getHealthReportBuilder().isEnabled()) {
-                    series = getHealthReportBuilder().createSeries(current.getNumberOfTasks());
+                    series = getHealthReportBuilder().createSeries(current.getNumberOfAnnotations());
                 }
                 else {
                     series = new ArrayList<Integer>();
