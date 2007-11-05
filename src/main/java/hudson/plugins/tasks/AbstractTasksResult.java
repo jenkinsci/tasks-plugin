@@ -2,7 +2,11 @@ package hudson.plugins.tasks;
 
 import hudson.model.Build;
 import hudson.model.ModelObject;
-import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.model.AnnotationContainer;
+import hudson.plugins.tasks.model.AnnotationProvider;
+import hudson.plugins.tasks.model.FileAnnotation;
+import hudson.plugins.tasks.model.Priority;
+import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.util.ChartBuilder;
 import hudson.util.ChartUtil;
 
@@ -10,7 +14,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +26,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * Provides common functionality of the different kind of tasks results details.
  */
-public abstract class AbstractTasksResult implements ModelObject, Serializable {
+public abstract class AbstractTasksResult extends AnnotationContainer implements ModelObject, Serializable {
     /** The current build as owner of this action. */
     @SuppressWarnings("Se")
     private final Build<?, ?> owner;
@@ -33,9 +36,6 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
-    /** All tasks of this result. */
-    @SuppressWarnings("Se")
-    private transient Task[] tasks;
 
     /**
      * Creates a new instance of <code>AbstractTasksDetail</code>.
@@ -48,30 +48,18 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
-     * @param files
+     * @param annotations
      *            all the files that contain tasks
      */
-    public AbstractTasksResult(final Build<?, ?> owner, final String high, final String normal, final String low, final Collection<WorkspaceFile> files) {
+    public AbstractTasksResult(final Build<?, ?> owner, final String high, final String normal, final String low, final Collection<FileAnnotation> annotations) {
+        super();
+
         this.owner = owner;
         this.high = high;
         this.normal = normal;
         this.low = low;
 
-        initializeTasks(files);
-    }
-
-    /**
-     * Initializes the array of available tasks.
-     *
-     * @param files the files with the tasks
-     */
-    private void initializeTasks(final Collection<WorkspaceFile> files) {
-        List<Task> sortedTasks = new ArrayList<Task>();
-        for (WorkspaceFile file : files) {
-            sortedTasks.addAll(file.getTasks());
-        }
-        Collections.sort(sortedTasks);
-        tasks = sortedTasks.toArray(new Task[sortedTasks.size()]);
+        addAnnotations(annotations);
     }
 
     /**
@@ -79,49 +67,12 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      *
      * @param root
      *            the root result object that is used to get the available tasks
+     * @param annotations
+     *            the annotations of the child
      */
-    public AbstractTasksResult(final AbstractTasksResult root) {
-        this(root.owner, root.high, root.normal, root.low, root.getFiles());
+    public AbstractTasksResult(final AbstractTasksResult root, final Collection<FileAnnotation> annotations) {
+        this(root.owner, root.high, root.normal, root.low, annotations);
     }
-
-    /**
-     * Returns the task with the specified key.
-     *
-     * @param key
-     *            the key of the task
-     * @return the task
-     */
-    public final Task getTask(final int key) {
-        if (tasks == null) {
-            initializeTasks(getFiles());
-        }
-        return tasks[key];
-    }
-
-    /**
-     * Returns the task with the specified key.
-     *
-     * @param key
-     *            the key of the task
-     * @return the task
-     */
-    public final Task getTask(final String key) {
-        int integer;
-        try {
-            integer = Integer.valueOf(key);
-        }
-        catch (NumberFormatException exception) {
-            integer = 0;
-        }
-        return getTask(integer);
-    }
-
-    /**
-     * Returns the files of this result object.
-     *
-     * @return the files of this result object
-     */
-    public abstract Collection<WorkspaceFile> getFiles();
 
     /**
      * Returns the package category name for the scanned files. Currently, only
@@ -130,8 +81,8 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      * @return the package category name for the scanned files
      */
     public String getPackageCategoryName() {
-        if (!getFiles().isEmpty()) {
-            WorkspaceFile file = getFiles().iterator().next();
+        if (hasAnnotations()) {
+            WorkspaceFile file = getAnnotation(0).getWorkspaceFile();
             if (file.getShortName().endsWith(".cs")) {
                 return "Namespace";
             }
@@ -165,7 +116,7 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
     public List<String> getPriorities() {
         List<String> actualPriorities = new ArrayList<String>();
         for (String priority : getAvailablePriorities()) {
-            if (getNumberOfTasks(priority) > 0) {
+            if (getNumberOfAnnotations(priority) > 0) {
                 actualPriorities.add(priority);
             }
         }
@@ -212,39 +163,6 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
     }
 
     /**
-     * Returns the total number of tasks in this project.
-     *
-     * @return total number of tasks in this project.
-     */
-    public int getNumberOfTasks() {
-        int numberOfTasks = 0;
-        for (Priority priority : Priority.values()) {
-            numberOfTasks += getNumberOfTasks(priority);
-        }
-        return numberOfTasks;
-    }
-
-    /**
-     * Returns the number of tasks with the specified priority for this object.
-     *
-     * @param priority
-     *            the priority
-     * @return the number of tasks with the specified priority in this project.
-     */
-    public abstract int getNumberOfTasks(Priority priority);
-
-    /**
-     * Returns the number of tasks with the specified priority.
-     *
-     * @param  priority the priority
-     *
-     * @return the number of tasks with the specified priority
-     */
-    public final int getNumberOfTasks(final String priority) {
-        return getNumberOfTasks(Priority.valueOf(StringUtils.upperCase(priority)));
-    }
-
-    /**
      * Creates a detail graph for the specified detail object.
      *
      * @param request
@@ -259,16 +177,16 @@ public abstract class AbstractTasksResult implements ModelObject, Serializable {
      *             in case of an error
      */
     protected final void createDetailGraph(final StaplerRequest request, final StaplerResponse response,
-            final TasksProvider detailObject, final int upperBound) throws IOException {
+            final AnnotationProvider detailObject, final int upperBound) throws IOException {
         if (ChartUtil.awtProblem) {
             response.sendRedirect2(request.getContextPath() + "/images/headless.png");
             return;
         }
         ChartBuilder chartBuilder = new ChartBuilder();
         JFreeChart chart = chartBuilder.createHighNormalLowChart(
-                detailObject.getNumberOfTasks(Priority.HIGH),
-                detailObject.getNumberOfTasks(Priority.NORMAL),
-                detailObject.getNumberOfTasks(Priority.LOW), upperBound);
+                detailObject.getNumberOfAnnotations(Priority.HIGH),
+                detailObject.getNumberOfAnnotations(Priority.NORMAL),
+                detailObject.getNumberOfAnnotations(Priority.LOW), upperBound);
         ChartUtil.generateGraph(request, response, chart, 400, 20);
     }
 }

@@ -7,6 +7,8 @@ import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Project;
 import hudson.model.Result;
+import hudson.plugins.tasks.model.JavaProject;
+import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.AbortException;
 import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.tasks.Publisher;
@@ -230,7 +232,7 @@ public class TasksPublisher extends Publisher {
         HealthReportBuilder healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks);
         build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
 
-        int warnings = project.getNumberOfTasks();
+        int warnings = project.getNumberOfAnnotations();
         if (warnings > 0) {
             listener.getLogger().println("A total of " + warnings + " open tasks have been found.");
             if (isThresholdEnabled && warnings >= minimumTasks) {

@@ -1,4 +1,6 @@
-package hudson.plugins.tasks;
+package hudson.plugins.tasks.parser;
+
+import hudson.plugins.tasks.model.WorkspaceFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +11,8 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Classifies a C# workspace file. No module is assigned.
+ *
+ * @author Ulli Hafner
  */
 public class CsharpClassifier implements FileClassifier {
 

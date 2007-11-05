@@ -1,7 +1,8 @@
 package hudson.plugins.tasks;
 
 import static org.junit.Assert.*;
-import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.model.WorkspaceFile;
+import hudson.plugins.tasks.parser.MavenJavaClassifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,14 +21,11 @@ public class MavenJavaClassifierTest {
      */
     @Test
     public void checkPackage() throws IOException {
-        InputStream stream = MavenJavaClassifierTest.class.getResourceAsStream("MavenJavaTest.txt");
-        WorkspaceFile file = new TaskScanner().scan(stream);
-        stream.close();
+        WorkspaceFile workspaceFile = new WorkspaceFile();
+        workspaceFile.setName("MavenJavaTest.txt");
 
-        assertEquals("Wrong FIXME count.", 1, file.getNumberOfTasks(Priority.HIGH));
-
-        checkClassification(file, "com.avaloq.adt.core/src/com/avaloq/adt/core/job/AvaloqJob.java");
-        checkClassification(file, "base/com.hello.world/com.avaloq.adt.core/src/com/avaloq/adt/core/job/AvaloqJob.java");
+        checkClassification(workspaceFile, "com.avaloq.adt.core/src/com/avaloq/adt/core/job/AvaloqJob.java");
+        checkClassification(workspaceFile, "base/com.hello.world/com.avaloq.adt.core/src/com/avaloq/adt/core/job/AvaloqJob.java");
     }
 
     /**

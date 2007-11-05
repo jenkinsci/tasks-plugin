@@ -1,4 +1,4 @@
-package hudson.plugins.tasks.util;
+package hudson.plugins.tasks.model;
 
 /**
  * A file annotation is a marker either for a fixed line number of a file or a
@@ -38,11 +38,23 @@ public interface FileAnnotation {
     boolean isLineAnnotation();
 
     /**
-     * Gets the file name of this annotation. This name could be either a
-     * absolute filename or a filename relative to the Hudson folder of the
-     * associated build.
+     * Returns the unique key of this annotation.
      *
-     * @return the file name of this annotation
+     * @return the unique key of this annotation.
      */
-    String getFileName();
+    long getKey();
+
+    /**
+     * Returns the priority of this annotation.
+     *
+     * @return the priority of this annotation
+     */
+    Priority getPriority();
+
+    /**
+     * Returns the workspace file that contains this annotation.
+     *
+     * @return the workspace file that contains this annotation
+     */
+    WorkspaceFile getWorkspaceFile();
 }

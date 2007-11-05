@@ -22,9 +22,11 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  * Moreover, this class renders the results trend.
  * </p>
  *
+ * @param <T>
+ *            type of the result of this action
  * @author Ulli Hafner
  */
-public abstract class AbstractResultAction implements StaplerProxy, HealthReportingAction {
+public abstract class AbstractResultAction<T> implements StaplerProxy, HealthReportingAction, ResultAction<T> {
     /** Height of the graph. */
     private static final int HEIGHT = 200;
     /** Width of the graph. */
@@ -34,6 +36,8 @@ public abstract class AbstractResultAction implements StaplerProxy, HealthReport
     private Build<?, ?> owner;
     /** Builds a health report. */
     private HealthReportBuilder healthReportBuilder;
+    /** The actual result of this action. */
+    private T result;
 
     /**
      * Creates a new instance of <code>AbstractResultAction</code>.
@@ -49,11 +53,13 @@ public abstract class AbstractResultAction implements StaplerProxy, HealthReport
      *            the associated build of this action
      * @param healthReportBuilder
      *            health builder to use
+     * @param result the result of the action
      */
-    public AbstractResultAction(final Build<?, ?> owner, final HealthReportBuilder healthReportBuilder) {
+    public AbstractResultAction(final Build<?, ?> owner, final HealthReportBuilder healthReportBuilder, final T result) {
         super();
         this.owner = owner;
         this.healthReportBuilder = healthReportBuilder;
+        this.result = result;
     }
 
     /**
@@ -88,6 +94,38 @@ public abstract class AbstractResultAction implements StaplerProxy, HealthReport
     public final Build<?, ?> getOwner() {
         return owner;
     }
+
+    /** {@inheritDoc} */
+    public final Object getTarget() {
+        return getResult();
+    }
+
+    /** {@inheritDoc} */
+    public final T getResult() {
+        return result;
+    }
+
+    /** {@inheritDoc} */
+    public final void setResult(final T result) {
+        this.result = result;
+    }
+
+    /** {@inheritDoc} */
+    public String getIconFileName() {
+        if (getHealthCounter() > 0) {
+            return getIconUrl();
+        }
+        else {
+            return null;
+    }
+    }
+
+    /**
+     * Returns the file name URL of the icon.
+     *
+     * @return the file name URL of the icon.
+     */
+    protected abstract String getIconUrl();
 
     /**
      * Generates a PNG image for the result trend.

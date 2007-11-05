@@ -1,4 +1,6 @@
-package hudson.plugins.tasks;
+package hudson.plugins.tasks.parser;
+
+import hudson.plugins.tasks.model.WorkspaceFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,6 +8,8 @@ import java.io.InputStream;
 /**
  * Classifies a workspace file. A module and package should be assigned to each
  * workspace file.
+ *
+ * @author Ulli Hafner
  */
 public interface FileClassifier {
     /**

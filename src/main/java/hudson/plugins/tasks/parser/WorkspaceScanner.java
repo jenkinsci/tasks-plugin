@@ -1,13 +1,16 @@
-package hudson.plugins.tasks;
+package hudson.plugins.tasks.parser;
 
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
+import hudson.plugins.tasks.model.JavaProject;
+import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.util.AbortException;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.tools.ant.types.FileSet;
@@ -20,7 +23,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author Ulli Hafner
  */
-class WorkspaceScanner implements FileCallable<JavaProject> {
+public class WorkspaceScanner implements FileCallable<JavaProject> {
     /** Generated ID. */
     private static final long serialVersionUID = -4355362392102020724L;
     /** Ant file-set pattern to scan for FindBugs files. */
@@ -60,19 +63,22 @@ class WorkspaceScanner implements FileCallable<JavaProject> {
         JavaProject javaProject = new JavaProject();
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
-            WorkspaceFile workspaceFile = taskScanner.scan(new FilePath(originalFile).read());
-            if (workspaceFile.hasTasks()) {
+            Collection<Task> tasks = taskScanner.scan(new FilePath(originalFile).read());
+            if (!tasks.isEmpty()) {
+                WorkspaceFile workspaceFile = new WorkspaceFile();
                 workspaceFile.setName(fileName.replace('\\', '/'));
                 for (FileClassifier fileClassifier : classifiers) {
                     if (fileClassifier.accepts(fileName)) {
                         fileClassifier.classify(workspaceFile, new FilePath(originalFile).read());
                     }
                 }
-                javaProject.addFile(workspaceFile);
+                for (Task task : tasks) {
+                    task.setWorkspaceFile(workspaceFile);
+                }
+                javaProject.addAnnotations(tasks);
             }
             javaProject.setWorkspacePath(workspace.getAbsolutePath());
         }
-        javaProject.computeIndex();
 
         return javaProject;
     }

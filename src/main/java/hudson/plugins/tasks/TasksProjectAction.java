@@ -22,7 +22,7 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
      *            the project that owns this action
      */
     public TasksProjectAction(final Project<?, ?> project) {
-        super(project, TasksResultAction.class, TasksDescriptor.TASKS_ACTION_LOGO, TasksResultAction.getLatestUrl());
+        super(project, TasksResultAction.class, TasksDescriptor.TASKS_ACTION_LOGO, "../lastBuild/tasksResult");
     }
 
     /** {@inheritDoc} */

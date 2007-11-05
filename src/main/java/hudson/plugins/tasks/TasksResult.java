@@ -2,7 +2,10 @@ package hudson.plugins.tasks;
 
 import hudson.XmlFile;
 import hudson.model.Build;
-import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.model.AnnotationProvider;
+import hudson.plugins.tasks.model.JavaPackage;
+import hudson.plugins.tasks.model.JavaProject;
+import hudson.plugins.tasks.model.Priority;
 import hudson.plugins.tasks.util.SourceDetail;
 import hudson.util.StringConverter2;
 import hudson.util.XStream2;
@@ -40,9 +43,10 @@ public class TasksResult extends AbstractTasksResult {
         XSTREAM.registerConverter(new StringConverter2(), 100);
     }
 
-    /** The parsed FindBugs result. */
+    /** The parsed project with annotations. */
     @SuppressWarnings("Se")
     private transient WeakReference<JavaProject> project;
+
     /** The total number of tasks. */
     private final int numberOfTasks;
     /** Difference between this and the previous build. */
@@ -69,7 +73,7 @@ public class TasksResult extends AbstractTasksResult {
      *            tag identifiers indicating low priority
      */
     public TasksResult(final Build<?, ?> build, final JavaProject project, final String high, final String normal, final String low) {
-        this(build, project, project.getNumberOfTasks(), high, normal, low);
+        this(build, project, project.getNumberOfAnnotations(), high, normal, low);
     }
 
     /**
@@ -86,13 +90,15 @@ public class TasksResult extends AbstractTasksResult {
      *            tag identifiers indicating low priority
      */
     public TasksResult(final Build<?, ?> build, final JavaProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
-        super(build, high, normal, low, project.getFiles());
-        highPriorityTasks = project.getNumberOfTasks(Priority.HIGH);
-        lowPriorityTasks = project.getNumberOfTasks(Priority.LOW);
-        normalPriorityTasks = project.getNumberOfTasks(Priority.NORMAL);
-        numberOfTasks = project.getNumberOfTasks();
-        this.project = new WeakReference<JavaProject>(project);
+        super(build, high, normal, low, project.getAnnotations());
+
+        highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
+        lowPriorityTasks = project.getNumberOfAnnotations(Priority.LOW);
+        normalPriorityTasks = project.getNumberOfAnnotations(Priority.NORMAL);
+        numberOfTasks = project.getNumberOfAnnotations();
         delta = numberOfTasks - previousNumberOfTasks;
+
+        this.project = new WeakReference<JavaProject>(project);
 
         try {
             getDataFile().write(project);
@@ -103,34 +109,40 @@ public class TasksResult extends AbstractTasksResult {
     }
 
     /** {@inheritDoc} */
-    @Override
     public int getNumberOfTasks() {
         return numberOfTasks;
     }
 
-    /** {@inheritDoc} */
-    public String getDisplayName() {
-        return "Open Tasks";
+    /**
+     * Returns the lowPriorityTasks.
+     *
+     * @return the lowPriorityTasks
+     */
+    public int getLowPriorityTasks() {
+        return lowPriorityTasks;
     }
 
     /**
-     * Returns the number of tasks with the specified priority.
+     * Returns the highPriorityTasks.
      *
-     * @param  priority the priority
-     *
-     * @return the number of tasks with the specified priority
+     * @return the highPriorityTasks
      */
-    @Override
-    public int getNumberOfTasks(final Priority priority) {
-        if (priority == Priority.HIGH) {
-            return highPriorityTasks;
-        }
-        else if (priority == Priority.NORMAL) {
-            return normalPriorityTasks;
-        }
-        else {
-            return lowPriorityTasks;
-        }
+    public int getHighPriorityTasks() {
+        return highPriorityTasks;
+    }
+
+    /**
+     * Returns the normalPriorityTasks.
+     *
+     * @return the normalPriorityTasks
+     */
+    public int getNormalPriorityTasks() {
+        return normalPriorityTasks;
+    }
+
+
+    public String getDisplayName() {
+        return "Open Tasks";
     }
 
     /**
@@ -151,17 +163,6 @@ public class TasksResult extends AbstractTasksResult {
         return getProject().getPackages();
     }
 
-
-    /**
-     * Returns the files in this project.
-     *
-     * @return the files in this project
-     */
-    @Override
-    public Collection<WorkspaceFile> getFiles() {
-        return getProject().getFiles();
-    }
-
     /**
      * Returns the associated project of this result.
      *
@@ -171,7 +172,7 @@ public class TasksResult extends AbstractTasksResult {
         if (project == null) {
             loadResult();
         }
-        TasksProvider result = project.get();
+        AnnotationProvider result = project.get();
         if (result == null) {
             loadResult();
         }
@@ -186,7 +187,6 @@ public class TasksResult extends AbstractTasksResult {
         JavaProject result;
         try {
             result = (JavaProject)getDataFile().read();
-            result.computeIndex();
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
@@ -228,7 +228,7 @@ public class TasksResult extends AbstractTasksResult {
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSingleModuleProject()) {
             if (isSinglePackageProject()) {
-                return new SourceDetail(getOwner(), getTask(link));
+                return new SourceDetail(getOwner(), getAnnotation(link));
             }
             else {
                 return new PackageDetail(this, getProject().getPackage(link));

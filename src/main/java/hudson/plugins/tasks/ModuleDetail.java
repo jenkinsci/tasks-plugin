@@ -1,11 +1,12 @@
 package hudson.plugins.tasks;
 
-import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.model.JavaPackage;
+import hudson.plugins.tasks.model.MavenModule;
+import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.util.SourceDetail;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Set;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -30,7 +31,8 @@ public class ModuleDetail extends AbstractTasksResult {
      *            the selected module to show
      */
     public ModuleDetail(final AbstractTasksResult root, final MavenModule module) {
-        super(root);
+        super(root, module.getAnnotations());
+
         this.root = root;
         this.module = module;
     }
@@ -41,7 +43,7 @@ public class ModuleDetail extends AbstractTasksResult {
     }
 
     /**
-     * Gets the modules of this project that have open tasks.
+     * Gets the packages of this module that have open tasks.
      *
      * @return the modules
      */
@@ -50,25 +52,12 @@ public class ModuleDetail extends AbstractTasksResult {
     }
 
     /**
-     * Returns the files.
+     * Gets the files of this module that have open tasks.
      *
      * @return the files
      */
-    @Override
-    public Set<WorkspaceFile> getFiles() {
+    public Collection<WorkspaceFile> getFiles() {
         return module.getFiles();
-    }
-
-    /**
-     * Returns the number of tasks with the specified priority in this module.
-     *
-     * @param  priority the priority
-     *
-     * @return the number of tasks with the specified priority in this project.
-     */
-    @Override
-    public int getNumberOfTasks(final Priority priority) {
-        return module.getNumberOfTasks(priority);
     }
 
     /**
@@ -103,7 +92,7 @@ public class ModuleDetail extends AbstractTasksResult {
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSinglePackageModule()) {
-            return new SourceDetail(getOwner(), getTask(link));
+            return new SourceDetail(getOwner(), getAnnotation(link));
         }
         else {
             return new PackageDetail(root, module.getPackage(link));

@@ -1,19 +1,22 @@
-package hudson.plugins.tasks;
+package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.util.FileAnnotation;
+
+import hudson.plugins.tasks.model.FileAnnotation;
+import hudson.plugins.tasks.model.Priority;
+import hudson.plugins.tasks.model.WorkspaceFile;
 
 import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Java Bean class representing an open task.
+ * A serializable Java Bean class representing an open task.
  */
 public class Task implements Serializable, FileAnnotation, Comparable<Task> {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 5171661552905752370L;
-    /** Defines the priority of a task. */
-    enum Priority { HIGH, NORMAL, LOW }
+    /** Current task key.  */
+    private static long currentKey;
     /** The message of this task. */
     private final String message;
     /** The priority of this task. */
@@ -21,9 +24,9 @@ public class Task implements Serializable, FileAnnotation, Comparable<Task> {
     /** Line number of the task in the corresponding file. */
     private final int lineNumber;
     /** Unique key of this task. */
-    private int key;
-    /** Filename of this task. */
-    private String fileName;
+    private long key;
+    /** File this annotation is part of. */
+    private WorkspaceFile workspaceFile;
 
     /**
      * Creates a new instance of <code>Task</code>.
@@ -37,6 +40,7 @@ public class Task implements Serializable, FileAnnotation, Comparable<Task> {
         this.priority = priority;
         this.message = message;
         this.lineNumber = lineNumber;
+        key = currentKey++;
     }
 
     /**
@@ -58,20 +62,12 @@ public class Task implements Serializable, FileAnnotation, Comparable<Task> {
         return "Priority: " + priority.name();
     }
 
-    /**
-     * Returns the priority.
-     *
-     * @return the priority
-     */
+    /** {@inheritDoc} */
     public Priority getPriority() {
         return priority;
     }
 
-    /**
-     * Returns the lineNumber.
-     *
-     * @return the lineNumber
-     */
+    /** {@inheritDoc} */
     public int getLineNumber() {
         return lineNumber;
     }
@@ -86,7 +82,7 @@ public class Task implements Serializable, FileAnnotation, Comparable<Task> {
      *
      * @param key the key
      */
-    public void setKey(final int key) {
+    public void setKey(final long key) {
         this.key = key;
     }
 
@@ -95,35 +91,40 @@ public class Task implements Serializable, FileAnnotation, Comparable<Task> {
      *
      * @return the key
      */
-    public int getKey() {
+    public long getKey() {
         return key;
     }
 
     /**
-     * Sets the file name for this task.
+     * Connects this annotation with the specified workspace file.
      *
-     * @param fileName the file name for this task
+     * @param workspaceFile the workspace file that contains this annotation
      */
-    public void setFileName(final String fileName) {
-        this.fileName = fileName;
+    public void setWorkspaceFile(final WorkspaceFile workspaceFile) {
+        this.workspaceFile = workspaceFile;
+        workspaceFile.addAnnotation(this);
     }
 
     /** {@inheritDoc} */
-    public String getFileName() {
-        return fileName;
+    public WorkspaceFile getWorkspaceFile() {
+        return workspaceFile;
     }
 
     /** {@inheritDoc} */
     public int compareTo(final Task otherTask) {
-        return key - otherTask.key;
+        if (key == otherTask.key) {
+            return 0;
+        }
+        else if (key > otherTask.key) {
+            return 1;
+        }
+        return -1;
     }
 
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        int result = 1;
-        result = 31 * result + key;
-        return result;
+        return 31 + (int)(key ^ (key >>> 32));
     }
 
     /** {@inheritDoc} */

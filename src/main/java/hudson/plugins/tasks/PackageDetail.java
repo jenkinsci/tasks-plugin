@@ -1,9 +1,10 @@
 package hudson.plugins.tasks;
 
-import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.model.JavaPackage;
+import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.util.SourceDetail;
 
-import java.util.Set;
+import java.util.Collection;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -26,7 +27,9 @@ public class PackageDetail extends AbstractTasksResult {
      *            the selected package to show
      */
     public PackageDetail(final AbstractTasksResult root, final JavaPackage javaPackage) {
-        super(root);
+        super(root, javaPackage.getAnnotations());
+
+        addAnnotations(javaPackage.getAnnotations());
 
         this.javaPackage = javaPackage;
     }
@@ -37,25 +40,12 @@ public class PackageDetail extends AbstractTasksResult {
     }
 
     /**
-     * Returns the files.
+     * Gets the files of this package that have open tasks.
      *
      * @return the files
      */
-    @Override
-    public Set<WorkspaceFile> getFiles() {
+    public Collection<WorkspaceFile> getFiles() {
         return javaPackage.getFiles();
-    }
-
-    /**
-     * Returns the number of tasks with the specified priority in this project.
-     *
-     * @param  priority the priority
-     *
-     * @return the number of tasks with the specified priority in this project.
-     */
-    @Override
-    public int getNumberOfTasks(final Priority priority) {
-        return javaPackage.getNumberOfTasks(priority);
     }
 
     /**
@@ -68,11 +58,11 @@ public class PackageDetail extends AbstractTasksResult {
      *            Stapler request
      * @param response
      *            Stapler response
-     * @return the dynamic result of the FindBugs analysis (detail page for a
+     * @return the dynamic result of the tasks analysis (detail page for a
      *         package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new SourceDetail(getOwner(), getTask(link));
+        return new SourceDetail(getOwner(), getAnnotation(link));
     }
 }
 

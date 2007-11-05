@@ -1,6 +1,8 @@
 package hudson.plugins.tasks;
 
 import static org.junit.Assert.*;
+import hudson.plugins.tasks.model.WorkspaceFile;
+import hudson.plugins.tasks.parser.CsharpClassifier;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,14 +22,14 @@ public class CsharpClassifierTest {
     public void checkClassification() throws IOException {
         String fileName = "ActionBinding.cs";
         InputStream stream = CsharpClassifierTest.class.getResourceAsStream(fileName);
-        WorkspaceFile file = new TaskScanner().scan(stream);
-        stream.close();
-        stream = CsharpClassifierTest.class.getResourceAsStream(fileName);
-        file.setName(fileName);
-        CsharpClassifier classifier = new CsharpClassifier();
-        classifier.classify(file, stream);
 
-        assertEquals("Wrong namespace name guessed.", "Avaloq.SmartClient.Utilities", file.getPackageName());
+        WorkspaceFile workspaceFile = new WorkspaceFile();
+        workspaceFile.setName(fileName);
+
+        CsharpClassifier classifier = new CsharpClassifier();
+        classifier.classify(workspaceFile, stream);
+
+        assertEquals("Wrong namespace name guessed.", "Avaloq.SmartClient.Utilities", workspaceFile.getPackageName());
     }
 
 }

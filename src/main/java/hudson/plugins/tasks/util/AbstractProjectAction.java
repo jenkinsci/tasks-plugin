@@ -51,7 +51,6 @@ public abstract class AbstractProjectAction<T extends ResultAction<?>> implement
      *            URL to the results of the last build.
      */
     public AbstractProjectAction(final Project<?, ?> project, final Class<T> resultActionType, final String iconUrl, final String resultsUrl) {
-        super();
         this.project = project;
         this.resultActionType = resultActionType;
         this.iconUrl = iconUrl;

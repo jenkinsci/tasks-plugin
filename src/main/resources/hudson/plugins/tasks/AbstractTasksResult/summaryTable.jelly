@@ -13,10 +13,10 @@
 		</tr>
 		<tbody>
 			<tr>
-				<td class="pane">${it.numberOfTasks}</td>
+				<td class="pane">${it.numberOfAnnotations}</td>
 				<j:forEach var="priority" items="${it.availablePriorities}">
 					<td class="pane">
-						${it.getNumberOfTasks(priority)}
+						${it.getNumberOfAnnotations(priority)}
 					</td>
 				</j:forEach>
 			</tr>

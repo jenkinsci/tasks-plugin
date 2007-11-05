@@ -1,11 +1,14 @@
-package hudson.plugins.tasks;
+package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.model.Priority;
 import hudson.plugins.tasks.util.AbortException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,7 +57,8 @@ public class TaskScanner {
     /**
      * Compiles a regular expression pattern to scan for tag identifiers.
      *
-     * @param tagIdentifiers the identifiers to scan for
+     * @param tagIdentifiers
+     *            the identifiers to scan for
      * @return the compiled pattern
      */
     private Pattern compile(final String tagIdentifiers) {
@@ -85,9 +89,9 @@ public class TaskScanner {
      * @throws IOException
      *             if we can't read the file
      */
-    public WorkspaceFile scan(final InputStream file) throws IOException {
-        WorkspaceFile javaFile = new WorkspaceFile();
+    public Collection<Task> scan(final InputStream file) throws IOException {
         LineIterator lineIterator = IOUtils.lineIterator(file, null);
+        List<Task> tasks = new ArrayList<Task>();
         for (int lineNumber = 1; lineIterator.hasNext(); lineNumber++) {
             String line = (String)lineIterator.next();
 
@@ -96,13 +100,14 @@ public class TaskScanner {
                     Matcher matcher = patterns.get(priority).matcher(line);
                     if (matcher.matches() && matcher.groupCount() == 1) {
                         String message = matcher.group(1).trim();
-                        javaFile.addTask(priority, lineNumber, StringUtils.remove(message, ":").trim());
+                        tasks.add(new Task(priority, lineNumber, StringUtils.remove(message, ":").trim()));
                     }
                 }
             }
         }
         file.close();
-        return javaFile;
+
+        return tasks;
     }
 }
 

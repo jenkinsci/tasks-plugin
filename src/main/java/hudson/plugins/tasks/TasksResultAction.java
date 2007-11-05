@@ -2,10 +2,9 @@ package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
 import hudson.model.Build;
-import hudson.plugins.tasks.Task.Priority;
+import hudson.plugins.tasks.model.Priority;
 import hudson.plugins.tasks.util.AbstractResultAction;
 import hudson.plugins.tasks.util.HealthReportBuilder;
-import hudson.plugins.tasks.util.ResultAction;
 import hudson.util.DataSetBuilder;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 
@@ -30,13 +29,11 @@ import org.kohsuke.stapler.StaplerResponse;
  *
  * @author Ulli Hafner
  */
-public class TasksResultAction extends AbstractResultAction implements ResultAction<TasksResult> {
+public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -3936658973355672416L;
     /** URL to results. */
     private static final String TASKS_RESULT_URL = "tasksResult";
-    /** The actual result of the FindBugs analysis. */
-    private TasksResult result;
 
     /**
      * Creates a new instance of <code>FindBugsBuildAction</code>.
@@ -49,22 +46,7 @@ public class TasksResultAction extends AbstractResultAction implements ResultAct
      *            health builder to use
      */
     public TasksResultAction(final Build<?, ?> owner, final TasksResult result, final HealthReportBuilder healthReportBuilder) {
-        super(owner, healthReportBuilder);
-        this.result = result;
-    }
-
-    /** {@inheritDoc} */
-    public Object getTarget() {
-        return getResult();
-    }
-
-    /**
-     * Returns the FindBugs result.
-     *
-     * @return the FindBugs result
-     */
-    public TasksResult getResult() {
-        return result;
+        super(owner, healthReportBuilder, result);
     }
 
     /** {@inheritDoc} */
@@ -79,13 +61,9 @@ public class TasksResultAction extends AbstractResultAction implements ResultAct
     }
 
     /** {@inheritDoc} */
-    public String getIconFileName() {
-        if (result.getNumberOfTasks() > 0) {
+    @Override
+    public String getIconUrl() {
             return TasksDescriptor.TASKS_ACTION_LOGO;
-        }
-        else {
-            return null;
-        }
     }
 
     /** {@inheritDoc} */
@@ -94,19 +72,11 @@ public class TasksResultAction extends AbstractResultAction implements ResultAct
     }
 
     /**
-     * Returns the URL for the results of the last build.
+     * Gets the tasks result of the previous build.
      *
-     * @return URL for the results of the last build
-     */
-    public static String getLatestUrl() {
-        return "../lastBuild/" + TASKS_RESULT_URL;
-    }
-
-    /**
-     * Gets the FindBugs result of the previous build.
-     *
-     * @return the FindBugs result of the previous build.
-     * @throws NoSuchElementException if there is no previous build for this action
+     * @return the tasks result of the previous build.
+     * @throws NoSuchElementException
+     *             if there is no previous build for this action
      */
     public TasksResultAction getPreviousResultAction() {
         TasksResultAction previousBuild = getPreviousBuild();
@@ -146,16 +116,6 @@ public class TasksResultAction extends AbstractResultAction implements ResultAct
     }
 
     /**
-     * Sets the Tasks result for this build. The specified result will be persisted in the build folder
-     * as an XML file.
-     *
-     * @param result the result to set
-     */
-    public void setResult(final TasksResult result) {
-        this.result = result;
-    }
-
-    /**
      * Creates the chart for this action.
      *
      * @param request
@@ -191,9 +151,9 @@ public class TasksResultAction extends AbstractResultAction implements ResultAct
                 }
                 else {
                     series = new ArrayList<Integer>();
-                    series.add(current.getNumberOfTasks(Priority.LOW));
-                    series.add(current.getNumberOfTasks(Priority.NORMAL));
-                    series.add(current.getNumberOfTasks(Priority.HIGH));
+                    series.add(current.getNumberOfAnnotations(Priority.LOW));
+                    series.add(current.getNumberOfAnnotations(Priority.NORMAL));
+                    series.add(current.getNumberOfAnnotations(Priority.HIGH));
                 }
                 int level = 0;
                 for (Integer integer : series) {
