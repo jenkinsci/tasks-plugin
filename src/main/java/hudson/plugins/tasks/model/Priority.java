@@ -1,4 +1,32 @@
+// CHECKSTYLE:OFF
 package hudson.plugins.tasks.model;
 
-/** Defines the priority of an annotation. */
-public enum Priority { HIGH, NORMAL, LOW }
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
+
+/**
+ * Defines the priority of an annotation.
+ *
+ * @author Ulli Hafner
+ */
+public enum Priority {
+    HIGH, NORMAL, LOW;
+
+    /**
+     * Converts priorities for {@link XStream} deserialization.
+     */
+    public static final class PriorityConverter extends AbstractSingleValueConverter {
+        /** {@inheritDoc} */
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean canConvert(final Class type) {
+            return type.equals(Priority.class);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Object fromString(final String str) {
+            return Priority.valueOf(str);
+        }
+    }
+}

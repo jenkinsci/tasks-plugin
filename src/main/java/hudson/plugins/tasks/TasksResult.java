@@ -3,12 +3,13 @@ package hudson.plugins.tasks;
 import hudson.XmlFile;
 import hudson.model.Build;
 import hudson.plugins.tasks.model.AnnotationProvider;
+import hudson.plugins.tasks.model.AnnotationStream;
 import hudson.plugins.tasks.model.JavaPackage;
 import hudson.plugins.tasks.model.JavaProject;
 import hudson.plugins.tasks.model.Priority;
+import hudson.plugins.tasks.model.WorkspaceFile;
+import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.util.SourceDetail;
-import hudson.util.StringConverter2;
-import hudson.util.XStream2;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,12 +37,10 @@ public class TasksResult extends AbstractTasksResult {
     /** Error logger. */
     private static final Logger LOGGER = Logger.getLogger(TasksResult.class.getName());
     /** Serialization provider. */
-    private static final XStream XSTREAM = new XStream2();
+    private static final XStream XSTREAM = new AnnotationStream();
 
-    // FIXME: we should use another serialization mechanism
     static {
-        XSTREAM.alias("project", JavaProject.class);
-        XSTREAM.registerConverter(new StringConverter2(), 100);
+        XSTREAM.alias("task", Task.class);
     }
 
     /** The parsed project with annotations. */
@@ -102,7 +101,8 @@ public class TasksResult extends AbstractTasksResult {
         this.project = new WeakReference<JavaProject>(project);
 
         try {
-            getDataFile().write(project);
+            Collection<WorkspaceFile> files = project.getFiles();
+            getDataFile().write(files.toArray(new WorkspaceFile[files.size()]));
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to serialize the open tasks result.", exception);
@@ -178,7 +178,12 @@ public class TasksResult extends AbstractTasksResult {
     private void loadResult() {
         JavaProject result;
         try {
-            result = (JavaProject)getDataFile().read();
+            JavaProject newProject = new JavaProject();
+            WorkspaceFile[] files = (WorkspaceFile[])getDataFile().read();
+            for (WorkspaceFile workspaceFile : files) {
+                newProject.addAnnotations(workspaceFile.getAnnotations());
+            }
+            result = newProject;
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
@@ -193,7 +198,7 @@ public class TasksResult extends AbstractTasksResult {
      * @return the serialization file.
      */
     private XmlFile getDataFile() {
-        return new XmlFile(XSTREAM, new File(getOwner().getRootDir(), "openTasks.xml"));
+        return new XmlFile(XSTREAM, new File(getOwner().getRootDir(), "open-tasks.xml"));
     }
 
     /**

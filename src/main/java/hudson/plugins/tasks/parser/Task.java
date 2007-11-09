@@ -1,6 +1,5 @@
 package hudson.plugins.tasks.parser;
 
-
 import hudson.plugins.tasks.model.FileAnnotation;
 import hudson.plugins.tasks.model.Priority;
 import hudson.plugins.tasks.model.WorkspaceFile;
@@ -8,6 +7,8 @@ import hudson.plugins.tasks.model.WorkspaceFile;
 import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
+
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * A serializable Java Bean class representing an open task.
@@ -26,7 +27,8 @@ public class Task implements Serializable, FileAnnotation, Comparable<Task> {
     /** Unique key of this task. */
     private long key;
     /** File this annotation is part of. */
-    private WorkspaceFile workspaceFile;
+    @SuppressWarnings("Se")
+    private transient WorkspaceFile workspaceFile;
 
     /**
      * Creates a new instance of <code>Task</code>.
@@ -102,7 +104,6 @@ public class Task implements Serializable, FileAnnotation, Comparable<Task> {
      */
     public void setWorkspaceFile(final WorkspaceFile workspaceFile) {
         this.workspaceFile = workspaceFile;
-        workspaceFile.addAnnotation(this);
     }
 
     /** {@inheritDoc} */

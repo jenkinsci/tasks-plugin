@@ -1,27 +1,41 @@
 package hudson.plugins.tasks.model;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
  * A serializable Java Bean class representing a project that has been built by
  * Hudson.
+ *
+ * @author Ulli Hafner
  */
-public class JavaProject extends AnnotationContainer implements Serializable {
+public class JavaProject extends AnnotationContainer {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 8556968267678442661L;
     /** All maven modules in this project (mapped by their name). */
     private final Map<String, MavenModule> moduleMapping = new HashMap<String, MavenModule>();
     /** Path of the workspace. */
     private String workspacePath;
+
+    /**
+     * Adds the specified annotations of the given files to this container.
+     *
+     * @param files
+     *            the files to get the annotations from
+     */
+    public void addFiles(final Collection<WorkspaceFile> files) {
+        for (WorkspaceFile workspaceFile : files) {
+            addAnnotations(workspaceFile.getAnnotations());
+        }
+    }
 
     /**
      * Creates the mapping of modules.
@@ -57,7 +71,11 @@ public class JavaProject extends AnnotationContainer implements Serializable {
      * @return the module with the given name
      */
     public MavenModule getModule(final String moduleName) {
-        return moduleMapping.get(moduleName);
+        MavenModule mavenModule = moduleMapping.get(moduleName);
+        if (mavenModule != null) {
+            return mavenModule;
+        }
+        throw new NoSuchElementException("Module not found: " + moduleName);
     }
 
     /**
@@ -74,13 +92,15 @@ public class JavaProject extends AnnotationContainer implements Serializable {
     }
 
     /**
-     * Returns the package with the given name.
+     * Returns the package with the given name. This method is only valid for
+     * single module projects.
      *
-     * @param name the package name
+     * @param name
+     *            the package name
      * @return the package with the given name.
      */
     public JavaPackage getPackage(final String name) {
-        return moduleMapping.values().iterator().next().getPackage(name);
+        return getSingleModule().getPackage(name);
     }
 
     /**
@@ -97,13 +117,26 @@ public class JavaProject extends AnnotationContainer implements Serializable {
     }
 
     /**
-     * Returns the file with the given name.
+     * Returns the file with the given name. This method is only valid for
+     * single module projects.
      *
      * @param name the file name
      * @return the file with the given name.
      */
     public WorkspaceFile getFile(final String name) {
-        return moduleMapping.values().iterator().next().getFile(name);
+        return getSingleModule().getFile(name);
+    }
+
+    /**
+     * Returns the single module of this project.
+     *
+     * @return the module of this project
+     */
+    private MavenModule getSingleModule() {
+        if (moduleMapping.size() != 1) {
+            throw new IllegalArgumentException("Number of modules != 1");
+        }
+        return moduleMapping.values().iterator().next();
     }
 
     /**

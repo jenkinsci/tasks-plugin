@@ -11,7 +11,6 @@ import hudson.plugins.tasks.util.ChartBuilder;
 import hudson.util.ChartUtil;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +25,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 /**
  * Provides common functionality of the different kind of tasks results details.
  */
-public abstract class AbstractTasksResult extends AnnotationContainer implements ModelObject, Serializable {
+public abstract class AbstractTasksResult extends AnnotationContainer implements ModelObject {
     /** The current build as owner of this action. */
     @SuppressWarnings("Se")
     private final Build<?, ?> owner;

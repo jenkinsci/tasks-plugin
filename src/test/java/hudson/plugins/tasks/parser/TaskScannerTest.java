@@ -1,4 +1,4 @@
-package hudson.plugins.tasks;
+package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
 import hudson.plugins.tasks.model.Priority;

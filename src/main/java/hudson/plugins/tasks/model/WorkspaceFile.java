@@ -1,15 +1,13 @@
 package hudson.plugins.tasks.model;
 
-
-
-import java.io.Serializable;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
  * A serializable Java Bean class representing a file in the Hudson workspace.
+ *
+ * @author Ulli Hafner
  */
-public class WorkspaceFile extends AnnotationContainer implements Serializable {
+public class WorkspaceFile extends AnnotationContainer {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 601361940925156719L;
     /** The absolute filename of this file. */
@@ -28,6 +26,16 @@ public class WorkspaceFile extends AnnotationContainer implements Serializable {
         return name;
     }
 
+    /**
+     * Creates a bidirectional link between annotation and file.
+     *
+     * @param annotation
+     *            the added annotation
+     */
+    @Override
+    protected void annotationAdded(final FileAnnotation annotation) {
+        annotation.setWorkspaceFile(this);
+    }
     /**
      * Sets the name of this file.
      *
@@ -80,6 +88,28 @@ public class WorkspaceFile extends AnnotationContainer implements Serializable {
      */
     public String getModuleName() {
         return moduleName;
+    }
+
+    /**
+     * Creates the bidirectional links between the annotations and this
+     * workspace file.
+     */
+    public void linkAnnotations() {
+        for (FileAnnotation annotation : getAnnotations()) {
+            annotation.setWorkspaceFile(this);
+        }
+    }
+
+    /**
+     * Rebuilds the bidirectional links between the annotations and this
+     * workspace file after deserialization.
+     *
+     * @return the created object
+     */
+    private Object readResolve() {
+        rebuildPriorities();
+        linkAnnotations();
+        return this;
     }
 }
 

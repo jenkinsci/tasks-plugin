@@ -72,9 +72,7 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
                         fileClassifier.classify(workspaceFile, new FilePath(originalFile).read());
                     }
                 }
-                for (Task task : tasks) {
-                    task.setWorkspaceFile(workspaceFile);
-                }
+                workspaceFile.addAnnotations(tasks);
                 javaProject.addAnnotations(tasks);
             }
             javaProject.setWorkspacePath(workspace.getAbsolutePath());

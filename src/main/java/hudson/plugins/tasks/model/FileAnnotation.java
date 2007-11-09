@@ -4,6 +4,8 @@ package hudson.plugins.tasks.model;
  * A file annotation is a marker either for a fixed line number of a file or a
  * marker for the file itself. An annotation consists of a description and a
  * tool tip.
+ *
+ * @author Ulli Hafner
  */
 public interface FileAnnotation {
     /**
@@ -57,4 +59,12 @@ public interface FileAnnotation {
      * @return the workspace file that contains this annotation
      */
     WorkspaceFile getWorkspaceFile();
+
+    /**
+     * Sets the workspace file that contains this annotation.
+     *
+     * @param workspaceFile
+     *            the workspace file that contains this annotation
+     */
+    void setWorkspaceFile(WorkspaceFile workspaceFile);
 }

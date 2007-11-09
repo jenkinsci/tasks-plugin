@@ -1,15 +1,17 @@
 package hudson.plugins.tasks.model;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * A serializable Java Bean class representing a Java package.
+ *
+ * @author Ulli Hafner
  */
-public class JavaPackage extends AnnotationContainer implements Serializable {
+public class JavaPackage extends AnnotationContainer {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 4034932648975191723L;
     /** Name of this package. */
@@ -68,7 +70,11 @@ public class JavaPackage extends AnnotationContainer implements Serializable {
      * @return the file with the given name
      */
     public WorkspaceFile getFile(final String fileName) {
-        return fileMapping.get(fileName);
+        WorkspaceFile file = fileMapping.get(fileName);
+        if (file != null) {
+            return file;
+        }
+        throw new NoSuchElementException("File not found: " + fileName);
     }
 }
 

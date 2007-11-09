@@ -1,30 +1,54 @@
 package hudson.plugins.tasks.model;
 
-
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
  * A container for annotations.
+ *
+ * @author Ulli Hafner
  */
-public class AnnotationContainer implements AnnotationProvider {
+public class AnnotationContainer implements AnnotationProvider, Serializable {
+    /** Unique identifier of this class. */
+    private static final long serialVersionUID = 855696821788264261L;
     /** The annotations mapped by their key. */
     private final Map<Long, FileAnnotation> annotations = new HashMap<Long, FileAnnotation>();
     /** The annotations mapped by priority. */
-    private final Map<Priority, Set<FileAnnotation>> annotationsByPriority = new HashMap<Priority, Set<FileAnnotation>>();
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("Se")
+    private transient Map<Priority, Set<FileAnnotation>> annotationsByPriority;
 
     /**
      * Creates a new instance of <code>AnnotationContainer</code>.
      */
     public AnnotationContainer() {
+        initializePrioritiesMap();
+    }
+
+    /**
+     * Initializes the priorities maps.
+     */
+    private void initializePrioritiesMap() {
+        annotationsByPriority = new HashMap<Priority, Set<FileAnnotation>>();
         for (Priority priority : Priority.values()) {
             annotationsByPriority.put(priority, new HashSet<FileAnnotation>());
+        }
+    }
+
+    /**
+     * Rebuilds the priorities after deserialization.
+     */
+    protected void rebuildPriorities() {
+        initializePrioritiesMap();
+        for (FileAnnotation annotation : getAnnotations()) {
+            annotationsByPriority.get(annotation.getPriority()).add(annotation);
         }
     }
 
@@ -51,7 +75,6 @@ public class AnnotationContainer implements AnnotationProvider {
             addAnnotation(annotation);
         }
     }
-
 
     /**
      * Called if the specified annotation has been added to this container.
@@ -140,7 +163,11 @@ public class AnnotationContainer implements AnnotationProvider {
 
     /** {@inheritDoc} */
     public final FileAnnotation getAnnotation(final long key) {
-        return annotations.get(key);
+        FileAnnotation annotation = annotations.get(key);
+        if (annotation != null) {
+            return annotation;
+        }
+        throw new NoSuchElementException("Annotation not found: key=" + key);
     }
 
     /**

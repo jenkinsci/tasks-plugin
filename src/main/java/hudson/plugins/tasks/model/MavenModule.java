@@ -1,19 +1,21 @@
 package hudson.plugins.tasks.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
  * A serializable Java Bean class representing a maven module.
+ *
+ * @author Ulli Hafner
  */
-public class MavenModule extends AnnotationContainer implements Serializable {
+public class MavenModule extends AnnotationContainer {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 5467122420572804130L;
     /** Name of this module. */
@@ -76,7 +78,11 @@ public class MavenModule extends AnnotationContainer implements Serializable {
      * @return the package with the given name
      */
     public JavaPackage getPackage(final String packageName) {
-        return packageMapping.get(packageName);
+        JavaPackage javaPackage = packageMapping.get(packageName);
+        if (javaPackage != null) {
+            return javaPackage;
+        }
+        throw new NoSuchElementException("Package not found: " + packageName);
     }
 
     /**
@@ -93,12 +99,16 @@ public class MavenModule extends AnnotationContainer implements Serializable {
     }
 
     /**
-     * Returns the file with the given name.
+     * Returns the file with the given name. This method is only valid for
+     * single package modules.
      *
      * @param fileName the file name
      * @return the file with the given name.
      */
     public WorkspaceFile getFile(final String fileName) {
+        if (packageMapping.size() != 1) {
+            throw new IllegalArgumentException("Number of modules != 1");
+        }
         return packageMapping.values().iterator().next().getFile(fileName);
     }
 
