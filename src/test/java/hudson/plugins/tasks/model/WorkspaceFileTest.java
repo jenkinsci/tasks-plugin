@@ -4,6 +4,8 @@ import hudson.XmlFile;
 import hudson.plugins.tasks.parser.Task;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import org.junit.Assert;
@@ -18,9 +20,14 @@ public class WorkspaceFileTest {
 
     /**
      * Test the deserialization of the tasks.
+     *
+     * @throws URISyntaxException
+     *             in case of a setup error
+     * @throws IOException
+     *             in case of a setup error
      */
     @Test
-    public void deserializeFiles() throws Exception {
+    public void deserializeFiles() throws URISyntaxException, IOException {
         AnnotationStream xStream = new AnnotationStream();
         xStream.alias("task", Task.class);
         XmlFile xmlFile = new XmlFile(xStream, new File(WorkspaceFileTest.class.getResource("open-tasks.xml").toURI()));
