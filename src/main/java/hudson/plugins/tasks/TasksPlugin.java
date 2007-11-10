@@ -1,6 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.Plugin;
+import hudson.maven.MavenReporters;
 import hudson.tasks.BuildStep;
 
 /**
@@ -14,5 +15,7 @@ public class TasksPlugin extends Plugin {
     @Override
     public void start() throws Exception {
         BuildStep.PUBLISHERS.addRecorder(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
+
+        MavenReporters.LIST.add(TasksReporter.TASK_SCANNER_DESCRIPTOR);
     }
 }
