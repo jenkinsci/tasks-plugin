@@ -2,10 +2,10 @@ package hudson.plugins.tasks;
 
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
-import hudson.model.Project;
 import hudson.model.Result;
 import hudson.plugins.tasks.model.JavaProject;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
@@ -109,12 +109,11 @@ public class TasksPublisher extends Publisher {
                 // nothing to do, we use the default value
             }
         }
-
     }
 
     /** {@inheritDoc} */
     @Override
-    public Action getProjectAction(final Project project) {
+    public Action getProjectAction(final AbstractProject<?, ?> project) {
         return new TasksProjectAction(project);
     }
 
