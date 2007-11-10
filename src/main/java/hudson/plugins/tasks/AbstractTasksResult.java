@@ -1,6 +1,6 @@
 package hudson.plugins.tasks;
 
-import hudson.model.Build;
+import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
 import hudson.plugins.tasks.model.AnnotationContainer;
 import hudson.plugins.tasks.model.AnnotationProvider;
@@ -28,7 +28,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 public abstract class AbstractTasksResult extends AnnotationContainer implements ModelObject {
     /** The current build as owner of this action. */
     @SuppressWarnings("Se")
-    private final Build<?, ?> owner;
+    private final AbstractBuild<?, ?> owner;
     /** Tag identifiers indicating high priority. */
     private final String high;
     /** Tag identifiers indicating normal priority. */
@@ -50,7 +50,7 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
      * @param annotations
      *            all the files that contain tasks
      */
-    public AbstractTasksResult(final Build<?, ?> owner, final String high, final String normal, final String low, final Collection<FileAnnotation> annotations) {
+    public AbstractTasksResult(final AbstractBuild<?, ?> owner, final String high, final String normal, final String low, final Collection<FileAnnotation> annotations) {
         super();
 
         this.owner = owner;
@@ -94,7 +94,7 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
      *
      * @return the owner of this details object
      */
-    public final Build<?, ?> getOwner() {
+    public final AbstractBuild<?, ?> getOwner() {
         return owner;
     }
 

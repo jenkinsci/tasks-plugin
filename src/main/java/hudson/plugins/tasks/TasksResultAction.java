@@ -1,7 +1,6 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.model.Build;
 import hudson.plugins.tasks.model.Priority;
 import hudson.plugins.tasks.util.AbstractResultAction;
 import hudson.plugins.tasks.util.HealthReportBuilder;
@@ -45,7 +44,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
      * @param healthReportBuilder
      *            health builder to use
      */
-    public TasksResultAction(final Build<?, ?> owner, final TasksResult result, final HealthReportBuilder healthReportBuilder) {
+    public TasksResultAction(final AbstractBuild<?, ?> owner, final TasksResult result, final HealthReportBuilder healthReportBuilder) {
         super(owner, healthReportBuilder, result);
     }
 

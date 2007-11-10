@@ -1,8 +1,8 @@
 package hudson.plugins.tasks;
 
 import hudson.Launcher;
+import hudson.model.AbstractBuild;
 import hudson.model.Action;
-import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Project;
@@ -198,8 +198,8 @@ public class TasksPublisher extends Publisher {
      * @throws InterruptedException
      *             if user cancels the operation
      */
-    public boolean perform(final Build<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
-
+    @Override
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
         JavaProject project;
         try {
             listener.getLogger().println("Scanning workspace files for tasks...");
@@ -215,8 +215,8 @@ public class TasksPublisher extends Publisher {
 
         Object previous = build.getPreviousBuild();
         TasksResult result;
-        if (previous instanceof Build<?, ?>) {
-            Build<?, ?> previousBuild = (Build<?, ?>)previous;
+        if (previous instanceof AbstractBuild<?, ?>) {
+            AbstractBuild<?, ?> previousBuild = (AbstractBuild<?, ?>)previous;
             TasksResultAction previousAction = previousBuild.getAction(TasksResultAction.class);
             if (previousAction == null) {
                 result = new TasksResult(build, project, high, normal, low);

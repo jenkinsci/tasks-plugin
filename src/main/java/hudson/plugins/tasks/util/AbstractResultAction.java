@@ -1,6 +1,6 @@
 package hudson.plugins.tasks.util;
 
-import hudson.model.Build;
+import hudson.model.AbstractBuild;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.util.ChartUtil;
@@ -33,7 +33,7 @@ public abstract class AbstractResultAction<T> implements StaplerProxy, HealthRep
     private static final int WIDTH = 500;
     /** The associated build of this action. */
     @SuppressWarnings("Se")
-    private Build<?, ?> owner;
+    private AbstractBuild<?, ?> owner;
     /** Builds a health report. */
     private HealthReportBuilder healthReportBuilder;
     /** The actual result of this action. */
@@ -55,7 +55,7 @@ public abstract class AbstractResultAction<T> implements StaplerProxy, HealthRep
      *            health builder to use
      * @param result the result of the action
      */
-    public AbstractResultAction(final Build<?, ?> owner, final HealthReportBuilder healthReportBuilder, final T result) {
+    public AbstractResultAction(final AbstractBuild<?, ?> owner, final HealthReportBuilder healthReportBuilder, final T result) {
         super();
         this.owner = owner;
         this.healthReportBuilder = healthReportBuilder;
@@ -91,7 +91,7 @@ public abstract class AbstractResultAction<T> implements StaplerProxy, HealthRep
      *
      * @return the associated build of this action
      */
-    public final Build<?, ?> getOwner() {
+    public final AbstractBuild<?, ?> getOwner() {
         return owner;
     }
 

@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.XmlFile;
-import hudson.model.Build;
+import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.model.AnnotationProvider;
 import hudson.plugins.tasks.model.AnnotationStream;
 import hudson.plugins.tasks.model.JavaPackage;
@@ -72,7 +72,7 @@ public class TasksResult extends AbstractTasksResult {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final Build<?, ?> build, final JavaProject project, final String high, final String normal, final String low) {
+    public TasksResult(final AbstractBuild<?, ?> build, final JavaProject project, final String high, final String normal, final String low) {
         this(build, project, project.getNumberOfAnnotations(), high, normal, low);
     }
 
@@ -89,7 +89,7 @@ public class TasksResult extends AbstractTasksResult {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final Build<?, ?> build, final JavaProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
+    public TasksResult(final AbstractBuild<?, ?> build, final JavaProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
         super(build, high, normal, low, project.getAnnotations());
 
         highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
