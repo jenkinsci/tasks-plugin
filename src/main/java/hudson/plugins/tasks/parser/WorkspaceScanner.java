@@ -31,6 +31,7 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
     /** Scans for the tags. */
     @SuppressWarnings("Se")
     private final transient TaskScanner taskScanner;
+    private String moduleName;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -49,6 +50,25 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
         taskScanner = new TaskScanner(high, normal, low);
     }
 
+    /**
+     * Creates a new instance of <code>WorkspaceScanner</code>.
+     *
+     * @param moduleName
+     *            the maven module name
+     * @param filePattern
+     *            ant file-set pattern to scan for files
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     */
+    public WorkspaceScanner(final String moduleName, final String filePattern, final String high, final String normal, final String low) {
+        this(filePattern, high, normal, low);
+        this.moduleName = moduleName;
+    }
+
     /** {@inheritDoc} */
     public JavaProject invoke(final File workspace, final VirtualChannel channel) throws IOException {
         String[] files = findFiles(workspace);
@@ -57,7 +77,7 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
         }
 
         List<FileClassifier> classifiers = new ArrayList<FileClassifier>();
-        classifiers.add(new MavenJavaClassifier());
+        classifiers.add(new MavenJavaClassifier(moduleName));
         classifiers.add(new CsharpClassifier());
 
         JavaProject javaProject = new JavaProject();
