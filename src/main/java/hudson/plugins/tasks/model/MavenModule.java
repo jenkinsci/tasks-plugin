@@ -36,6 +36,16 @@ public class MavenModule extends AnnotationContainer {
     }
 
     /**
+     * Rebuilds the priorities mapping.
+     *
+     * @return the created object
+     */
+    private Object readResolve() {
+        rebuildPriorities();
+        return this;
+    }
+
+    /**
      * Creates the mapping of packages.
      *
      * @param annotation

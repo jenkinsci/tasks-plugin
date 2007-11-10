@@ -26,6 +26,16 @@ public class JavaProject extends AnnotationContainer {
     private String workspacePath;
 
     /**
+     * Rebuilds the priorities mapping.
+     *
+     * @return the created object
+     */
+    private Object readResolve() {
+        rebuildPriorities();
+        return this;
+    }
+
+    /**
      * Adds the specified annotations of the given files to this container.
      *
      * @param files

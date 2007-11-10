@@ -32,6 +32,16 @@ public class JavaPackage extends AnnotationContainer {
     }
 
     /**
+     * Rebuilds the priorities mapping.
+     *
+     * @return the created object
+     */
+    private Object readResolve() {
+        rebuildPriorities();
+        return this;
+    }
+
+    /**
      * Returns the name of this package.
      *
      * @return the name of this package
