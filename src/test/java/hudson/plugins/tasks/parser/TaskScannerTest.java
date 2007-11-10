@@ -3,8 +3,6 @@ package hudson.plugins.tasks.parser;
 import static org.junit.Assert.*;
 import hudson.plugins.tasks.model.Priority;
 import hudson.plugins.tasks.model.WorkspaceFile;
-import hudson.plugins.tasks.parser.Task;
-import hudson.plugins.tasks.parser.TaskScanner;
 
 import java.io.IOException;
 import java.io.InputStream;
