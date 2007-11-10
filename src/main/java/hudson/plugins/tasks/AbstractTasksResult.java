@@ -81,7 +81,7 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
      */
     public String getPackageCategoryName() {
         if (hasAnnotations()) {
-            WorkspaceFile file = getAnnotation(0).getWorkspaceFile();
+            WorkspaceFile file = getAnnotations().iterator().next().getWorkspaceFile();
             if (file.getShortName().endsWith(".cs")) {
                 return "Namespace";
             }
