@@ -15,6 +15,25 @@ import org.apache.commons.lang.StringUtils;
  * @author Ulli Hafner
  */
 public class MavenJavaClassifier implements FileClassifier {
+    /** Predefined module name. */
+    private final String moduleName;
+
+    /**
+     * Creates a new instance of <code>MavenJavaClassifier</code>.
+     */
+    public MavenJavaClassifier() {
+        moduleName = null;
+    }
+
+    /**
+     * Creates a new instance of <code>MavenJavaClassifier</code>.
+     *
+     * @param moduleName predefined maven module name
+     */
+    public MavenJavaClassifier(final String moduleName) {
+        this.moduleName = moduleName;
+    }
+
     /** {@inheritDoc} */
     public void classify(final WorkspaceFile file, final InputStream stream) throws IOException {
         try {
@@ -30,6 +49,20 @@ public class MavenJavaClassifier implements FileClassifier {
         finally {
             IOUtils.closeQuietly(stream);
         }
+        if (moduleName == null) {
+            guessModuleName(file);
+        }
+        else {
+            file.setModuleName(moduleName);
+        }
+    }
+
+    /**
+     * Guesses a maven module name based on the source folder.
+     *
+     * @param file the file to guess the module for
+     */
+    private void guessModuleName(final WorkspaceFile file) {
         String module = StringUtils.substringBefore(file.getName(), "/src/");
         if (module.contains("/")) {
             module = StringUtils.substringAfterLast(module, "/");
