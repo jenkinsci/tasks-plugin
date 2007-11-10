@@ -31,6 +31,7 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
     /** Scans for the tags. */
     @SuppressWarnings("Se")
     private final transient TaskScanner taskScanner;
+    /** The maven module. If <code>null</code>, then the scanner tries to guess it (freestyle project). */
     private String moduleName;
 
     /**
