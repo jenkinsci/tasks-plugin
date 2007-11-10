@@ -1,6 +1,6 @@
 package hudson.plugins.tasks;
 
-import hudson.model.Project;
+import hudson.model.AbstractProject;
 import hudson.plugins.tasks.util.AbstractProjectAction;
 
 /**
@@ -21,7 +21,7 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
      * @param project
      *            the project that owns this action
      */
-    public TasksProjectAction(final Project<?, ?> project) {
+    public TasksProjectAction(final AbstractProject<?, ?> project) {
         super(project, TasksResultAction.class, TasksDescriptor.TASKS_ACTION_LOGO, "../lastBuild/tasksResult");
     }
 
