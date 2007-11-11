@@ -12,11 +12,6 @@ import hudson.plugins.tasks.util.AbstractProjectAction;
 public class TasksProjectAction extends AbstractProjectAction<TasksResultAction> {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 2726362508120270158L;
-    /** URL for this action. */
-    private static final String TASKS_URL = "tasks";
-    /** URL to the results of the last build. */
-    private static final String TASKS_RESULTS_URL = "../lastBuild/tasksResult";
-
     /**
      * Instantiates a new tasks project action.
      *
