@@ -10,6 +10,7 @@ import hudson.model.Result;
 import hudson.plugins.tasks.model.JavaProject;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.AbortException;
+import hudson.plugins.tasks.util.HealthAwarePublisher;
 import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.tasks.Publisher;
 
@@ -22,35 +23,17 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Ulli Hafner
  */
-public class TasksPublisher extends Publisher {
+public class TasksPublisher extends HealthAwarePublisher {
     /** Default files pattern. */
     private static final String DEFAULT_PATTERN = "**/*.java";
     /** Descriptor of this publisher. */
     public static final TasksDescriptor TASK_SCANNER_DESCRIPTOR = new TasksDescriptor();
-    /** Ant file-set pattern of files to scan for open tasks in. */
-    private final String pattern;
-    /** Tasks threshold to be reached if a build should be considered as unstable. */
-    private final String threshold;
-    /** Determines whether to use the provided threshold to mark a build as unstable. */
-    private boolean isThresholdEnabled;
-    /** Integer bug threshold to be reached if a build should be considered as unstable. */
-    private int minimumTasks;
-    /** Report health as 100% when the number of warnings is less than this value. */
-    private final String healthy;
-    /** Report health as 0% when the number of warnings is greater than this value. */
-    private final String unHealthy;
-    /** Report health as 100% when the number of warnings is less than this value. */
-    private int healthyTasks;
-    /** Report health as 0% when the number of warnings is greater than this value. */
-    private int unHealthyTasks;
-    /** Determines whether to use the provided healthy thresholds. */
-    private boolean isHealthyReportEnabled;
     /** Tag identifiers indicating high priority. */
-    private final String high;
+    final String high;
     /** Tag identifiers indicating normal priority. */
-    private final String normal;
+    final String normal;
     /** Tag identifiers indicating low priority. */
-    private final String low;
+    final String low;
 
     /**
      * Creates a new instance of <code>TaskScannerPublisher</code>.
@@ -77,80 +60,11 @@ public class TasksPublisher extends Publisher {
     public TasksPublisher(final String pattern, final String threshold,
             final String healthy, final String unHealthy,
             final String high, final String normal, final String low) {
-        super();
-        this.threshold = threshold;
-        this.healthy = healthy;
-        this.unHealthy = unHealthy;
-        this.pattern = pattern;
+        super(pattern, threshold, healthy, unHealthy);
+
         this.high = high;
         this.normal = normal;
         this.low = low;
-
-        if (!StringUtils.isEmpty(threshold)) {
-            try {
-                minimumTasks = Integer.valueOf(threshold);
-                if (minimumTasks >= 0) {
-                    isThresholdEnabled = true;
-                }
-            }
-            catch (NumberFormatException exception) {
-                // nothing to do, we use the default value
-            }
-        }
-        if (!StringUtils.isEmpty(healthy) && !StringUtils.isEmpty(unHealthy)) {
-            try {
-                healthyTasks = Integer.valueOf(healthy);
-                unHealthyTasks = Integer.valueOf(unHealthy);
-                if (healthyTasks >= 0 && unHealthyTasks > healthyTasks) {
-                    isHealthyReportEnabled = true;
-                }
-            }
-            catch (NumberFormatException exception) {
-                // nothing to do, we use the default value
-            }
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Action getProjectAction(final AbstractProject<?, ?> project) {
-        return new TasksProjectAction(project);
-    }
-
-    /**
-     * Returns the Bug threshold to be reached if a build should be considered as unstable.
-     *
-     * @return the bug threshold
-     */
-    public String getThreshold() {
-        return threshold;
-    }
-
-    /**
-     * Returns the healthy threshold.
-     *
-     * @return the healthy
-     */
-    public String getHealthy() {
-        return healthy;
-    }
-
-    /**
-     * Returns the unhealthy threshold.
-     *
-     * @return the unHealthy
-     */
-    public String getUnHealthy() {
-        return unHealthy;
-    }
-
-    /**
-     * Returns the Ant file-set pattern to the workspace files.
-     *
-     * @return ant file-set pattern to the workspace files.
-     */
-    public String getPattern() {
-        return pattern;
     }
 
     /**
@@ -180,10 +94,16 @@ public class TasksPublisher extends Publisher {
         return low;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Action getProjectAction(final AbstractProject<?, ?> project) {
+        return new TasksProjectAction(project);
+    }
+
     /**
      * Scans the workspace, collects all data files and copies these files to
      * the build results folder. Then counts the number of bugs and sets the
-     * result of the build accordingly ({@link #threshold}.
+     * result of the build accordingly ({@link #getThreshold()}.
      *
      * @param build
      *            the build
@@ -191,7 +111,7 @@ public class TasksPublisher extends Publisher {
      *            the launcher
      * @param listener
      *            the build listener
-     * @return true in case the processing has been aborted
+     * @return <code>true</code> if the build could continue
      * @throws IOException
      *             if the files could not be copied
      * @throws InterruptedException
@@ -203,13 +123,12 @@ public class TasksPublisher extends Publisher {
         try {
             listener.getLogger().println("Scanning workspace files for tasks...");
             project = build.getProject().getWorkspace().act(
-                    new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
-                            high, normal, low));
+                    new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), high, normal, low));
         }
         catch (AbortException exception) {
             listener.getLogger().println(exception.getMessage());
             build.setResult(Result.FAILURE);
-            return true;
+            return false;
         }
 
         Object previous = build.getPreviousBuild();
@@ -228,13 +147,13 @@ public class TasksPublisher extends Publisher {
             result = new TasksResult(build, project, high, normal, low);
         }
 
-        HealthReportBuilder healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks);
+        HealthReportBuilder healthReportBuilder = createHealthReporter("Task Scanner", "open task");
         build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
 
         int warnings = project.getNumberOfAnnotations();
         if (warnings > 0) {
             listener.getLogger().println("A total of " + warnings + " open tasks have been found.");
-            if (isThresholdEnabled && warnings >= minimumTasks) {
+            if (isThresholdEnabled() && warnings >= getMinimumAnnotations()) {
                 build.setResult(Result.UNSTABLE);
             }
         }
@@ -242,7 +161,7 @@ public class TasksPublisher extends Publisher {
             listener.getLogger().println("No open tasks have been found.");
         }
 
-        return false;
+        return true;
     }
 
     /** {@inheritDoc} */
