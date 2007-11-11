@@ -180,5 +180,23 @@ public class AnnotationContainer implements AnnotationProvider, Serializable {
     public final FileAnnotation getAnnotation(final String key) {
         return getAnnotation(Long.parseLong(key));
     }
+
+    /**
+     * Returns a tooltip showing the distribution of priorities for this container.
+     *
+     * @return a tooltip showing the distribution of priorities
+     */
+    public String getToolTip() {
+        StringBuilder message = new StringBuilder();
+        for (Priority priority : Priority.values()) {
+            if (hasAnnotations(priority)) {
+                message.append(priority);
+                message.append(":");
+                message.append(getNumberOfAnnotations(priority));
+                message.append(" - ");
+            }
+        }
+        return StringUtils.removeEnd(message.toString(), " - ");
+    }
 }
 

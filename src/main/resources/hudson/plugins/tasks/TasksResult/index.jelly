@@ -26,7 +26,9 @@
       					${module.numberOfAnnotations}
       				</td>
       				<td class="pane">
-					  	<img src="moduleStatistics?module=${module.name}"/>
+				        <div tooltip="${it.getToolTip(module.name)}">
+					  		<img src="moduleStatistics?module=${module.name}"/>
+				        </div>
       				</td>
       			</tr>
       		</j:forEach>

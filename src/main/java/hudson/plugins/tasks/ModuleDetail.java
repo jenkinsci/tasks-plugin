@@ -61,6 +61,18 @@ public class ModuleDetail extends AbstractTasksResult {
     }
 
     /**
+     * Returns a tooltip showing the distribution of priorities for the selected
+     * package.
+     *
+     * @param packageName
+     *            the package to show the distribution for
+     * @return a tooltip showing the distribution of priorities
+     */
+    public String getToolTip(final String packageName) {
+        return module.getPackage(packageName).getToolTip();
+    }
+
+    /**
      * Generates a PNG image for high/normal/low distribution of a java package.
      *
      * @param request

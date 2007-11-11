@@ -237,6 +237,23 @@ public class TasksResult extends AbstractTasksResult {
     }
 
     /**
+     * Returns a tooltip showing the distribution of priorities for the selected
+     * package.
+     *
+     * @param name
+     *            the package to show the distribution for
+     * @return a tooltip showing the distribution of priorities
+     */
+    public String getToolTip(final String name) {
+        if (isSingleModuleProject()) {
+            return getProject().getModules().iterator().next().getPackage(name).getToolTip();
+        }
+        else {
+            return getProject().getModule(name).getToolTip();
+        }
+    }
+
+    /**
      * Returns whether we only have a single module. In this case the module
      * statistics are suppressed and only the package statistics are shown.
      *
