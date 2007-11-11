@@ -29,11 +29,11 @@ public class TasksPublisher extends HealthAwarePublisher {
     /** Descriptor of this publisher. */
     public static final TasksDescriptor TASK_SCANNER_DESCRIPTOR = new TasksDescriptor();
     /** Tag identifiers indicating high priority. */
-    final String high;
+    private final String high;
     /** Tag identifiers indicating normal priority. */
-    final String normal;
+    private final String normal;
     /** Tag identifiers indicating low priority. */
-    final String low;
+    private final String low;
 
     /**
      * Creates a new instance of <code>TaskScannerPublisher</code>.
