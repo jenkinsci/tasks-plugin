@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -128,6 +129,13 @@ public class TasksResult extends AbstractTasksResult {
             return lowPriorityTasks;
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfAnnotations(final String priority) {
+        return getNumberOfAnnotations(Priority.valueOf(StringUtils.upperCase(priority)));
+    }
+
     /**
      * Returns the display name (bread crumb name) of this result.
      *
@@ -184,6 +192,8 @@ public class TasksResult extends AbstractTasksResult {
                 newProject.addAnnotations(workspaceFile.getAnnotations());
             }
             result = newProject;
+
+
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
@@ -285,7 +295,7 @@ public class TasksResult extends AbstractTasksResult {
      */
     public final void doModuleStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
         createDetailGraph(request, response, getProject().getModule(request.getParameter("module")),
-                getProject().getTaskBound());
+                getProject().getAnnotationBound());
     }
 
     /**
@@ -300,6 +310,6 @@ public class TasksResult extends AbstractTasksResult {
      */
     public final void doPackageStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
         createDetailGraph(request, response, getProject().getPackage(request.getParameter("package")),
-                getProject().getModules().iterator().next().getTaskBound());
+                getProject().getModules().iterator().next().getAnnotationBound());
     }
 }

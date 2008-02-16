@@ -172,7 +172,7 @@ public class JavaProject extends AnnotationContainer {
      *
      * @return the maximum number of tasks
      */
-    public int getTaskBound() {
+    public int getAnnotationBound() {
         int tasks = 0;
         for (MavenModule module : moduleMapping.values()) {
             tasks = Math.max(tasks, module.getNumberOfAnnotations());

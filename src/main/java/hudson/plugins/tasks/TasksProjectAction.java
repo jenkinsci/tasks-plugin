@@ -12,6 +12,7 @@ import hudson.plugins.tasks.util.AbstractProjectAction;
 public class TasksProjectAction extends AbstractProjectAction<TasksResultAction> {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 2726362508120270158L;
+
     /**
      * Instantiates a new tasks project action.
      *

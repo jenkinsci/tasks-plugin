@@ -29,8 +29,6 @@ public class PackageDetail extends AbstractTasksResult {
     public PackageDetail(final AbstractTasksResult root, final JavaPackage javaPackage) {
         super(root, javaPackage.getAnnotations());
 
-        addAnnotations(javaPackage.getAnnotations());
-
         this.javaPackage = javaPackage;
     }
 

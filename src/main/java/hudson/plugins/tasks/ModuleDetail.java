@@ -83,7 +83,7 @@ public class ModuleDetail extends AbstractTasksResult {
      *             in case of an error
      */
     public final void doPackageStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        createDetailGraph(request, response, module.getPackage(request.getParameter("package")), module.getTaskBound());
+        createDetailGraph(request, response, module.getPackage(request.getParameter("package")), module.getAnnotationBound());
     }
 
     /**

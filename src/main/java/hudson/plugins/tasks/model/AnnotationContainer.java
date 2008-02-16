@@ -97,13 +97,7 @@ public class AnnotationContainer implements AnnotationProvider, Serializable {
         return Collections.unmodifiableCollection(annotationsByPriority.get(priority));
     }
 
-    /**
-     * Returns the annotations of the specified priority for this object.
-     *
-     * @param priority
-     *            the priority
-     * @return annotations of the specified priority for this object
-     */
+    /** {@inheritDoc} */
     public final Collection<FileAnnotation> getAnnotations(final String priority) {
         return getAnnotations(getPriority(priority));
     }
@@ -129,13 +123,7 @@ public class AnnotationContainer implements AnnotationProvider, Serializable {
         return annotationsByPriority.get(priority).size();
     }
 
-    /**
-     * Returns the annotations of the specified priority for this object.
-     *
-     * @param priority
-     *            the priority
-     * @return annotations of the specified priority for this object
-     */
+    /** {@inheritDoc} */
     public final int getNumberOfAnnotations(final String priority) {
         return getNumberOfAnnotations(getPriority(priority));
     }
@@ -150,13 +138,7 @@ public class AnnotationContainer implements AnnotationProvider, Serializable {
         return !annotationsByPriority.get(priority).isEmpty();
     }
 
-    /**
-     * Returns whether this objects has annotations with the specified priority.
-     *
-     * @param priority
-     *            the priority
-     * @return <code>true</code> if this objects has annotations.
-     */
+    /** {@inheritDoc} */
     public final boolean hasAnnotations(final String priority) {
         return hasAnnotations(getPriority(priority));
     }
@@ -170,13 +152,7 @@ public class AnnotationContainer implements AnnotationProvider, Serializable {
         throw new NoSuchElementException("Annotation not found: key=" + key);
     }
 
-    /**
-     * Returns the annotation with the specified key.
-     *
-     * @param key
-     *            the key of the annotation
-     * @return the annotation with the specified key
-     */
+    /** {@inheritDoc} */
     public final FileAnnotation getAnnotation(final String key) {
         return getAnnotation(Long.parseLong(key));
     }

@@ -19,9 +19,16 @@ public class MavenModule extends AnnotationContainer {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 5467122420572804130L;
     /** Name of this module. */
-    private final String name;
+    private String name;
     /** All Java packages in this maven module (mapped by their name). */
     private final Map<String, JavaPackage> packageMapping = new HashMap<String, JavaPackage>();
+
+    /**
+     * Creates a new instance of <code>MavenModule</code>.
+     */
+    public MavenModule() {
+        super();
+    }
 
     /**
      * Creates a new instance of <code>MavenModule</code>.
@@ -30,9 +37,27 @@ public class MavenModule extends AnnotationContainer {
      *            name of the module
      */
     public MavenModule(final String moduleName) {
-        super();
+        this();
 
         name = moduleName;
+    }
+
+    /**
+     * Returns the module name.
+     *
+     * @return the module name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of this module.
+     *
+     * @param name the name of this module
+     */
+    public void setName(final String name) {
+        this.name = name;
     }
 
     /**
@@ -60,15 +85,6 @@ public class MavenModule extends AnnotationContainer {
             packageMapping.put(packageName, new JavaPackage(packageName));
         }
         packageMapping.get(packageName).addAnnotation(annotation);
-    }
-
-    /**
-     * Returns the module name.
-     *
-     * @return the module name
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -127,7 +143,7 @@ public class MavenModule extends AnnotationContainer {
      *
      * @return the maximum number of tasks
      */
-    public int getTaskBound() {
+    public int getAnnotationBound() {
         int tasks = 0;
         for (JavaPackage javaPackage : packageMapping.values()) {
             tasks = Math.max(tasks, javaPackage.getNumberOfAnnotations());

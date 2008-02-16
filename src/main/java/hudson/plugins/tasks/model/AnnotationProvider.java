@@ -27,6 +27,15 @@ public interface AnnotationProvider {
     int getNumberOfAnnotations(final Priority priority);
 
     /**
+     * Returns the annotations of the specified priority for this object.
+     *
+     * @param priority
+     *            the priority as a string object
+     * @return annotations of the specified priority for this object
+     */
+    int getNumberOfAnnotations(final String priority);
+
+    /**
      * Returns whether this objects has annotations.
      *
      * @return <code>true</code> if this objects has annotations.
@@ -41,6 +50,15 @@ public interface AnnotationProvider {
      * @return <code>true</code> if this objects has annotations.
      */
     boolean hasAnnotations(final Priority priority);
+
+    /**
+     * Returns whether this objects has annotations with the specified priority.
+     *
+     * @param priority
+     *            the priority as a string object
+     * @return <code>true</code> if this objects has annotations.
+     */
+    boolean hasAnnotations(final String priority);
 
     /**
      * Returns the annotations for this object.
@@ -59,6 +77,15 @@ public interface AnnotationProvider {
     Collection<FileAnnotation> getAnnotations(final Priority priority);
 
     /**
+     * Returns the annotations of the specified priority for this object.
+     *
+     * @param priority
+     *            the priority as a string object
+     * @return annotations of the specified priority for this object
+     */
+    Collection<FileAnnotation> getAnnotations(final String priority);
+
+    /**
      * Returns the annotation with the specified key.
      *
      * @param key
@@ -66,4 +93,13 @@ public interface AnnotationProvider {
      * @return the annotation with the specified key
      */
     FileAnnotation getAnnotation(final long key);
+
+    /**
+     * Returns the annotation with the specified key.
+     *
+     * @param key
+     *            the key of the annotation as a long value in string representation
+     * @return the annotation with the specified key
+     */
+    FileAnnotation getAnnotation(final String key);
 }

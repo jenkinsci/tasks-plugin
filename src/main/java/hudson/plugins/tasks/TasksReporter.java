@@ -178,9 +178,11 @@ public class TasksReporter extends MavenReporter {
     @Override
     public boolean postExecute(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo,
             final BuildListener listener, final Throwable error) throws InterruptedException, IOException {
-        if (!"compile".equals(mojo.getGoal())) {
+        listener.getLogger().println("postExecute..." + mojo.getGoal());
+        if (!"resources".equals(mojo.getGoal())) {
             return true;
         }
+        listener.getLogger().println("postExecute..." + mojo.getGoal());
         FilePath filePath = new FilePath(pom.getBasedir());
         final JavaProject project;
         try {
