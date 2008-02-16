@@ -178,11 +178,10 @@ public class TasksReporter extends MavenReporter {
     @Override
     public boolean postExecute(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo,
             final BuildListener listener, final Throwable error) throws InterruptedException, IOException {
-        listener.getLogger().println("postExecute..." + mojo.getGoal());
         if (!"resources".equals(mojo.getGoal())) {
             return true;
         }
-        listener.getLogger().println("postExecute..." + mojo.getGoal());
+
         FilePath filePath = new FilePath(pom.getBasedir());
         final JavaProject project;
         try {
@@ -196,7 +195,6 @@ public class TasksReporter extends MavenReporter {
             return true;
         }
 
-        // FIXME: serialization seems not to work this way, build.xml will not be written
         build.execute(new BuildCallable<Void, IOException>() {
             public Void call(final MavenBuild build) throws IOException, InterruptedException {
                 Object previous = build.getPreviousBuild();
@@ -217,6 +215,7 @@ public class TasksReporter extends MavenReporter {
 
                 HealthReportBuilder healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks);
                 build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
+                build.registerAsProjectAction(TasksReporter.this);
 
                 return null;
             }
