@@ -35,7 +35,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     private static final String TASKS_RESULT_URL = "tasksResult";
 
     /**
-     * Creates a new instance of <code>FindBugsBuildAction</code>.
+     * Creates a new instance of <code>TasksResultAction</code>.
      *
      * @param owner
      *            the associated build of this action
@@ -62,7 +62,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     /** {@inheritDoc} */
     @Override
     public String getIconUrl() {
-            return TasksDescriptor.TASKS_ACTION_LOGO;
+        return TasksDescriptor.TASKS_ACTION_LOGO;
     }
 
     /** {@inheritDoc} */
