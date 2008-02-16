@@ -15,8 +15,6 @@ import java.util.List;
 
 import org.apache.tools.ant.types.FileSet;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 /**
  * Scans the workspace and records the found tasks. Each file is then
  * classified, i.e., a module and package is guessed and assigned.
@@ -28,11 +26,14 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
     private static final long serialVersionUID = -4355362392102020724L;
     /** Ant file-set pattern to scan for FindBugs files. */
     private final String filePattern;
-    /** Scans for the tags. */
-    @SuppressWarnings("Se")
-    private final transient TaskScanner taskScanner;
     /** The maven module. If <code>null</code>, then the scanner tries to guess it (freestyle project). */
     private String moduleName;
+    /** Tag identifiers indicating high priority. */
+    private final String high;
+    /** Tag identifiers indicating normal priority. */
+    private final String normal;
+    /** Tag identifiers indicating low priority. */
+    private final String low;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -48,7 +49,9 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
      */
     public WorkspaceScanner(final String filePattern, final String high, final String normal, final String low) {
         this.filePattern = filePattern;
-        taskScanner = new TaskScanner(high, normal, low);
+        this.high = high;
+        this.normal = normal;
+        this.low = low;
     }
 
     /**
@@ -80,6 +83,8 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
         List<FileClassifier> classifiers = new ArrayList<FileClassifier>();
         classifiers.add(new MavenJavaClassifier(moduleName));
         classifiers.add(new CsharpClassifier());
+
+        TaskScanner taskScanner = new TaskScanner(high, normal, low);
 
         JavaProject javaProject = new JavaProject();
         for (String fileName : files) {
