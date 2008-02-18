@@ -180,7 +180,7 @@ public class TasksResult extends AbstractTasksResult {
     }
 
     /**
-     * Loads the FindBugs results and wraps them in a weak reference that might
+     * Loads the tasks results and wraps them in a weak reference that might
      * get removed by the garbage collector.
      */
     private void loadResult() {
@@ -192,8 +192,6 @@ public class TasksResult extends AbstractTasksResult {
                 newProject.addAnnotations(workspaceFile.getAnnotations());
             }
             result = newProject;
-
-
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
