@@ -18,10 +18,10 @@
 							<p>
 								<j:choose>
 									<j:when test="${it.isCurrent()}">
-										<a href="${task.key}/#${task.lineNumber}">Line ${task.lineNumber}:</a>
+										<a href="${task.key}/#${task.primaryLineNumber}">Line ${task.primaryLineNumber}:</a>
 									</j:when>
 									<j:otherwise>
-										Line ${task.lineNumber}:
+										Line ${task.primaryLineNumber}:
 									</j:otherwise>
 								</j:choose>
 								${task.detailMessage}

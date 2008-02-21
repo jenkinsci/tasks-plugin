@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Ulli Hafner
  */
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public class WorkspaceFile extends AnnotationContainer {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 601361940925156719L;
@@ -36,6 +37,7 @@ public class WorkspaceFile extends AnnotationContainer {
     protected void annotationAdded(final FileAnnotation annotation) {
         annotation.setWorkspaceFile(this);
     }
+
     /**
      * Sets the name of this file.
      *
@@ -112,10 +114,11 @@ public class WorkspaceFile extends AnnotationContainer {
         return this;
     }
 
+    // CHECKSTYLE:OFF
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
         result = prime * result + ((moduleName == null) ? 0 : moduleName.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -124,6 +127,7 @@ public class WorkspaceFile extends AnnotationContainer {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("PMD")
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {

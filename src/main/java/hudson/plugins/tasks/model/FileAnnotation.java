@@ -1,9 +1,10 @@
 package hudson.plugins.tasks.model;
 
+import java.util.Collection;
+
 /**
- * A file annotation is a marker either for a fixed line number of a file or a
- * marker for the file itself. An annotation consists of a description and a
- * tool tip.
+ * Annotates a collection of line ranges in a file. An annotation consists of a
+ * description and a tooltip.
  *
  * @author Ulli Hafner
  */
@@ -16,28 +17,26 @@ public interface FileAnnotation {
     String getMessage();
 
     /**
-     * Returns the a detailed description that will be used as tool tip.
+     * Returns the a detailed description that will be used as tooltip.
      *
-     * @return the tool tip of this annotation
+     * @return the tooltip of this annotation
      */
     String getToolTip();
 
     /**
-     * Returns the line number of this annotation.
+     * Returns the primary line number of this annotation that defines the
+     * anchor of this annotation.
      *
-     * @return the line number of this annotation.
+     * @return the primary line number of this annotation
      */
-    int getLineNumber();
+    int getPrimaryLineNumber();
 
     /**
-     * Returns whether this annotation is for a specific line or for the whole
-     * file.
+     * Returns a collection of line ranges for this annotation.
      *
-     * @return <code>true</code> if this annotation is for a specific line of
-     *         the file, <code>false</code> if this annotation is for the file
-     *         itself.
+     * @return the collection of line ranges for this annotation.
      */
-    boolean isLineAnnotation();
+    Collection<LineRange> getLineRanges();
 
     /**
      * Returns the unique key of this annotation.
@@ -59,6 +58,13 @@ public interface FileAnnotation {
      * @return the workspace file that contains this annotation
      */
     WorkspaceFile getWorkspaceFile();
+
+    /**
+     * Returns the name of the workspace file that contains this annotation.
+     *
+     * @return the workspace file that contains this annotation
+     */
+    String getWorkspaceFileName();
 
     /**
      * Sets the workspace file that contains this annotation.

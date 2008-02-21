@@ -15,6 +15,10 @@ import org.junit.Test;
  * Tests the class {@link TaskScanner}.
  */
 public class TaskScannerTest {
+    /** High priority. */
+    private static final String PRIORITY_HIGH = "here another task with priority HIGH";
+    /** Normal priority. */
+    private static final String PRIORITY_NORMAL = "here we have a task with priority NORMAL";
     /** Test file. */
     private static final String FILE_WITH_TASKS = "file-with-tasks.txt";
     /** Error message. */
@@ -35,8 +39,8 @@ public class TaskScannerTest {
 
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
         Iterator<Task> iterator = result.iterator();
-        assertEquals(WRONG_MESSAGE_ERROR, "here we have a task with priority NORMAL", iterator.next().getDetailMessage());
-        assertEquals(WRONG_MESSAGE_ERROR, "here another task with priority HIGH", iterator.next().getDetailMessage());
+        assertEquals(WRONG_MESSAGE_ERROR, PRIORITY_NORMAL, iterator.next().getDetailMessage());
+        assertEquals(WRONG_MESSAGE_ERROR, PRIORITY_HIGH, iterator.next().getDetailMessage());
     }
 
     /**
