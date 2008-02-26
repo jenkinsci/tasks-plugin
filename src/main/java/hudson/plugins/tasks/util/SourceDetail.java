@@ -151,12 +151,12 @@ public class SourceDetail implements ModelObject {
                 output.append("<div tooltip=\"");
                 if (range.getStart() > 0) {
                     output.append(StringEscapeUtils.escapeHtml(annotation.getMessage()));
-                    output.append(StringEscapeUtils.escapeHtml(annotation.getToolTip()));
                 }
+                output.append(StringEscapeUtils.escapeHtml(annotation.getToolTip()));
                 output.append("\" nodismiss=\"\">\n");
                 output.append("<code><b>\n");
                 if (range.getStart() <= 0) {
-                    output.append(annotation.getToolTip());
+                    output.append(annotation.getMessage());
                 }
                 else {
                     while (lineNumber <= range.getEnd()) {
