@@ -1,9 +1,9 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.model.Priority;
 import hudson.plugins.tasks.util.AbstractResultAction;
 import hudson.plugins.tasks.util.HealthReportBuilder;
+import hudson.plugins.tasks.util.model.Priority;
 import hudson.util.DataSetBuilder;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 

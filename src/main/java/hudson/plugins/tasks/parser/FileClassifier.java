@@ -1,6 +1,6 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.model.WorkspaceFile;
+import hudson.plugins.tasks.util.model.WorkspaceFile;
 
 import java.io.IOException;
 import java.io.InputStream;

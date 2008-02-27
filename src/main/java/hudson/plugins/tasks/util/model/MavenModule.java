@@ -1,4 +1,4 @@
-package hudson.plugins.tasks.model;
+package hudson.plugins.tasks.util.model;
 
 import java.util.ArrayList;
 import java.util.Collection;

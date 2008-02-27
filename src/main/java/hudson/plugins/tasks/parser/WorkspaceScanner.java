@@ -2,9 +2,9 @@ package hudson.plugins.tasks.parser;
 
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
-import hudson.plugins.tasks.model.JavaProject;
-import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.util.AbortException;
+import hudson.plugins.tasks.util.model.JavaProject;
+import hudson.plugins.tasks.util.model.WorkspaceFile;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;

@@ -1,9 +1,9 @@
 package hudson.plugins.tasks;
 
-import hudson.plugins.tasks.model.JavaPackage;
-import hudson.plugins.tasks.model.MavenModule;
-import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.util.SourceDetail;
+import hudson.plugins.tasks.util.model.JavaPackage;
+import hudson.plugins.tasks.util.model.MavenModule;
+import hudson.plugins.tasks.util.model.WorkspaceFile;
 
 import java.io.IOException;
 import java.util.Collection;

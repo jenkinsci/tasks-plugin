@@ -1,4 +1,4 @@
-package hudson.plugins.tasks.model;
+package hudson.plugins.tasks.util.model;
 
 import hudson.util.StringConverter2;
 import hudson.util.XStream2;

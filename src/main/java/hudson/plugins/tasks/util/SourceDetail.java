@@ -2,8 +2,8 @@ package hudson.plugins.tasks.util;
 
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
-import hudson.plugins.tasks.model.FileAnnotation;
-import hudson.plugins.tasks.model.LineRange;
+import hudson.plugins.tasks.util.model.FileAnnotation;
+import hudson.plugins.tasks.util.model.LineRange;
 
 import java.io.File;
 import java.io.FileInputStream;

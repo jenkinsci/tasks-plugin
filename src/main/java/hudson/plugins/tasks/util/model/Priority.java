@@ -1,5 +1,5 @@
 // CHECKSTYLE:OFF
-package hudson.plugins.tasks.model;
+package hudson.plugins.tasks.util.model;
 
 import org.apache.commons.lang.StringUtils;
 

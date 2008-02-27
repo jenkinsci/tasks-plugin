@@ -1,8 +1,8 @@
 package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
-import hudson.plugins.tasks.model.Priority;
-import hudson.plugins.tasks.model.WorkspaceFile;
+import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.tasks.util.model.WorkspaceFile;
 
 import java.io.IOException;
 import java.io.InputStream;

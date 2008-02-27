@@ -2,14 +2,14 @@ package hudson.plugins.tasks;
 
 import hudson.XmlFile;
 import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.model.AnnotationProvider;
-import hudson.plugins.tasks.model.AnnotationStream;
-import hudson.plugins.tasks.model.JavaPackage;
-import hudson.plugins.tasks.model.JavaProject;
-import hudson.plugins.tasks.model.Priority;
-import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.util.SourceDetail;
+import hudson.plugins.tasks.util.model.AnnotationProvider;
+import hudson.plugins.tasks.util.model.AnnotationStream;
+import hudson.plugins.tasks.util.model.JavaPackage;
+import hudson.plugins.tasks.util.model.JavaProject;
+import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.tasks.util.model.WorkspaceFile;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package hudson.plugins.tasks.util;
 
-import hudson.plugins.tasks.model.AnnotationProvider;
-import hudson.plugins.tasks.model.Priority;
+import hudson.plugins.tasks.util.model.AnnotationProvider;
+import hudson.plugins.tasks.util.model.Priority;
 import hudson.util.ChartUtil;
 
 import java.io.IOException;

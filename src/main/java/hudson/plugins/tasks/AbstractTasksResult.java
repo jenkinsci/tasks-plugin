@@ -2,12 +2,12 @@ package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
-import hudson.plugins.tasks.model.AnnotationContainer;
-import hudson.plugins.tasks.model.AnnotationProvider;
-import hudson.plugins.tasks.model.FileAnnotation;
-import hudson.plugins.tasks.model.Priority;
-import hudson.plugins.tasks.model.WorkspaceFile;
 import hudson.plugins.tasks.util.ChartBuilder;
+import hudson.plugins.tasks.util.model.AnnotationContainer;
+import hudson.plugins.tasks.util.model.AnnotationProvider;
+import hudson.plugins.tasks.util.model.FileAnnotation;
+import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.tasks.util.model.WorkspaceFile;
 import hudson.util.ChartUtil;
 
 import java.io.IOException;
