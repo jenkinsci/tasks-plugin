@@ -1,10 +1,15 @@
 package hudson.plugins.tasks.util.model;
 
+import org.junit.Test;
 
 /**
  * Tests
  */
 public class SerializerTest {
+    @Test
+    public void testname() throws Exception {
+       // empty
+    }
 //   @Test
 //    public void testSerialization() throws IOException {
 //        AnnotationContainer original = createOriginal();
