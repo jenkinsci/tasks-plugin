@@ -7,7 +7,6 @@ import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.Priority;
-import hudson.plugins.tasks.util.model.WorkspaceFile;
 import hudson.util.ChartUtil;
 
 import java.io.IOException;
@@ -23,52 +22,50 @@ import org.kohsuke.stapler.StaplerResponse;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
- * Provides common functionality of the different kind of tasks results details.
+ * Base class for tasks detail objects.
  */
-public abstract class AbstractTasksResult implements ModelObject, AnnotationProvider {
+public abstract class AbstractTasksResult extends AnnotationContainer implements ModelObject {
     /** The current build as owner of this action. */
     @SuppressWarnings("Se")
     private final AbstractBuild<?, ?> owner;
 
     /** Tag identifiers indicating high priority. */
     private final String high;
-
     /** Tag identifiers indicating normal priority. */
     private final String normal;
-
     /** Tag identifiers indicating low priority. */
     private final String low;
-
-    /** The annotation container. */
-    private transient AnnotationContainer annotationContainer;
 
     /**
      * Creates a new instance of <code>AbstractTasksDetail</code>.
      *
-     * @param owner the current build as owner of this result object
-     * @param high tag identifiers indicating high priority
-     * @param normal tag identifiers indicating normal priority
-     * @param low tag identifiers indicating low priority
-     * @param annotations all the files that contain tasks
+     * @param owner
+     *            the current build as owner of this result object
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     * @param annotations
+     *            all the files that contain tasks
      */
-    public AbstractTasksResult(final AbstractBuild<?, ?> owner, final String high, final String normal, final String low, final Collection<FileAnnotation> annotations) {
+    public AbstractTasksResult(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations,
+            final String high, final String normal, final String low) {
+        super();
+
         this.owner = owner;
         this.high = high;
         this.normal = normal;
         this.low = low;
 
-        annotationContainer = new AnnotationContainer();
-        annotationContainer.addAnnotations(annotations);
+        addAnnotations(annotations);
     }
 
-    /**
-     * Creates a new instance of <code>AbstractTasksResult</code>.
-     *
-     * @param root the root result object that is used to get the available tasks
-     * @param annotations the annotations of the child
-     */
-    public AbstractTasksResult(final AbstractTasksResult root, final Collection<FileAnnotation> annotations) {
-        this(root.owner, root.high, root.normal, root.low, annotations);
+    /** {@inheritDoc} */
+    @Override
+    protected final void annotationAdded(final FileAnnotation annotation) {
+        // prevent overriding from sub classes
     }
 
     /**
@@ -79,22 +76,12 @@ public abstract class AbstractTasksResult implements ModelObject, AnnotationProv
      */
     public String getPackageCategoryName() {
         if (hasAnnotations()) {
-            WorkspaceFile file = getAnnotations().iterator().next().getWorkspaceFile();
-            if (file.getShortName().endsWith(".cs")) {
+            String fileName = getAnnotations().iterator().next().getFileName();
+            if (fileName.endsWith(".cs")) {
                 return "Namespace";
             }
         }
         return "Package";
-    }
-
-    /**
-     * FIXME: Document method getAnnotations.
-     *
-     * @param annotations the annotations
-     */
-    protected final void setAnnotations(final Collection<FileAnnotation> annotations) {
-        annotationContainer = new AnnotationContainer();
-        annotationContainer.addAnnotations(annotations);
     }
 
     /**
@@ -154,14 +141,24 @@ public abstract class AbstractTasksResult implements ModelObject, AnnotationProv
      *
      * @param priority the priority
      *
-     * @return the tags for priority high
+     * @return the tags for the specified priority
      */
     public final String getTags(final String priority) {
-        Priority converted = Priority.valueOf(StringUtils.upperCase(priority));
-        if (converted == Priority.HIGH) {
+        return getTags(Priority.fromString(priority));
+    }
+
+    /**
+     * Returns the tags for the specified priority.
+     *
+     * @param priority
+     *            the priority
+     * @return the tags for the specified priority
+     */
+    public final String getTags(final Priority priority) {
+        if (priority == Priority.HIGH) {
             return high;
         }
-        else if (converted == Priority.NORMAL) {
+        else if (priority == Priority.NORMAL) {
             return normal;
         }
         else {
@@ -190,60 +187,5 @@ public abstract class AbstractTasksResult implements ModelObject, AnnotationProv
                 detailObject.getNumberOfAnnotations(Priority.NORMAL),
                 detailObject.getNumberOfAnnotations(Priority.LOW), upperBound);
         ChartUtil.generateGraph(request, response, chart, 400, 20);
-    }
-
-    /** {@inheritDoc} */
-    public final FileAnnotation getAnnotation(final long key) {
-        return annotationContainer.getAnnotation(key);
-    }
-
-    /** {@inheritDoc} */
-    public final FileAnnotation getAnnotation(final String key) {
-        return annotationContainer.getAnnotation(key);
-    }
-
-    /** {@inheritDoc} */
-    public final Collection<FileAnnotation> getAnnotations() {
-        return annotationContainer.getAnnotations();
-    }
-
-    /** {@inheritDoc} */
-    public final Collection<FileAnnotation> getAnnotations(final Priority priority) {
-        return annotationContainer.getAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public final Collection<FileAnnotation> getAnnotations(final String priority) {
-        return annotationContainer.getAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public int getNumberOfAnnotations() {
-        return annotationContainer.getNumberOfAnnotations();
-    }
-
-    /** {@inheritDoc} */
-    public int getNumberOfAnnotations(final Priority priority) {
-        return annotationContainer.getNumberOfAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public int getNumberOfAnnotations(final String priority) {
-        return annotationContainer.getNumberOfAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public final boolean hasAnnotations() {
-        return annotationContainer.hasAnnotations();
-    }
-
-    /** {@inheritDoc} */
-    public final boolean hasAnnotations(final Priority priority) {
-        return annotationContainer.hasAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public final boolean hasAnnotations(final String priority) {
-        return annotationContainer.hasAnnotations(priority);
     }
 }

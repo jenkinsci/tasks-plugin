@@ -1,30 +1,25 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.util.model.WorkspaceFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Classifies a workspace file. A module and package should be assigned to each
- * workspace file.
+ * Detects the package or namespace name of a file.
  *
  * @author Ulli Hafner
  */
-public interface FileClassifier {
+public interface PackageDetector {
     /**
-     * Classifies the specified workspace file. A module and package should be
-     * assigned to each workspace file. The provided stream must be closed
-     * afterwards.
+     * Detects the package or namespace name of the specified input stream. The
+     * stream must be closed afterwards.
      *
-     * @param file
-     *            the workspace file model
      * @param stream
-     *            the content of the workspace file
+     *            the content of the file to scan
+     * @return the detected package or namespace name
      * @throws IOException
      *             if the file could not be read
      */
-    void classify(final WorkspaceFile file, final InputStream stream) throws IOException;
+    String detectPackageName(final InputStream stream) throws IOException;
 
     /**
      * Returns whether this classifier accepts the specified file for

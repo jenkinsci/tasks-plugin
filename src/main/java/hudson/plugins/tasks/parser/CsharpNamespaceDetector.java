@@ -1,7 +1,5 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.util.model.WorkspaceFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -10,38 +8,36 @@ import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Classifies a C# workspace file. No module is assigned.
+ * Detects the namespace of a C# workspace file.
  *
  * @author Ulli Hafner
  */
-public class CsharpClassifier implements FileClassifier {
-
+public class CsharpNamespaceDetector implements PackageDetector {
     /** {@inheritDoc} */
     public boolean accepts(final String fileName) {
         return fileName.endsWith(".cs");
     }
 
-    /** {@inheritDoc} */
-    public void classify(final WorkspaceFile file, final InputStream stream) throws IOException {
+    /** {@inheritDoc}*/
+    public String detectPackageName(final InputStream stream) throws IOException {
         try {
             LineIterator iterator = IOUtils.lineIterator(stream, "UTF-8");
             while (iterator.hasNext()) {
                 String line = iterator.nextLine();
                 if (line.matches("^namespace .*$")) {
                     if (line.contains("{")) {
-                        file.setPackageName(StringUtils.substringBetween(line, " ", "{").trim());
+                        return StringUtils.substringBetween(line, " ", "{").trim();
                     }
                     else {
-                        file.setPackageName(StringUtils.substringAfter(line, " ").trim());
+                        return StringUtils.substringAfter(line, " ").trim();
                     }
-                    break;
                 }
             }
+            return StringUtils.EMPTY;
         }
         finally {
             IOUtils.closeQuietly(stream);
         }
     }
-
 }
 

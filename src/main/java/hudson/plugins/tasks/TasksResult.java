@@ -2,19 +2,26 @@ package hudson.plugins.tasks;
 
 import hudson.XmlFile;
 import hudson.model.AbstractBuild;
+import hudson.model.ModelObject;
 import hudson.plugins.tasks.parser.Task;
+import hudson.plugins.tasks.util.ChartRenderer;
 import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.AnnotationStream;
+import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.JavaPackage;
 import hudson.plugins.tasks.util.model.JavaProject;
+import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 import hudson.plugins.tasks.util.model.WorkspaceFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +39,7 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author Ulli Hafner
  */
-public class TasksResult extends AbstractTasksResult {
+public class TasksResult implements ModelObject, Serializable  {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -344808345805935004L;
     /** Error logger. */
@@ -47,6 +54,17 @@ public class TasksResult extends AbstractTasksResult {
     /** The parsed project with annotations. */
     @SuppressWarnings("Se")
     private transient WeakReference<JavaProject> project;
+
+    /** Current build as owner of this action. */
+    @SuppressWarnings("Se")
+    private final AbstractBuild<?, ?> owner;
+
+    /** Tag identifiers indicating high priority. */
+    private final String high;
+    /** Tag identifiers indicating normal priority. */
+    private final String normal;
+    /** Tag identifiers indicating low priority. */
+    private final String low;
 
     /** The total number of tasks. */
     private final int numberOfTasks;
@@ -91,33 +109,66 @@ public class TasksResult extends AbstractTasksResult {
      *            tag identifiers indicating low priority
      */
     public TasksResult(final AbstractBuild<?, ?> build, final JavaProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
-        super(build, high, normal, low, project.getAnnotations());
+        owner = build;
 
         highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
         lowPriorityTasks = project.getNumberOfAnnotations(Priority.LOW);
         normalPriorityTasks = project.getNumberOfAnnotations(Priority.NORMAL);
+
+        this.high = high;
+        this.normal = normal;
+        this.low = low;
+
         numberOfTasks = project.getNumberOfAnnotations();
         delta = numberOfTasks - previousNumberOfTasks;
 
         this.project = new WeakReference<JavaProject>(project);
 
         try {
-            Collection<WorkspaceFile> files = project.getFiles();
-            getDataFile().write(files.toArray(new WorkspaceFile[files.size()]));
+            Collection<FileAnnotation> files = project.getAnnotations();
+            getDataFile().write(files.toArray(new FileAnnotation[files.size()]));
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to serialize the open tasks result.", exception);
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Returns whether this result belongs to the last build.
+     *
+     * @return <code>true</code> if this result belongs to the last build
+     */
+    public final boolean isCurrent() {
+        return owner.getProject().getLastBuild().number == owner.number;
+    }
+
+    /**
+     * Returns the build as owner of this action.
+     *
+     * @return the owner
+     */
+    public final AbstractBuild<?, ?> getOwner() {
+        return owner;
+    }
+
+    /**
+     * Gets the number of tasks.
+     *
+     * @return the number of tasks
+     */
     public int getNumberOfAnnotations() {
         return numberOfTasks;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Returns the total number of tasks of the specified priority for
+     * this object.
+     *
+     * @param priority
+     *            the priority
+     * @return total number of tasks of the specified priority for this
+     *         object
+     */
     public int getNumberOfAnnotations(final Priority priority) {
         if (priority == Priority.HIGH) {
             return highPriorityTasks;
@@ -130,25 +181,30 @@ public class TasksResult extends AbstractTasksResult {
         }
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Returns the annotations of the specified priority for this object.
+     *
+     * @param priority
+     *            the priority as a string object
+     * @return annotations of the specified priority for this object
+     */
     public int getNumberOfAnnotations(final String priority) {
-        return getNumberOfAnnotations(Priority.valueOf(StringUtils.upperCase(priority)));
+        return getNumberOfAnnotations(Priority.fromString(priority));
     }
 
     /**
      * Returns the display name (bread crumb name) of this result.
      *
-     * @return the display name (bread crumb name) of this result.
+     * @return the display name of this result.
      */
     public String getDisplayName() {
         return "Open Tasks";
     }
 
     /**
-     * Returns the delta.
+     * Returns the delta between this build and the previous build.
      *
-     * @return the delta
+     * @return the delta between this build and the previous build
      */
     public int getDelta() {
         return delta;
@@ -168,7 +224,7 @@ public class TasksResult extends AbstractTasksResult {
      *
      * @return the associated project of this result.
      */
-    public JavaProject getProject() {
+    public synchronized JavaProject getProject() {
         if (project == null) {
             loadResult();
         }
@@ -187,10 +243,9 @@ public class TasksResult extends AbstractTasksResult {
         JavaProject result;
         try {
             JavaProject newProject = new JavaProject();
-            WorkspaceFile[] files = (WorkspaceFile[])getDataFile().read();
-            for (WorkspaceFile workspaceFile : files) {
-                newProject.addAnnotations(workspaceFile.getAnnotations());
-            }
+            FileAnnotation[] annotations = (FileAnnotation[])getDataFile().read();
+            newProject.addAnnotations(annotations);
+            LOGGER.log(Level.INFO, "Loaded tasks data file " + getDataFile() + " for build " + getOwner().getNumber());
             result = newProject;
         }
         catch (IOException exception) {
@@ -233,14 +288,14 @@ public class TasksResult extends AbstractTasksResult {
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         if (isSingleModuleProject()) {
             if (isSinglePackageProject()) {
-                return new SourceDetail(getOwner(), getAnnotation(link));
+                return new SourceDetail(getOwner(), getProject().getAnnotation(link));
             }
             else {
-                return new PackageDetail(this, getProject().getPackage(link));
+                return new PackageDetail(getOwner(), getProject().getPackage(link), high, normal, low);
             }
         }
         else {
-            return new ModuleDetail(this, getProject().getModule(link));
+            return new ModuleDetail(getOwner(), getProject().getModule(link), high, normal, low);
         }
     }
 
@@ -282,6 +337,86 @@ public class TasksResult extends AbstractTasksResult {
     }
 
     /**
+     * Returns the actually used priorities.
+     *
+     * @return the actually used priorities.
+     */
+    public List<String> getPriorities() {
+        List<String> actualPriorities = new ArrayList<String>();
+        for (String priority : getAvailablePriorities()) {
+            if (getNumberOfAnnotations(priority) > 0) {
+                actualPriorities.add(priority);
+            }
+        }
+        return actualPriorities;
+    }
+
+    /**
+     * Returns the defined priorities.
+     *
+     * @return the defined priorities.
+     */
+    public Collection<String> getAvailablePriorities() {
+        ArrayList<String> priorities = new ArrayList<String>();
+        if (StringUtils.isNotEmpty(high)) {
+            priorities.add(StringUtils.capitalize(StringUtils.lowerCase(Priority.HIGH.name())));
+        }
+        if (StringUtils.isNotEmpty(normal)) {
+            priorities.add(StringUtils.capitalize(StringUtils.lowerCase(Priority.NORMAL.name())));
+        }
+        if (StringUtils.isNotEmpty(low)) {
+            priorities.add(StringUtils.capitalize(StringUtils.lowerCase(Priority.LOW.name())));
+        }
+        return priorities;
+    }
+
+    /**
+     * Returns the tags for the specified priority.
+     *
+     * @param priority the priority
+     *
+     * @return the tags for the specified priority
+     */
+    public final String getTags(final String priority) {
+        return getTags(Priority.fromString(priority));
+    }
+
+    /**
+     * Returns the tags for the specified priority.
+     *
+     * @param priority
+     *            the priority
+     * @return the tags for the specified priority
+     */
+    public final String getTags(final Priority priority) {
+        if (priority == Priority.HIGH) {
+            return high;
+        }
+        else if (priority == Priority.NORMAL) {
+            return normal;
+        }
+        else {
+            return low;
+        }
+    }
+
+    /**
+     * Returns the package category name for the scanned files. Currently, only
+     * java and c# files are supported.
+     *
+     * @return the package category name for the scanned files
+     */
+    public String getPackageCategoryName() {
+        if (hasAnnotations()) {
+            String fileName = getAnnotations().iterator().next().getFileName();
+            if (fileName.endsWith(".cs")) {
+                return "Namespace";
+            }
+        }
+        return "Package";
+    }
+
+    /**
      * Generates a PNG image for high/normal/low distribution of a maven module.
      *
      * @param request
@@ -292,8 +427,8 @@ public class TasksResult extends AbstractTasksResult {
      *             in case of an error
      */
     public final void doModuleStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        createDetailGraph(request, response, getProject().getModule(request.getParameter("module")),
-                getProject().getAnnotationBound());
+        ChartRenderer.renderPriorititesChart(request, response,
+                getProject().getModule(request.getParameter("module")), getProject().getAnnotationBound());
     }
 
     /**
@@ -307,7 +442,36 @@ public class TasksResult extends AbstractTasksResult {
      *             in case of an error
      */
     public final void doPackageStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        createDetailGraph(request, response, getProject().getPackage(request.getParameter("package")),
-                getProject().getModules().iterator().next().getAnnotationBound());
+        MavenModule module = getProject().getModules().iterator().next();
+        ChartRenderer.renderPriorititesChart(request, response,
+                module.getPackage(request.getParameter("package")), module.getAnnotationBound());
+    }
+
+    // Delegates to JavaProject
+
+    // CHECKSTYLE:OFF
+
+    public Collection<WorkspaceFile> getFiles() {
+        return getProject().getFiles();
+    }
+
+    public final boolean hasAnnotations() {
+        return getProject().hasAnnotations();
+    }
+
+    public final boolean hasAnnotations(final String priority) {
+        return getProject().hasAnnotations(priority);
+    }
+
+    public final FileAnnotation getAnnotation(final String key) {
+        return getProject().getAnnotation(key);
+    }
+
+    public final Collection<FileAnnotation> getAnnotations() {
+        return getProject().getAnnotations();
+    }
+
+    public final Collection<FileAnnotation> getAnnotations(final String priority) {
+        return getProject().getAnnotations(priority);
     }
 }

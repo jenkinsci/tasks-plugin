@@ -1,5 +1,6 @@
 package hudson.plugins.tasks;
 
+import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.JavaPackage;
 import hudson.plugins.tasks.util.model.WorkspaceFile;
@@ -21,13 +22,20 @@ public class PackageDetail extends AbstractTasksResult {
     /**
      * Creates a new instance of <code>PackageDetail</code>.
      *
-     * @param root
-     *            the root result object that is used to get the available tasks
+     * @param owner
+     *            the current build as owner of this result object
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
      * @param javaPackage
-     *            the selected package to show
+     *            the selected Java package to show
      */
-    public PackageDetail(final AbstractTasksResult root, final JavaPackage javaPackage) {
-        super(root, javaPackage.getAnnotations());
+    public PackageDetail(final AbstractBuild<?, ?> owner, final JavaPackage javaPackage,
+            final String high, final String normal, final String low) {
+        super(owner, javaPackage.getAnnotations(), high, normal, low);
 
         this.javaPackage = javaPackage;
     }

@@ -1,8 +1,10 @@
 package hudson.plugins.tasks;
 
+import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.JavaPackage;
 import hudson.plugins.tasks.util.model.MavenModule;
+import hudson.plugins.tasks.util.model.Priority;
 import hudson.plugins.tasks.util.model.WorkspaceFile;
 
 import java.io.IOException;
@@ -19,21 +21,25 @@ public class ModuleDetail extends AbstractTasksResult {
     private static final long serialVersionUID = -3743047168363581305L;
     /** The selected module to show. */
     private final MavenModule module;
-    /** The root of the tasks results. */
-    private final AbstractTasksResult root;
 
     /**
-     * Creates a new instance of <code>PackageDetail</code>.
+     * Creates a new instance of <code>ModuleDetail</code>.
      *
-     * @param root
-     *            the root result object that is used to get the available tasks
+     * @param owner
+     *            the current build as owner of this result object
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
      * @param module
      *            the selected module to show
      */
-    public ModuleDetail(final AbstractTasksResult root, final MavenModule module) {
-        super(root, module.getAnnotations());
+    public ModuleDetail(final AbstractBuild<?, ?> owner, final MavenModule module,
+            final String high, final String normal, final String low) {
+        super(owner, module.getAnnotations(), high, normal, low);
 
-        this.root = root;
         this.module = module;
     }
 
@@ -107,7 +113,8 @@ public class ModuleDetail extends AbstractTasksResult {
             return new SourceDetail(getOwner(), getAnnotation(link));
         }
         else {
-            return new PackageDetail(root, module.getPackage(link));
+            return new PackageDetail(getOwner(), module.getPackage(link),
+                    getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
         }
     }
 

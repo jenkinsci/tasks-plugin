@@ -187,7 +187,7 @@ public class TasksReporter extends MavenReporter {
         try {
             listener.getLogger().println("Scanning workspace files for tasks...");
             project = filePath.act(new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
-                            high, normal, low));
+                            high, normal, low, pom.getName()));
         }
         catch (AbortException exception) {
             listener.getLogger().println(exception.getMessage());

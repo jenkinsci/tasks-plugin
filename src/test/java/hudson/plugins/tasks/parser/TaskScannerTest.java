@@ -1,8 +1,8 @@
 package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
+import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.Priority;
-import hudson.plugins.tasks.util.model.WorkspaceFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +36,8 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner().scan(file);
-
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
+
         Iterator<Task> iterator = result.iterator();
         assertEquals(WRONG_MESSAGE_ERROR, PRIORITY_NORMAL, iterator.next().getDetailMessage());
         assertEquals(WRONG_MESSAGE_ERROR, PRIORITY_HIGH, iterator.next().getDetailMessage());
@@ -53,13 +53,12 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner().scan(file);
-        WorkspaceFile workspaceFile = new WorkspaceFile();
-        workspaceFile.addAnnotations(result);
-
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, workspaceFile.getNumberOfAnnotations(Priority.HIGH));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, workspaceFile.getNumberOfAnnotations(Priority.NORMAL));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations(Priority.LOW));
+
+        AnnotationContainer container = createContainer(result);
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.NORMAL));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
     }
 
     /**
@@ -72,13 +71,12 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner("FIXME", null, null).scan(file);
-        WorkspaceFile workspaceFile = new WorkspaceFile();
-        workspaceFile.addAnnotations(result);
-
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, workspaceFile.getNumberOfAnnotations(Priority.HIGH));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations(Priority.NORMAL));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations(Priority.LOW));
+
+        AnnotationContainer container = createContainer(result);
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.NORMAL));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
     }
 
     /**
@@ -91,13 +89,12 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner(" FIXME , TODO ", null, null).scan(file);
-        WorkspaceFile workspaceFile = new WorkspaceFile();
-        workspaceFile.addAnnotations(result);
-
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, workspaceFile.getNumberOfAnnotations(Priority.HIGH));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations(Priority.NORMAL));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations(Priority.LOW));
+
+        AnnotationContainer container = createContainer(result);
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.HIGH));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.NORMAL));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
     }
 
     /**
@@ -110,13 +107,12 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner("FIXME,TODO", null, null).scan(file);
-        WorkspaceFile workspaceFile = new WorkspaceFile();
-        workspaceFile.addAnnotations(result);
-
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, workspaceFile.getNumberOfAnnotations(Priority.HIGH));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations(Priority.NORMAL));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations(Priority.LOW));
+
+        AnnotationContainer container = createContainer(result);
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.HIGH));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.NORMAL));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
     }
 
     /**
@@ -129,14 +125,12 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner("FIXME", "FIXME,TODO", "TODO").scan(file);
-        WorkspaceFile workspaceFile = new WorkspaceFile();
-        workspaceFile.addAnnotations(result);
-
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 4, result.size());
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, workspaceFile.getNumberOfAnnotations(Priority.HIGH));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, workspaceFile.getNumberOfAnnotations(Priority.NORMAL));
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, workspaceFile.getNumberOfAnnotations(Priority.LOW));
 
+        AnnotationContainer container = createContainer(result);
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.NORMAL));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.LOW));
     }
 
     /**
@@ -149,11 +143,26 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream("file-without-tasks.txt");
 
         Collection<Task> result = new TaskScanner().scan(file);
-        WorkspaceFile workspaceFile = new WorkspaceFile();
-        workspaceFile.addAnnotations(result);
-
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, result.size());
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, workspaceFile.getNumberOfAnnotations());
+
+        AnnotationContainer container = createContainer(result);
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations());
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.HIGH));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.NORMAL));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
+    }
+
+    /**
+     * Creates an annotation container to simplify tasks counting.
+     *
+     * @param result
+     *            the tasks to add to the container
+     * @return the annotation container
+     */
+    private AnnotationContainer createContainer(final Collection<Task> result) {
+        AnnotationContainer container = new AnnotationContainer();
+        container.addAnnotations(result);
+        return container;
     }
 }
 
