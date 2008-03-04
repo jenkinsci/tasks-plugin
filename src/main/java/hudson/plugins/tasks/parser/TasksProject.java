@@ -25,6 +25,16 @@ public class TasksProject extends JavaProject {
     }
 
     /**
+     * Rebuilds the priorities mapping.
+     *
+     * @return the created object
+     */
+    private Object readResolve() {
+        rebuildPriorities();
+        return this;
+    }
+
+    /**
      * Returns the number of scanned files in this project.
      *
      * @return the number of scanned files in a {@link JavaProject}
