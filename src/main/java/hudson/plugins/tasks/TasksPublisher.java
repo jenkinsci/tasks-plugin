@@ -7,11 +7,11 @@ import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Result;
+import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.AbortException;
 import hudson.plugins.tasks.util.HealthAwarePublisher;
 import hudson.plugins.tasks.util.HealthReportBuilder;
-import hudson.plugins.tasks.util.model.JavaProject;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;
@@ -119,7 +119,7 @@ public class TasksPublisher extends HealthAwarePublisher {
      */
     @Override
     public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
-        JavaProject project;
+        TasksProject project;
         try {
             listener.getLogger().println("Scanning workspace files for tasks...");
             project = build.getProject().getWorkspace().act(

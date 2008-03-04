@@ -12,10 +12,10 @@ import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
+import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.AbortException;
 import hudson.plugins.tasks.util.HealthReportBuilder;
-import hudson.plugins.tasks.util.model.JavaProject;
 
 import java.io.IOException;
 
@@ -183,7 +183,7 @@ public class TasksReporter extends MavenReporter {
         }
 
         FilePath filePath = new FilePath(pom.getBasedir());
-        final JavaProject project;
+        final TasksProject project;
         try {
             listener.getLogger().println("Scanning workspace files for tasks...");
             project = filePath.act(new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),

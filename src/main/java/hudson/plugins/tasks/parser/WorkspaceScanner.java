@@ -4,7 +4,6 @@ import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.plugins.tasks.util.AbortException;
 import hudson.plugins.tasks.util.MavenModuleDetector;
-import hudson.plugins.tasks.util.model.JavaProject;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;
@@ -23,7 +22,7 @@ import org.apache.tools.ant.types.FileSet;
  *
  * @author Ulli Hafner
  */
-public class WorkspaceScanner implements FileCallable<JavaProject> {
+public class WorkspaceScanner implements FileCallable<TasksProject> {
     /** Generated ID. */
     private static final long serialVersionUID = -4355362392102020724L;
     /** Ant file-set pattern to scan for FindBugs files. */
@@ -76,7 +75,7 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
     }
 
     /** {@inheritDoc} */
-    public JavaProject invoke(final File workspace, final VirtualChannel channel) throws IOException {
+    public TasksProject invoke(final File workspace, final VirtualChannel channel) throws IOException {
         String[] files = findFiles(workspace);
         if (files.length == 0) {
             throw new AbortException("No files were found that match the pattern '"
@@ -89,7 +88,7 @@ public class WorkspaceScanner implements FileCallable<JavaProject> {
 
         TaskScanner taskScanner = new TaskScanner(high, normal, low);
 
-        JavaProject javaProject = new JavaProject();
+        TasksProject javaProject = new TasksProject(files.length);
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
             Collection<Task> tasks = taskScanner.scan(new FilePath(originalFile).read());

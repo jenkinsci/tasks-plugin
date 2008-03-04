@@ -22,7 +22,7 @@ import org.kohsuke.stapler.StaplerResponse;
  */
 public final class TasksDescriptor extends BuildStepDescriptor<Publisher> {
     /** Icon to use for the result and project action. */
-    public static final String TASKS_ACTION_LOGO = "/plugin/tasks/icons/tasks-24x24.gif";
+    public static final String TASKS_ACTION_LOGO = "/plugin/tasks/icons/tasks-24x24.png";
 
     /**
      * Instantiates a new find bugs descriptor.

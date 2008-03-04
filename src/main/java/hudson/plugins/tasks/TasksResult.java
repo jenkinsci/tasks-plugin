@@ -4,6 +4,7 @@ import hudson.XmlFile;
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
 import hudson.plugins.tasks.parser.Task;
+import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.util.ChartRenderer;
 import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
@@ -76,6 +77,8 @@ public class TasksResult implements ModelObject, Serializable  {
     private final int lowPriorityTasks;
     /** The number of normal priority tasks in this build. */
     private final int normalPriorityTasks;
+    /** The number of scanned files in the project. */
+    private int numberOfFiles;
 
     /**
      * Creates a new instance of <code>TasksResult</code>.
@@ -91,7 +94,7 @@ public class TasksResult implements ModelObject, Serializable  {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final JavaProject project, final String high, final String normal, final String low) {
+    public TasksResult(final AbstractBuild<?, ?> build, final TasksProject project, final String high, final String normal, final String low) {
         this(build, project, project.getNumberOfAnnotations(), high, normal, low);
     }
 
@@ -108,7 +111,7 @@ public class TasksResult implements ModelObject, Serializable  {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final JavaProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
+    public TasksResult(final AbstractBuild<?, ?> build, final TasksProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
         owner = build;
 
         highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
@@ -122,6 +125,7 @@ public class TasksResult implements ModelObject, Serializable  {
         numberOfTasks = project.getNumberOfAnnotations();
         delta = numberOfTasks - previousNumberOfTasks;
 
+        numberOfFiles = project.getNumberOfFiles();
         this.project = new WeakReference<JavaProject>(project);
 
         try {
@@ -131,6 +135,15 @@ public class TasksResult implements ModelObject, Serializable  {
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to serialize the open tasks result.", exception);
         }
+    }
+
+    /**
+     * Returns a summary message for the summary.jelly file.
+     *
+     * @return the summary message
+     */
+    public String getSummary() {
+        return ResultSummary.createSummary(this);
     }
 
     /**
@@ -149,6 +162,15 @@ public class TasksResult implements ModelObject, Serializable  {
      */
     public final AbstractBuild<?, ?> getOwner() {
         return owner;
+    }
+
+    /**
+     * Returns the number of scanned files in this project.
+     *
+     * @return the number of scanned files in a {@link JavaProject}
+     */
+    public int getNumberOfFiles() {
+        return numberOfFiles;
     }
 
     /**
