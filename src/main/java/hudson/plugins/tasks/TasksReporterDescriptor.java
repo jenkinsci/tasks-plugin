@@ -22,7 +22,7 @@ public class TasksReporterDescriptor extends MavenReporterDescriptor {
     /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
-        return "Scan workspace for open tasks";
+        return Messages.Tasks_Publisher_Name();
     }
 
     /** {@inheritDoc} */

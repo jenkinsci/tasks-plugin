@@ -220,7 +220,7 @@ public class TasksResult implements ModelObject, Serializable  {
      * @return the display name of this result.
      */
     public String getDisplayName() {
-        return "Open Tasks";
+        return Messages.Tasks_ProjectAction_Name();
     }
 
     /**
@@ -432,10 +432,10 @@ public class TasksResult implements ModelObject, Serializable  {
         if (hasAnnotations()) {
             String fileName = getAnnotations().iterator().next().getFileName();
             if (fileName.endsWith(".cs")) {
-                return "Namespace";
+                return Messages.Tasks_ResultAction_Category_Namespace();
             }
         }
-        return "Package";
+        return Messages.Tasks_ResultAction_Category_Package();
     }
 
     /**

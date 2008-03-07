@@ -17,25 +17,26 @@ public final class ResultSummary {
         StringBuilder summary = new StringBuilder();
         int tasks = project.getNumberOfAnnotations();
 
-        summary.append("Task Scanner: ");
+        summary.append(Messages._Tasks_ResultAction_Summary());
+        summary.append(" ");
         if (tasks > 0) {
             summary.append("<a href=\"tasksResult\">");
         }
         if (tasks == 1) {
-            summary.append("1 open task");
+            summary.append(Messages._Tasks_ResultAction_OneWarning());
         }
         else {
-            summary.append(tasks + " open tasks");
+            summary.append(Messages._Tasks_ResultAction_MultipleWarnings(tasks));
         }
         if (tasks > 0) {
             summary.append("</a>");
         }
         summary.append(" ");
         if (project.getNumberOfFiles() > 1) {
-            summary.append("in " + project.getNumberOfFiles() + " workspace files");
+            summary.append(Messages._Tasks_ResultAction_MultipleFiles(project.getNumberOfFiles()));
         }
         else {
-            summary.append("in 1 workspace file");
+            summary.append(Messages._Tasks_ResultAction_OneFile());
         }
         if (project.getDelta() == 0) {
             summary.append(" (±0).");

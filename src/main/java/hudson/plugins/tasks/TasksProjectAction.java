@@ -25,7 +25,7 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
 
     /** {@inheritDoc} */
     public String getDisplayName() {
-        return "Open Tasks";
+        return Messages.Tasks_ProjectAction_Name();
     }
 
     /** {@inheritDoc} */

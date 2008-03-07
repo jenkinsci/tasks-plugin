@@ -78,10 +78,10 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
         if (hasAnnotations()) {
             String fileName = getAnnotations().iterator().next().getFileName();
             if (fileName.endsWith(".cs")) {
-                return "Namespace";
+                return Messages.Tasks_ResultAction_Category_Namespace();
             }
         }
-        return "Package";
+        return Messages.Tasks_ResultAction_Category_Package();
     }
 
     /**

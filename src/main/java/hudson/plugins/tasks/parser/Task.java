@@ -1,5 +1,6 @@
 package hudson.plugins.tasks.parser;
 
+import hudson.plugins.tasks.Messages;
 import hudson.plugins.tasks.util.model.AbstractAnnotation;
 import hudson.plugins.tasks.util.model.Priority;
 
@@ -41,7 +42,7 @@ public class Task extends AbstractAnnotation {
 
     /** {@inheritDoc} */
     public String getToolTip() {
-        return "Priority: " + getPriority().name();
+        return Messages.Tasks_Source_PriorityTooltip(getPriority().name());
     }
 }
 
