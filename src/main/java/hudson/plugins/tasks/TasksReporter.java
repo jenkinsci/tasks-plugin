@@ -178,7 +178,7 @@ public class TasksReporter extends MavenReporter {
     @Override
     public boolean postExecute(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo,
             final BuildListener listener, final Throwable error) throws InterruptedException, IOException {
-        if (!"resources".equals(mojo.getGoal())) {
+        if (hasTaskResultAction(build)) {
             return true;
         }
 
@@ -233,6 +233,26 @@ public class TasksReporter extends MavenReporter {
         }
 
         return true;
+    }
+
+    /**
+     * Returns whether we already have a task result for this build.
+     *
+     * @param build
+     *            the current build.
+     * @return <code>true</code> if we already have a task result action.
+     * @throws IOException
+     *             in case of an IO error
+     * @throws InterruptedException
+     *             if the call has been interrupted
+     */
+    private Boolean hasTaskResultAction(final MavenBuildProxy build) throws IOException,
+            InterruptedException {
+        return build.execute(new BuildCallable<Boolean, IOException>() {
+            public Boolean call(final MavenBuild mavenBuild) throws IOException, InterruptedException {
+                return mavenBuild.getAction(TasksResultAction.class) != null;
+            }
+        });
     }
 
     /** {@inheritDoc} */
