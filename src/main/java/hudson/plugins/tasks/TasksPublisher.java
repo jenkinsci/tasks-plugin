@@ -147,7 +147,9 @@ public class TasksPublisher extends HealthAwarePublisher {
             result = new TasksResult(build, project, high, normal, low);
         }
 
-        HealthReportBuilder healthReportBuilder = createHealthReporter("Task Scanner", "open task");
+        HealthReportBuilder healthReportBuilder = createHealthReporter(
+                Messages.Tasks_ResultAction_HealthReportSingleItem(),
+                Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
         build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
 
         int warnings = project.getNumberOfAnnotations();

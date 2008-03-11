@@ -213,7 +213,10 @@ public class TasksReporter extends MavenReporter {
                     result = new TasksResult(build, project, high, normal, low);
                 }
 
-                HealthReportBuilder healthReportBuilder = new HealthReportBuilder("Task Scanner", "open task", isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks);
+                HealthReportBuilder healthReportBuilder = new HealthReportBuilder(
+                        isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks,
+                        Messages.Tasks_ResultAction_HealthReportSingleItem(),
+                        Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
                 build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
                 build.registerAsProjectAction(TasksReporter.this);
 

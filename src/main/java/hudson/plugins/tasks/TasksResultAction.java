@@ -127,7 +127,9 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     protected JFreeChart createChart(final StaplerRequest request, final StaplerResponse response) {
         String parameter = request.getParameter("useHealthBuilder");
         boolean useHealthBuilder = Boolean.valueOf(StringUtils.defaultIfEmpty(parameter, "true"));
-        return getHealthReportBuilder().createGraph(useHealthBuilder, TASKS_RESULT_URL, buildDataSet(useHealthBuilder));
+        return getHealthReportBuilder().createGraph(useHealthBuilder, TASKS_RESULT_URL, buildDataSet(useHealthBuilder),
+                Messages.Tasks_ResultAction_OneWarning(),
+                Messages.Tasks_ResultAction_MultipleWarnings("%d"));
     }
 
     /**
