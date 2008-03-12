@@ -393,6 +393,17 @@ public class TasksResult implements ModelObject, Serializable  {
     }
 
     /**
+     * Returns a localized priority name.
+     *
+     * @param priorityName
+     *            priority as String value
+     * @return localized priority name
+     */
+    public String getLocalizedPriority(final String priorityName) {
+        return Priority.fromString(priorityName).getLongLocalizedString();
+    }
+
+    /**
      * Returns the tags for the specified priority.
      *
      * @param priority the priority

@@ -4,19 +4,19 @@
   <l:layout>
     <st:include it="${it.owner}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>Open Tasks</h1>
+      <h1>${%Open Tasks}</h1>
 
       <st:include page="/summaryTable.jelly" />
 
       <j:if test="${it.hasAnnotations()}">
 
 	      <j:if test="${!it.isSingleModuleProject()}">
-	      <h2>Module Statistics</h2>
+	      <h2>${%Module Statistics}</h2>
 	      <table class="pane sortable" id="tasks.modules">
 	      	<tr>
-	      		<td class="pane-header">Module</td>
-	      		<td class="pane-header" style="width:2em">Total</td>
-		      	<td class="pane-header" >Distribution</td>
+	      		<td class="pane-header">${%Module}</td>
+	      		<td class="pane-header" style="width:2em">${%Total}</td>
+		      	<td class="pane-header">${%Distribution}</td>
 	      	</tr>
 	      	<tbody>
 	      		<j:forEach var="module" items="${it.project.modules}">

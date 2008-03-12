@@ -69,6 +69,17 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
     }
 
     /**
+     * Returns a localized priority name.
+     *
+     * @param priorityName
+     *            priority as String value
+     * @return localized priority name
+     */
+    public String getLocalizedPriority(final String priorityName) {
+        return Priority.fromString(priorityName).getLongLocalizedString();
+    }
+
+    /**
      * Returns the package category name for the scanned files. Currently, only
      * java and c# files are supported.
      *

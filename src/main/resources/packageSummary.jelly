@@ -1,12 +1,12 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
 	xmlns:f="/lib/form">
-	<h2>${it.packageCategoryName} Statistics</h2>
+	<h2>${it.packageCategoryName} ${%Statistics}</h2>
 	<table class="pane sortable" id="tasks">
 		<tr>
 			<td class="pane-header">${it.packageCategoryName}</td>
-			<td class="pane-header" style="width:2em">Total</td>
-			<td class="pane-header">Distribution</td>
+			<td class="pane-header" style="width:2em">${%Total}</td>
+			<td class="pane-header">${%Distribution}</td>
 		</tr>
 		<tbody>
 			<j:forEach var="package" items="${it.packages}">

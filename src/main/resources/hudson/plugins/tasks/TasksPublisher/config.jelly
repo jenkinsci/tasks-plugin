@@ -1,26 +1,16 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-	<f:entry title="Files to scan"
-		description="
-             &lt;a href='http://ant.apache.org/manual/CoreTypes/fileset.html'>Fileset 'includes'&lt;/a>
-             setting that specifies the workspace files to scan for tasks,
-             such as '**/*.java'.
-             Basedir of the fileset is &lt;a href='ws/'>the workspace root&lt;/a>.
-             If no value is set, then the default '**/*.java' is used.
-           ">
+	<f:entry title="${%Files to scan}" description="${%description.files}">
 		<f:textbox name="tasks_pattern" value="${instance.pattern}"
 			checkUrl="'${rootURL}/publisher/TasksPublisher/checkPattern?job=${it.fullName}&amp;value='+escape(this.value)"/>
 	</f:entry>
-	<f:entry title="Tasks tags"
-		description="
-             Configure the tags identifiers that should be looked for in the workspace files.
-             For each priority a comma separated list of tags could be defined, e.g. TODO, FIXME, etc.">
+	<f:entry title="${%Tasks tags}" description="${%description.tags}">
 		<table>
 			<thead>
 				<tr>
-					<td width="33%">High priority</td>
-					<td width="33%">Normal priority</td>
-					<td width="33%">Low priority</td>
+					<td width="33%">${%High priority}</td>
+					<td width="33%">${%Normal priority}</td>
+					<td width="33%">${%Low priority}</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -39,35 +29,29 @@
 
 		</table>
 	</f:entry>
-	<f:entry title="Unstable threshold"
-		description="If the number of open tasks exceeds this threshold then a build is
-           considered as unstable. Leave this field empty if the unstable state of the build
-           should not be touched by this plug-in.">
+	<f:entry title="${%Unstable threshold}" description="${%description.threshold}">
 		<f:textbox name="tasks_threshold" value="${instance.threshold}"
 		    checkUrl="'${rootURL}/publisher/TasksPublisher/checkThreshold?job=${it.fullName}&amp;value='+escape(this.value)"/>
 	</f:entry>
-	<f:entry title="Health reporting"
-		description="
-             Configure health reporting thresholds. If the actual number of open tasks is between
-             the provided thresholds, then the healthiness is interpolated.">
+	<f:entry title="${%Health reporting}" description="${%description.healthy}">
 		<table>
 			<thead>
 				<tr>
 					<td width="40%"></td>
 					<td width="30%">
 						<img src="${rootURL}/images/16x16/health-80plus.gif" alt="100%"
-							title="Report health as 100% when the number of open tasks is less than this value" />
+							title="${%Report health as 100% when the number of open tasks is less than this value}." />
 					</td>
 					<td width="30%">
 						<img src="${rootURL}/images/16x16/health-00to19.gif" alt="0%"
-							title="Report health as 0% when the number of open tasks is greater than this value" />
+							title="${%Report health as 0% when the number of open tasks is greater than this value}." />
 					</td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<th>
-						Number of open tasks
+						${%Number of open tasks}
 					</th>
 					<td>
 						<f:textbox name="tasks_healthy" value="${instance.healthy}"/>

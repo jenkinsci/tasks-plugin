@@ -1,6 +1,8 @@
 // CHECKSTYLE:OFF
 package hudson.plugins.tasks.util.model;
 
+import hudson.plugins.tasks.util.Messages;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
@@ -41,5 +43,35 @@ public enum Priority {
         public Object fromString(final String str) {
             return Priority.valueOf(str);
         }
+    }
+
+    /**
+     * Returns a localized description of this priority.
+     *
+     * @return localized description of this priority
+     */
+    public String getLocalizedString() {
+        if (this == HIGH) {
+            return Messages.Priority_High();
+        }
+        if (this == LOW) {
+            return Messages.Priority_Low();
+        }
+        return Messages.Priority_Normal();
+    }
+
+    /**
+     * Returns a long localized description of this priority.
+     *
+     * @return long localized description of this priority
+     */
+    public String getLongLocalizedString() {
+        if (this == Priority.HIGH) {
+            return Messages.HighPriority();
+        }
+        if (this == Priority.LOW) {
+            return Messages.LowPriority();
+        }
+        return Messages.NormalPriority();
     }
 }

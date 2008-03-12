@@ -3,13 +3,13 @@
 	xmlns:f="/lib/form">
 	<j:forEach var="priority" items="${it.priorities}">
 		<a name="${priority}" />
-		<h2>${priority} Priority: ${it.getTags(priority)}</h2>
+		<h2>${it.getLocalizedPriority(priority)}: ${it.getTags(priority)}</h2>
 		<j:forEach var="file" items="${it.files}">
 		  <j:if test="${file.hasAnnotations(priority)}">
 			<table class="pane">
 				<tr class="pane">
 					<td class="pane-header">
-						<p>File: ${file.shortName}</p>
+						<p>${%File}: ${file.shortName}</p>
 		            </td>
 	            </tr>
 				<j:forEach var="task" items="${file.getAnnotations(priority)}">
@@ -18,10 +18,10 @@
 							<p>
 								<j:choose>
 									<j:when test="${it.isCurrent()}">
-										<a href="${task.key}/#${task.primaryLineNumber}">Line ${task.primaryLineNumber}:</a>
+										<a href="${task.key}/#${task.primaryLineNumber}">${%tasks.line(task.primaryLineNumber)}:</a>
 									</j:when>
 									<j:otherwise>
-										Line ${task.primaryLineNumber}:
+										${%tasks.line(task.primaryLineNumber)}:
 									</j:otherwise>
 								</j:choose>
 								${task.detailMessage}
