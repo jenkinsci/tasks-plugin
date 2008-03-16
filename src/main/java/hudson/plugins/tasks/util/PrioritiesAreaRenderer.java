@@ -1,9 +1,5 @@
 package hudson.plugins.tasks.util;
 
-import hudson.Util;
-import hudson.util.StackedAreaRenderer2;
-import hudson.util.ChartUtil.NumberOnlyBuildLabel;
-
 import org.jfree.data.category.CategoryDataset;
 
 /**
