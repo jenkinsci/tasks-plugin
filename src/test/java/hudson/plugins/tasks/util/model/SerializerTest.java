@@ -15,60 +15,69 @@ import org.junit.Test;
 
 /**
  * Tests the serialization of the model.
+ *
+ * @see <a href="http://www.ibm.com/developerworks/library/j-serialtest.html">Testing object serialization</a>
  */
 public class SerializerTest {
+    /**
+     * Test whether we could serialize the a task.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @Test
     public void testSerialization() throws IOException {
-        AnnotationContainer original = createOriginal();
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(out);
-        oos.writeObject(original);
-        oos.close();
+        JavaProject original = createOriginal();
+        ByteArrayOutputStream out = serialize(original);
 
         Assert.assertTrue(out.toByteArray().length > 0);
     }
 
     /**
-     * FIXME: Document method createOriginal
+     * Creates the original object that will be serialized.
      *
-     * @return
+     * @return the annotation container
      */
-    private AnnotationContainer createOriginal() {
+    private JavaProject createOriginal() {
         final JavaProject project = new JavaProject();
+
         Task task = new Task(Priority.HIGH, 100, "Test Task");
         task.setFileName("Path/To/File");
         task.setPackageName("Package");
         task.setModuleName("Module");
 
         project.addAnnotation(task);
+
+        verifyProject(project);
+
         return project;
     }
 
+    /**
+     * Verifies the created project.
+     *
+     * @param project the created project
+     */
+    private void verifyProject(final JavaProject project) {
+        Assert.assertTrue(project.hasAnnotations());
+        Assert.assertEquals(1, project.getNumberOfAnnotations());
+        Assert.assertEquals(1, project.getNumberOfAnnotations(Priority.HIGH));
+        Assert.assertEquals(0, project.getNumberOfAnnotations(Priority.NORMAL));
+        Assert.assertEquals(0, project.getNumberOfAnnotations(Priority.LOW));
+    }
+
+    /**
+     * Test whether a serialized task is the same object after deserialization.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
    @Test
    public void testObjectIsSameAfterDeserialization() throws IOException, ClassNotFoundException {
-       AnnotationContainer original = createOriginal();
+       JavaProject original = createOriginal();
 
-       Assert.assertTrue(original.hasAnnotations());
-       Assert.assertEquals(1, original.getNumberOfAnnotations());
-       Assert.assertEquals(1, original.getNumberOfAnnotations(Priority.HIGH));
-       Assert.assertEquals(0, original.getNumberOfAnnotations(Priority.NORMAL));
+       ByteArrayOutputStream outputStream = serialize(original);
+       JavaProject copy = deserialize(outputStream.toByteArray());
 
-       ByteArrayOutputStream out = new ByteArrayOutputStream();
-       ObjectOutputStream oos = new ObjectOutputStream(out);
-       oos.writeObject(original);
-       oos.close();
-
-       byte[] pickled = out.toByteArray();
-       InputStream inputStream = new ByteArrayInputStream(pickled);
-       ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-       Object readObject = objectInputStream.readObject();
-       AnnotationContainer copy = (AnnotationContainer) readObject;
-
-       Assert.assertEquals(original.hasAnnotations(), copy.hasAnnotations());
-       Assert.assertEquals(original.getNumberOfAnnotations(), copy.getNumberOfAnnotations());
-       Assert.assertEquals(original.getNumberOfAnnotations(Priority.HIGH), copy.getNumberOfAnnotations(Priority.HIGH));
-       Assert.assertEquals(original.getNumberOfAnnotations(Priority.NORMAL), copy.getNumberOfAnnotations(Priority.NORMAL));
+       verifyProject(copy);
 
        FileAnnotation originalFile = original.getAnnotations().iterator().next();
        FileAnnotation copyFile = copy.getAnnotations().iterator().next();
@@ -76,5 +85,41 @@ public class SerializerTest {
        Assert.assertSame(originalFile.getPriority(), copyFile.getPriority());
        Assert.assertSame(originalFile.getMessage(), copyFile.getMessage());
    }
+
+    /**
+     * Deserializes an object from the specified data and returns it.
+     *
+     * @param objectData
+     *            the serialized object in plain bytes
+     * @return the deserialized object
+     * @throws IOException
+     *             in case of an IO error
+     * @throws ClassNotFoundException
+     *             if the wrong class is created
+     */
+    private JavaProject deserialize(final byte[] objectData) throws IOException, ClassNotFoundException {
+       InputStream inputStream = new ByteArrayInputStream(objectData);
+       ObjectInputStream objectStream = new ObjectInputStream(inputStream);
+       Object readObject = objectStream.readObject();
+
+       return (JavaProject) readObject;
+    }
+
+    /**
+     * Serializes the specified object and returns the created output stream.
+     *
+     * @param original
+     *            original object
+     * @return created output stream
+     * @throws IOException
+     */
+    private ByteArrayOutputStream serialize(final JavaProject original) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectStream = new ObjectOutputStream(outputStream);
+        objectStream.writeObject(original);
+        objectStream.close();
+
+        return outputStream;
+    }
 }
 

@@ -17,7 +17,6 @@ public class MavenModuleDetectorTest {
     public void testTopLevelModuleName() {
         String moduleName = MavenModuleDetector.guessModuleName("com.avaloq.adt.core/src/com/avaloq/adt/core/job/AvaloqJob.java");
         assertEquals("Wrong module name guessed.", "com.avaloq.adt.core", moduleName);
-
     }
 
     /**
