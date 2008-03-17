@@ -2,9 +2,7 @@ package hudson.plugins.tasks;
 
 import static org.easymock.EasyMock.*;
 import static org.easymock.classextension.EasyMock.*;
-
-import java.util.Locale;
-
+import hudson.plugins.tasks.util.AbstractEnglishLocaleTest;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -12,7 +10,7 @@ import org.junit.Test;
 /**
  * Tests the class {@link ResultSummary}.
  */
-public class ResultSummaryTest {
+public class ResultSummaryTest extends AbstractEnglishLocaleTest {
     /**
      * Checks the text for no warnings in 1 file. The delta is > 0.
      */
@@ -82,7 +80,6 @@ public class ResultSummaryTest {
 
         replay(result);
 
-        Locale.setDefault(Locale.ENGLISH);
         Assert.assertEquals("Wrong summary message created.", expectedMessage, ResultSummary.createSummary(result));
 
         verify(result);

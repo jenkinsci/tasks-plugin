@@ -13,7 +13,7 @@ import org.junit.Test;
  */
 public class JavaPackageDetectorTest {
     /** The classifier under test. */
-    private JavaPackageDetector classifier = new JavaPackageDetector();
+    private final JavaPackageDetector classifier = new JavaPackageDetector();
 
     /**
      * Checks whether we could identify a java package name.
@@ -41,8 +41,7 @@ public class JavaPackageDetectorTest {
         String fileName = "file-without-tasks.txt";
         InputStream stream = JavaPackageDetectorTest.class.getResourceAsStream(fileName);
 
-        assertEquals("Wrong namespace name guessed.", StringUtils.EMPTY,
-                classifier.detectPackageName(stream));
+        assertEquals("Wrong namespace name guessed.", StringUtils.EMPTY, classifier.detectPackageName(stream));
     }
 
     /**

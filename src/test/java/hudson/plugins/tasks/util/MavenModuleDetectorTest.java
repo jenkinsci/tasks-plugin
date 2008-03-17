@@ -1,13 +1,12 @@
 package hudson.plugins.tasks.util;
 
 import static org.junit.Assert.*;
-import hudson.plugins.tasks.parser.JavaPackageDetector;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 /**
- *  Tests the class {@link JavaPackageDetector}.
+ *  Tests the class {@link MavenModuleDetector}.
  */
 public class MavenModuleDetectorTest {
     /**
