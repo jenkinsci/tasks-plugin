@@ -34,7 +34,7 @@ public class TasksReporterDescriptor extends MavenReporterDescriptor {
     /** {@inheritDoc} */
     @Override
     public String getHelpFile() {
-        return "/plugin/tasks/help.html";
+        return "/plugin/" +  TasksDescriptor.PLUGIN_NAME + "/help.html";
     }
 
     /** {@inheritDoc} */

@@ -62,7 +62,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     /** {@inheritDoc} */
     @Override
     public String getIconUrl() {
-        return TasksDescriptor.TASKS_ACTION_LOGO;
+        return TasksDescriptor.ACTION_ICON;
     }
 
     /** {@inheritDoc} */

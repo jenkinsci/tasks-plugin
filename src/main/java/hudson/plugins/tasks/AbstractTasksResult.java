@@ -1,34 +1,20 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.model.ModelObject;
-import hudson.plugins.tasks.util.ChartBuilder;
-import hudson.plugins.tasks.util.model.AnnotationContainer;
-import hudson.plugins.tasks.util.model.AnnotationProvider;
+import hudson.plugins.tasks.util.AbstractAnnotationsDetail;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.Priority;
-import hudson.util.ChartUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jfree.chart.JFreeChart;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
  * Base class for tasks detail objects.
  */
-public abstract class AbstractTasksResult extends AnnotationContainer implements ModelObject {
-    /** The current build as owner of this action. */
-    @SuppressWarnings("Se")
-    private final AbstractBuild<?, ?> owner;
-
+public abstract class AbstractTasksResult extends AbstractAnnotationsDetail {
     /** Tag identifiers indicating high priority. */
     private final String high;
     /** Tag identifiers indicating normal priority. */
@@ -52,20 +38,11 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
      */
     public AbstractTasksResult(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations,
             final String high, final String normal, final String low) {
-        super();
+        super(owner, annotations);
 
-        this.owner = owner;
         this.high = high;
         this.normal = normal;
         this.low = low;
-
-        addAnnotations(annotations);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected final void annotationAdded(final FileAnnotation annotation) {
-        // prevent overriding from sub classes
     }
 
     /**
@@ -93,24 +70,6 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
             }
         }
         return Messages.Tasks_ResultAction_Category_Package();
-    }
-
-    /**
-     * Returns the current build as owner of this result object.
-     *
-     * @return the owner of this details object
-     */
-    public final AbstractBuild<?, ?> getOwner() {
-        return owner;
-    }
-
-    /**
-     * Returns whether this result object belongs to the last build.
-     *
-     * @return <code>true</code> if this result belongs to the last build
-     */
-    public final boolean isCurrent() {
-        return getOwner().getProject().getLastBuild().number == getOwner().number;
     }
 
     /**
@@ -175,28 +134,5 @@ public abstract class AbstractTasksResult extends AnnotationContainer implements
         else {
             return low;
         }
-    }
-
-    /**
-     * Creates a detail graph for the specified detail object.
-     *
-     * @param request Stapler request
-     * @param response Stapler response
-     * @param detailObject the detail object to compute the graph for
-     * @param upperBound the upper bound of all tasks
-     *
-     * @throws IOException in case of an error
-     */
-    protected final void createDetailGraph(final StaplerRequest request, final StaplerResponse response,
-            final AnnotationProvider detailObject, final int upperBound) throws IOException {
-        if (ChartUtil.awtProblem) {
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
-        JFreeChart chart = ChartBuilder.createHighNormalLowChart(
-                detailObject.getNumberOfAnnotations(Priority.HIGH),
-                detailObject.getNumberOfAnnotations(Priority.NORMAL),
-                detailObject.getNumberOfAnnotations(Priority.LOW), upperBound);
-        ChartUtil.generateGraph(request, response, chart, 400, 20);
     }
 }
