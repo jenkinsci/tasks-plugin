@@ -313,11 +313,11 @@ public class TasksResult implements ModelObject, Serializable  {
                 return new SourceDetail(getOwner(), getProject().getAnnotation(link));
             }
             else {
-                return new PackageDetail(getOwner(), getProject().getPackage(link), high, normal, low);
+                return new TasksPackageDetail(getOwner(), getProject().getPackage(link), high, normal, low);
             }
         }
         else {
-            return new ModuleDetail(getOwner(), getProject().getModule(link), high, normal, low);
+            return new TasksModuleDetail(getOwner(), getProject().getModule(link), high, normal, low);
         }
     }
 
@@ -443,10 +443,10 @@ public class TasksResult implements ModelObject, Serializable  {
         if (hasAnnotations()) {
             String fileName = getAnnotations().iterator().next().getFileName();
             if (fileName.endsWith(".cs")) {
-                return Messages.Tasks_ResultAction_Category_Namespace();
+                return hudson.plugins.tasks.util.Messages.NamespaceDetail_header();
             }
         }
-        return Messages.Tasks_ResultAction_Category_Package();
+        return hudson.plugins.tasks.util.Messages.NamespaceDetail_header();
     }
 
     /**

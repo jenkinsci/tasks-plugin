@@ -1,10 +1,9 @@
 package hudson.plugins.tasks;
 
-import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.util.AbstractAnnotationsDetail;
-import hudson.plugins.tasks.util.model.FileAnnotation;
+import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.Priority;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,64 +11,37 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Base class for tasks detail objects.
+ * Handles the tags of the open tasks.
  */
-public abstract class AbstractTasksResult extends AbstractAnnotationsDetail {
+public class TaskTagsHandler implements Serializable {
+    /** Unique ID of this class.*/
+    private static final long serialVersionUID = 4156585047399976629L;
     /** Tag identifiers indicating high priority. */
     private final String high;
     /** Tag identifiers indicating normal priority. */
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
+    /** References all the warnings. */
+    private final AnnotationContainer provider;
 
     /**
-     * Creates a new instance of <code>AbstractTasksDetail</code>.
+     * Creates a new instance of <code>TaskTagsHandler</code>.
      *
-     * @param owner
-     *            the current build as owner of this result object
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
-     * @param annotations
-     *            all the files that contain tasks
+     * @param provider
+     *             References all the warnings.
      */
-    public AbstractTasksResult(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations,
-            final String high, final String normal, final String low) {
-        super(owner, annotations);
-
+    public TaskTagsHandler(final String high, final String normal, final String low, final AnnotationContainer provider) {
         this.high = high;
         this.normal = normal;
         this.low = low;
-    }
-
-    /**
-     * Returns a localized priority name.
-     *
-     * @param priorityName
-     *            priority as String value
-     * @return localized priority name
-     */
-    public String getLocalizedPriority(final String priorityName) {
-        return Priority.fromString(priorityName).getLongLocalizedString();
-    }
-
-    /**
-     * Returns the package category name for the scanned files. Currently, only
-     * java and c# files are supported.
-     *
-     * @return the package category name for the scanned files
-     */
-    public String getPackageCategoryName() {
-        if (hasAnnotations()) {
-            String fileName = getAnnotations().iterator().next().getFileName();
-            if (fileName.endsWith(".cs")) {
-                return Messages.Tasks_ResultAction_Category_Namespace();
-            }
-        }
-        return Messages.Tasks_ResultAction_Category_Package();
+        this.provider = provider;
     }
 
     /**
@@ -80,7 +52,7 @@ public abstract class AbstractTasksResult extends AbstractAnnotationsDetail {
     public List<String> getPriorities() {
         List<String> actualPriorities = new ArrayList<String>();
         for (String priority : getAvailablePriorities()) {
-            if (getNumberOfAnnotations(priority) > 0) {
+            if (provider.getNumberOfAnnotations(priority) > 0) {
                 actualPriorities.add(priority);
             }
         }
@@ -93,6 +65,7 @@ public abstract class AbstractTasksResult extends AbstractAnnotationsDetail {
      * @return the defined priorities.
      */
     public Collection<String> getAvailablePriorities() {
+        // FIXME: l10n
         ArrayList<String> priorities = new ArrayList<String>();
         if (StringUtils.isNotEmpty(high)) {
             priorities.add(StringUtils.capitalize(StringUtils.lowerCase(Priority.HIGH.name())));

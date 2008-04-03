@@ -4,11 +4,18 @@
   <l:layout>
     <st:include it="${it.owner}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>${%package.header(it.displayName)}</h1>
+
+      <h1>${it.header}</h1>
 
       <st:include page="/summaryTable.jelly" />
 
-	  <st:include page="/filesTable.jelly" />
+      <j:if test="${!it.isSinglePackageModule()}">
+		<st:include page="/packagesTable.jelly" />
+      </j:if>
+
+      <j:if test="${it.isSinglePackageModule()}">
+		<st:include page="/annotationsTable.jelly" />
+      </j:if>
 
     </l:main-panel>
   </l:layout>
