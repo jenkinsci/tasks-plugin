@@ -95,7 +95,7 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
             if (!tasks.isEmpty()) {
                 String unixName = fileName.replace('\\', '/');
                 String packageName = detectPackageName(detectors, unixName, new FilePath(originalFile).read());
-                String actualModule = StringUtils.defaultIfEmpty(moduleName, MavenModuleDetector.guessModuleName(unixName));
+                String actualModule = StringUtils.defaultIfEmpty(moduleName, MavenModuleDetector.guessModuleName(originalFile.getAbsolutePath()));
 
                 for (Task task : tasks) {
                     task.setFileName(unixName);
