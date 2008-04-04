@@ -446,7 +446,7 @@ public class TasksResult implements ModelObject, Serializable  {
                 return hudson.plugins.tasks.util.Messages.NamespaceDetail_header();
             }
         }
-        return hudson.plugins.tasks.util.Messages.NamespaceDetail_header();
+        return hudson.plugins.tasks.util.Messages.PackageDetail_header();
     }
 
     /**
