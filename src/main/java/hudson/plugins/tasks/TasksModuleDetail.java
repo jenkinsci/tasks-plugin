@@ -6,7 +6,6 @@ import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -73,7 +72,8 @@ public class TasksModuleDetail extends ModuleDetail {
         return taskTagsHandler.getAvailablePriorities();
     }
 
-    public List<String> getPriorities() {
+    @Override
+    public Priority[] getPriorities() {
         return taskTagsHandler.getPriorities();
     }
 

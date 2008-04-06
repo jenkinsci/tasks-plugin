@@ -49,14 +49,14 @@ public class TaskTagsHandler implements Serializable {
      *
      * @return the actually used priorities.
      */
-    public List<String> getPriorities() {
-        List<String> actualPriorities = new ArrayList<String>();
+    public Priority[] getPriorities() {
+        List<Priority> actualPriorities = new ArrayList<Priority>();
         for (String priority : getAvailablePriorities()) {
             if (provider.getNumberOfAnnotations(priority) > 0) {
-                actualPriorities.add(priority);
+                actualPriorities.add(Priority.fromString(priority));
             }
         }
-        return actualPriorities;
+        return actualPriorities.toArray(new Priority[actualPriorities.size()]);
     }
 
     /**

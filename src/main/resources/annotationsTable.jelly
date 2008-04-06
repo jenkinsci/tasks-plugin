@@ -3,7 +3,7 @@
 	xmlns:f="/lib/form">
 	<j:forEach var="priority" items="${it.priorities}">
 		<a name="${priority}" />
-		<h2>${it.getLocalizedPriority(priority)}: ${it.getTags(priority)}</h2>
+		<h2>${priority.getLongLocalizedString()}: ${it.getTags(priority)}</h2>
 		<j:forEach var="file" items="${it.files}">
 		  <j:if test="${file.hasAnnotations(priority)}">
 			<table class="pane">

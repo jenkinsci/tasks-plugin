@@ -6,7 +6,6 @@ import hudson.plugins.tasks.util.model.JavaPackage;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Represents the tasks details of a Java package.
@@ -44,7 +43,8 @@ public class TasksPackageDetail extends PackageDetail {
         return taskTagsHandler.getAvailablePriorities();
     }
 
-    public List<String> getPriorities() {
+    @Override
+    public Priority[] getPriorities() {
         return taskTagsHandler.getPriorities();
     }
 
