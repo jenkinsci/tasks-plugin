@@ -11,7 +11,7 @@
   <packaging>hpi</packaging>
   <name>Hudson Task Scanner Plug-in</name>
   <version>2.4-SNAPSHOT</version>
-  <url>http://hudson.gotdns.com/wiki/display/HUDSON/Task+Scanner</url>
+  <url>http://hudson.gotdns.com/wiki/display/HUDSON/Task+Scanner+Plugin</url>
 
   <licenses>
   	<license><name>MIT license</name><comments>All source code is under the MIT license.</comments></license>
