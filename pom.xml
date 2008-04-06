@@ -10,7 +10,7 @@
   <artifactId>tasks</artifactId>
   <packaging>hpi</packaging>
   <name>Hudson Task Scanner Plug-in</name>
-  <version>2.3</version>
+  <version>2.4-SNAPSHOT</version>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/Task+Scanner</url>
 
   <licenses>
@@ -82,8 +82,4 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <scm>
-    <tag>tasks-2_3</tag>
-  </scm>
 </project>
