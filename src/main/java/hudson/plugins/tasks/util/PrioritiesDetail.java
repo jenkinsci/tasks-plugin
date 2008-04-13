@@ -10,7 +10,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 /**
- * Result object to visualize the priorities statistics of a module.
+ * Result object to visualize the priorities statistics of an annotation container.
  */
 public class PrioritiesDetail extends AbstractAnnotationsDetail {
     /** Unique identifier of this class. */

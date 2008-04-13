@@ -17,7 +17,7 @@ public class TasksPackageDetail extends PackageDetail {
     private final TaskTagsHandler taskTagsHandler;
 
     /**
-     * Creates a new instance of <code>PackageDetail</code>.
+     * Creates a new instance of <code>TasksPackageDetail</code>.
      *
      * @param owner
      *            the current build as owner of this result object

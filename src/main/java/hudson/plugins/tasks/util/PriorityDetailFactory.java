@@ -62,7 +62,7 @@ public class PriorityDetailFactory {
      *            header to show
      * @return the priority detail
      */
-    private PrioritiesDetail createPrioritiesDetail(final Priority priority, final AbstractBuild<?, ?> owner, final AnnotationContainer container, final String header) {
+    protected PrioritiesDetail createPrioritiesDetail(final Priority priority, final AbstractBuild<?, ?> owner, final AnnotationContainer container, final String header) {
         return new PrioritiesDetail(owner, container.getAnnotations(priority), priority, header);
     }
 }

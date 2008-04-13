@@ -6,7 +6,10 @@ import hudson.model.ModelObject;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.util.ChartRenderer;
+import hudson.plugins.tasks.util.PrioritiesDetail;
+import hudson.plugins.tasks.util.PriorityDetailFactory;
 import hudson.plugins.tasks.util.SourceDetail;
+import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.AnnotationStream;
 import hudson.plugins.tasks.util.model.FileAnnotation;
@@ -308,6 +311,17 @@ public class TasksResult implements ModelObject, Serializable  {
      *         package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        PriorityDetailFactory factory = new PriorityDetailFactory() {
+            /** {@inheritDoc} */
+            @Override
+            protected PrioritiesDetail createPrioritiesDetail(Priority priority, AbstractBuild<?, ?> build, AnnotationContainer container, String header) {
+                return new TasksPrioritiesDetail(build, getProject(), priority, header, high, normal, low);
+            }
+        };
+        String priority = StringUtils.upperCase(link);
+        if (factory.isPriority(priority)) {
+            return factory.create(priority, owner, getProject(), Messages.Tasks_ProjectAction_Name());
+        }
         if (isSingleModuleProject()) {
             if (isSinglePackageProject()) {
                 return new SourceDetail(getOwner(), getProject().getAnnotation(link));
