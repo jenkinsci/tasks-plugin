@@ -30,7 +30,7 @@ public class TasksProject extends JavaProject {
      * @return the created object
      */
     private Object readResolve() {
-        rebuildPriorities();
+        rebuildMappings(false);
         return this;
     }
 

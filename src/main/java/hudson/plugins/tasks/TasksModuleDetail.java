@@ -2,6 +2,7 @@ package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.util.ModuleDetail;
+import hudson.plugins.tasks.util.PriorityDetailFactory;
 import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 
@@ -62,6 +63,10 @@ public class TasksModuleDetail extends ModuleDetail {
             return super.getDynamic(link, request, response);
         }
         else {
+            PriorityDetailFactory factory = new PriorityDetailFactory();
+            if (factory.isPriority(link)) {
+                return factory.create(link, getOwner(), this, getTitle());
+            }
             return new TasksPackageDetail(getOwner(), getModule().getPackage(link), getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
         }
     }

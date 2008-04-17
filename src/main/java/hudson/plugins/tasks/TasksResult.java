@@ -318,9 +318,8 @@ public class TasksResult implements ModelObject, Serializable  {
                 return new TasksPrioritiesDetail(build, getProject(), priority, header, high, normal, low);
             }
         };
-        String priority = StringUtils.upperCase(link);
-        if (factory.isPriority(priority)) {
-            return factory.create(priority, owner, getProject(), Messages.Tasks_ProjectAction_Name());
+        if (factory.isPriority(link)) {
+            return factory.create(link, owner, getProject(), Messages.Tasks_ProjectAction_Name());
         }
         if (isSingleModuleProject()) {
             if (isSinglePackageProject()) {
