@@ -3,35 +3,37 @@
 	xmlns:f="/lib/form">
 	<j:forEach var="priority" items="${it.priorities}">
 		<a name="${priority}" />
-		<h2>${priority.getLongLocalizedString()}: ${it.getTags(priority)}</h2>
-		<j:forEach var="file" items="${it.files}">
-		  <j:if test="${file.hasAnnotations(priority)}">
-			<table class="pane">
-				<tr class="pane">
-					<td class="pane-header">
-						<p>${%File}: ${file.shortName}</p>
-		            </td>
-	            </tr>
-				<j:forEach var="task" items="${file.getAnnotations(priority)}">
-		            <tr>
-			            <td class="pane">
-							<p>
-								<j:choose>
-									<j:when test="${it.isCurrent()}">
-										<a href="${task.key}/#${task.primaryLineNumber}">${%tasks.line(task.primaryLineNumber)}:</a>
-									</j:when>
-									<j:otherwise>
-										${%tasks.line(task.primaryLineNumber)}:
-									</j:otherwise>
-								</j:choose>
-								${task.detailMessage}
-							</p>
+		<j:if test="${it.hasAnnotations(priority)}">
+			<h2>${priority.getLongLocalizedString()}: ${it.getTags(priority)}</h2>
+			<j:forEach var="file" items="${it.files}">
+			  <j:if test="${file.hasAnnotations(priority)}">
+				<table class="pane">
+					<tr class="pane">
+						<td class="pane-header">
+							<p>${%File}: ${file.shortName}</p>
 			            </td>
 		            </tr>
-				</j:forEach>
-			</table>
-			<p/>
-   		  </j:if>
-		</j:forEach>
+					<j:forEach var="task" items="${file.getAnnotations(priority)}">
+			            <tr>
+				            <td class="pane">
+								<p>
+									<j:choose>
+										<j:when test="${it.isCurrent()}">
+											<a href="${task.key}/#${task.primaryLineNumber}">${%tasks.line(task.primaryLineNumber)}:</a>
+										</j:when>
+										<j:otherwise>
+											${%tasks.line(task.primaryLineNumber)}:
+										</j:otherwise>
+									</j:choose>
+									${task.detailMessage}
+								</p>
+				            </td>
+			            </tr>
+					</j:forEach>
+				</table>
+				<p/>
+	   		  </j:if>
+			</j:forEach>
+		</j:if>
 	</j:forEach>
 </j:jelly>
