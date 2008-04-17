@@ -41,7 +41,7 @@ public class PrioritiesDetail extends AbstractAnnotationsDetail {
      * @return the header
      */
     public String getHeader() {
-        return getTitle() + " - " + priority.getLongLocalizedString();
+        return getName() + " - " + priority.getLongLocalizedString();
     }
 
     /** {@inheritDoc} */

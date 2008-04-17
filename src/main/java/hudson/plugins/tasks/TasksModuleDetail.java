@@ -65,7 +65,7 @@ public class TasksModuleDetail extends ModuleDetail {
         else {
             PriorityDetailFactory factory = new PriorityDetailFactory();
             if (factory.isPriority(link)) {
-                return factory.create(link, getOwner(), this, getTitle());
+                return factory.create(link, getOwner(), this, getName());
             }
             return new TasksPackageDetail(getOwner(), getModule().getPackage(link), getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
         }
