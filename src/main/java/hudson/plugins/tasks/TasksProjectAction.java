@@ -35,8 +35,14 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
 
     /** {@inheritDoc} */
     @Override
-    protected String getCookieName() {
+    public String getCookieName() {
         return "Tasks_displayMode";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getTrendName() {
+        return Messages.Tasks_Trend_Name();
     }
 }
 
