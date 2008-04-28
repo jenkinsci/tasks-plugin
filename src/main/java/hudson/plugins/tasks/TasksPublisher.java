@@ -105,22 +105,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         project = build.getProject().getWorkspace().act(
                 new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), high, normal, low));
 
-        Object previous = build.getPreviousBuild();
-        TasksResult result;
-        if (previous instanceof AbstractBuild<?, ?>) {
-            AbstractBuild<?, ?> previousBuild = (AbstractBuild<?, ?>)previous;
-            TasksResultAction previousAction = previousBuild.getAction(TasksResultAction.class);
-            if (previousAction == null) {
-                result = new TasksResult(build, project, high, normal, low);
-            }
-            else {
-                result = new TasksResult(build, project, previousAction.getResult().getNumberOfAnnotations(), high, normal, low);
-            }
-        }
-        else {
-            result = new TasksResult(build, project, high, normal, low);
-        }
-
+        TasksResult result = new TasksResultBuilder().build(build, project, high, normal, low);
         HealthReportBuilder healthReportBuilder = createHealthReporter(
                 Messages.Tasks_ResultAction_HealthReportSingleItem(),
                 Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));

@@ -8,7 +8,6 @@ import hudson.maven.MavenReporter;
 import hudson.maven.MavenReporterDescriptor;
 import hudson.maven.MojoInfo;
 import hudson.maven.MavenBuildProxy.BuildCallable;
-import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
@@ -197,21 +196,7 @@ public class TasksReporter extends MavenReporter {
 
         build.execute(new BuildCallable<Void, IOException>() {
             public Void call(final MavenBuild build) throws IOException, InterruptedException {
-                Object previous = build.getPreviousBuild();
-                TasksResult result;
-                if (previous instanceof AbstractBuild<?, ?>) {
-                    AbstractBuild<?, ?> previousBuild = (AbstractBuild<?, ?>)previous;
-                    TasksResultAction previousAction = previousBuild.getAction(TasksResultAction.class);
-                    if (previousAction == null) {
-                        result = new TasksResult(build, project, high, normal, low);
-                    }
-                    else {
-                        result = new TasksResult(build, project, previousAction.getResult().getNumberOfAnnotations(), high, normal, low);
-                    }
-                }
-                else {
-                    result = new TasksResult(build, project, high, normal, low);
-                }
+                TasksResult result = new TasksResultBuilder().build(build, project, high, normal, low);
 
                 HealthReportBuilder healthReportBuilder = new HealthReportBuilder(
                         isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks,
