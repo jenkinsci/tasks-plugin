@@ -5,10 +5,8 @@ import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
-import hudson.model.Result;
 import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
-import hudson.plugins.tasks.util.AbortException;
 import hudson.plugins.tasks.util.HealthAwarePublisher;
 import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.tasks.Publisher;
@@ -99,34 +97,13 @@ public class TasksPublisher extends HealthAwarePublisher {
         return new TasksProjectAction(project);
     }
 
-    /**
-     * Scans the workspace, collects all data files and copies these files to
-     * the build results folder. Then counts the number of bugs and sets the
-     * result of the build accordingly ({@link #getThreshold()}.
-     *
-     * @param build
-     *            the build
-     * @param listener
-     *            the build listener
-     * @return <code>true</code> if the build could continue
-     * @throws IOException
-     *             if the files could not be copied
-     * @throws InterruptedException
-     *             if user cancels the operation
-     */
+    /** {@inheritDoc} */
     @Override
-    public boolean perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
+    public TasksProject perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
         TasksProject project;
-        try {
-            listener.getLogger().println("Scanning workspace files for tasks...");
-            project = build.getProject().getWorkspace().act(
-                    new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), high, normal, low));
-        }
-        catch (AbortException exception) {
-            listener.getLogger().println(exception.getMessage());
-            build.setResult(Result.FAILURE);
-            return false;
-        }
+        listener.getLogger().println("Scanning workspace files for tasks...");
+        project = build.getProject().getWorkspace().act(
+                new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), high, normal, low));
 
         Object previous = build.getPreviousBuild();
         TasksResult result;
@@ -149,18 +126,7 @@ public class TasksPublisher extends HealthAwarePublisher {
                 Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
         build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
 
-        int warnings = project.getNumberOfAnnotations();
-        if (warnings > 0) {
-            listener.getLogger().println("A total of " + warnings + " open tasks have been found.");
-            if (isThresholdEnabled() && warnings >= getMinimumAnnotations()) {
-                build.setResult(Result.UNSTABLE);
-            }
-        }
-        else {
-            listener.getLogger().println("No open tasks have been found.");
-        }
-
-        return true;
+        return project;
     }
 
     /** {@inheritDoc} */
