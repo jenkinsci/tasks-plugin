@@ -20,17 +20,12 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
      *            the project that owns this action
      */
     public TasksProjectAction(final AbstractProject<?, ?> project) {
-        super(project, TasksResultAction.class, TasksDescriptor.ACTION_ICON, TasksDescriptor.PLUGIN_NAME);
+        super(project, TasksResultAction.class, TasksPublisher.TASK_SCANNER_DESCRIPTOR);
     }
 
     /** {@inheritDoc} */
     public String getDisplayName() {
         return Messages.Tasks_ProjectAction_Name();
-    }
-
-    /** {@inheritDoc} */
-    public String getUrlName() {
-        return "tasks";
     }
 
     /** {@inheritDoc} */

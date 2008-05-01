@@ -1,7 +1,8 @@
 package hudson.plugins.tasks;
 
 import hudson.maven.MavenReporter;
-import hudson.maven.MavenReporterDescriptor;
+import hudson.plugins.tasks.util.PluginDescriptor;
+import hudson.plugins.tasks.util.ReporterDescriptor;
 
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -11,18 +12,15 @@ import org.kohsuke.stapler.StaplerRequest;
  *
  * @author Ulli Hafner
  */
-public class TasksReporterDescriptor extends MavenReporterDescriptor {
+public class TasksReporterDescriptor extends ReporterDescriptor {
     /**
      * Creates a new instance of <code>TasksReporterDescriptor</code>.
+     *
+     * @param pluginDescriptor
+     *            the plug-in descriptor of the publisher
      */
-    public TasksReporterDescriptor() {
-        super(TasksReporter.class);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getDisplayName() {
-        return Messages.Tasks_Publisher_Name();
+    public TasksReporterDescriptor(final PluginDescriptor pluginDescriptor) {
+        super(TasksReporter.class, pluginDescriptor);
     }
 
     /** {@inheritDoc} */
@@ -33,14 +31,8 @@ public class TasksReporterDescriptor extends MavenReporterDescriptor {
 
     /** {@inheritDoc} */
     @Override
-    public String getHelpFile() {
-        return "/plugin/" +  TasksDescriptor.PLUGIN_NAME + "/help.html";
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public MavenReporter newInstance(final StaplerRequest request) throws FormException {
-        return request.bindParameters(TasksReporter.class, "tasks_");
+        return request.bindParameters(TasksReporter.class, getPublisherDescriptor().getPluginName() + "_");
     }
 }
 

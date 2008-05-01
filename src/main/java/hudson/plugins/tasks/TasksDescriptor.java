@@ -12,9 +12,9 @@ import org.kohsuke.stapler.StaplerRequest;
  */
 public final class TasksDescriptor extends PluginDescriptor {
     /** Plug-in name. */
-    static final String PLUGIN_NAME = "tasks";
+    private static final String PLUGIN_NAME = "tasks";
     /** Icon to use for the result and project action. */
-    static final String ACTION_ICON = "/plugin/tasks/icons/tasks-24x24.png";
+    private static final String ACTION_ICON = "/plugin/tasks/icons/tasks-24x24.png";
 
     /**
      * Instantiates a new find bugs descriptor.
@@ -33,6 +33,12 @@ public final class TasksDescriptor extends PluginDescriptor {
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getIconUrl() {
+        return ACTION_ICON;
     }
 
     /** {@inheritDoc} */

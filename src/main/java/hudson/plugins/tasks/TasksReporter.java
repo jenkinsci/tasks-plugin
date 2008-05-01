@@ -24,7 +24,7 @@ import org.apache.maven.project.MavenProject;
 // FIXME: this class more or less is a copy of the TasksPublisher, we should find a way to generalize portions of this class
 public class TasksReporter extends MavenReporter {
     /** Descriptor of this publisher. */
-    public static final TasksReporterDescriptor TASK_SCANNER_DESCRIPTOR = new TasksReporterDescriptor();
+    public static final TasksReporterDescriptor TASK_SCANNER_DESCRIPTOR = new TasksReporterDescriptor(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
     /** Default files pattern. */
     private static final String DEFAULT_PATTERN = "**/*.java";
     /** Ant file-set pattern of files to scan for open tasks in. */

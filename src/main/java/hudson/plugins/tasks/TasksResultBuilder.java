@@ -9,7 +9,7 @@ import hudson.plugins.tasks.parser.TasksProject;
  */
 public class TasksResultBuilder {
     /**
-     * Creates a result that persists the FindBugs information for the
+     * Creates a result that persists the Tasks information for the
      * specified build.
      *
      * @param build
