@@ -23,6 +23,8 @@ import org.apache.maven.project.MavenProject;
 
 // FIXME: this class more or less is a copy of the TasksPublisher, we should find a way to generalize portions of this class
 public class TasksReporter extends MavenReporter {
+    /** Default height of the graph. */
+    private static final int HEIGHT = 200;
     /** Descriptor of this publisher. */
     public static final TasksReporterDescriptor TASK_SCANNER_DESCRIPTOR = new TasksReporterDescriptor(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
     /** Default files pattern. */
@@ -51,6 +53,8 @@ public class TasksReporter extends MavenReporter {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
+    /** Determines the height of the trend graph. */
+    private final String height;
 
     /**
      * Creates a new instance of <code>TaskScannerPublisher</code>.
@@ -66,6 +70,8 @@ public class TasksReporter extends MavenReporter {
      * @param unHealthy
      *            Report health as 0% when the number of open tasks is greater
      *            than this value
+     * @param height
+     *            the height of the trend graph
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -74,13 +80,14 @@ public class TasksReporter extends MavenReporter {
      *            tag identifiers indicating low priority
      * @stapler-constructor
      */
-    public TasksReporter(final String pattern, final String threshold, final String healthy, final String unHealthy,
+    public TasksReporter(final String pattern, final String threshold, final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
         super();
         this.threshold = threshold;
         this.healthy = healthy;
         this.unHealthy = unHealthy;
         this.pattern = pattern;
+        this.height = height;
         this.high = high;
         this.normal = normal;
         this.low = low;
@@ -246,13 +253,39 @@ public class TasksReporter extends MavenReporter {
     /** {@inheritDoc} */
     @Override
     public Action getProjectAction(final MavenModule module) {
-        return new TasksProjectAction(module);
+        return new TasksProjectAction(module, getTrendHeight());
     }
 
     /** {@inheritDoc} */
     @Override
     public MavenReporterDescriptor getDescriptor() {
         return TASK_SCANNER_DESCRIPTOR;
+    }
+
+    /**
+     * Returns the height of the trend graph.
+     *
+     * @return the height of the trend graph
+     */
+    public String getHeight() {
+        return height;
+    }
+
+    /**
+     * Returns the height of the trend graph.
+     *
+     * @return the height of the trend graph
+     */
+    public int getTrendHeight() {
+        if (!StringUtils.isEmpty(height)) {
+            try {
+                return Math.max(50, Integer.valueOf(height));
+            }
+            catch (NumberFormatException exception) {
+                // nothing to do, we use the default value
+            }
+        }
+        return HEIGHT;
     }
 }
 

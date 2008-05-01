@@ -46,6 +46,8 @@ public class TasksPublisher extends HealthAwarePublisher {
      * @param unHealthy
      *            Report health as 0% when the number of open tasks is greater
      *            than this value
+     * @param height
+     *            the height of the trend graph
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -55,9 +57,9 @@ public class TasksPublisher extends HealthAwarePublisher {
      * @stapler-constructor
      */
     public TasksPublisher(final String pattern, final String threshold,
-            final String healthy, final String unHealthy,
+            final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
-        super(pattern, threshold, healthy, unHealthy);
+        super(pattern, threshold, healthy, unHealthy, height);
 
         this.high = high;
         this.normal = normal;
@@ -94,7 +96,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     /** {@inheritDoc} */
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
-        return new TasksProjectAction(project);
+        return new TasksProjectAction(project, getTrendHeight());
     }
 
     /** {@inheritDoc} */
