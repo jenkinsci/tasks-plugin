@@ -15,16 +15,18 @@ import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.AbortException;
 import hudson.plugins.tasks.util.HealthReportBuilder;
+import hudson.plugins.tasks.util.TrendReportSize;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 
 // FIXME: this class more or less is a copy of the TasksPublisher, we should find a way to generalize portions of this class
 public class TasksReporter extends MavenReporter {
-    /** Default height of the graph. */
-    private static final int HEIGHT = 200;
     /** Descriptor of this publisher. */
     public static final TasksReporterDescriptor TASK_SCANNER_DESCRIPTOR = new TasksReporterDescriptor(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
     /** Default files pattern. */
@@ -181,6 +183,7 @@ public class TasksReporter extends MavenReporter {
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public boolean postExecute(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo,
             final BuildListener listener, final Throwable error) throws InterruptedException, IOException {
@@ -188,17 +191,40 @@ public class TasksReporter extends MavenReporter {
             return true;
         }
 
-        FilePath filePath = new FilePath(pom.getBasedir());
-        final TasksProject project;
-        try {
-            listener.getLogger().println("Scanning workspace files for tasks...");
-            project = filePath.act(new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
-                            high, normal, low, pom.getName()));
+        List<String> foldersToScan = new ArrayList<String>(pom.getCompileSourceRoots());
+        List<Resource> resources = pom.getResources();
+        for (Resource resource : resources) {
+            foldersToScan.add(resource.getDirectory());
         }
-        catch (AbortException exception) {
-            listener.getLogger().println(exception.getMessage());
-            build.setResult(Result.FAILURE);
-            return true;
+        FilePath basedir = new FilePath(pom.getBasedir());
+        final TasksProject project = new TasksProject();
+        for (String sourcePath : foldersToScan) {
+            if (StringUtils.isEmpty(sourcePath)) {
+                continue;
+            }
+            FilePath filePath = new FilePath(basedir, sourcePath);
+            if (filePath.exists()) {
+                try {
+                    listener.getLogger().print(String.format("Scanning folder '%s' for tasks ... ", sourcePath));
+                    WorkspaceScanner workspaceScanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
+                            high, normal, low, pom.getName());
+                    workspaceScanner.setPrefix(sourcePath);
+                    TasksProject subProject = filePath.act(workspaceScanner);
+                    if (subProject.hasAnnotations()) {
+                        project.addModules(subProject.getModules());
+                        project.addScannedFiles(subProject.getNumberOfScannedFiles());
+                    }
+                    listener.getLogger().println(String.format("Found %d.", subProject.getNumberOfAnnotations()));
+                }
+                catch (AbortException exception) {
+                    listener.getLogger().println(exception.getMessage());
+                    build.setResult(Result.FAILURE);
+                    return true;
+                }
+            }
+            else {
+                listener.getLogger().println(String.format("Scipping non-existent folder '%s'...", sourcePath));
+            }
         }
 
         build.execute(new BuildCallable<Void, IOException>() {
@@ -209,7 +235,7 @@ public class TasksReporter extends MavenReporter {
                         isThresholdEnabled, minimumTasks, isHealthyReportEnabled, healthyTasks, unHealthyTasks,
                         Messages.Tasks_ResultAction_HealthReportSingleItem(),
                         Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
-                build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
+                build.getActions().add(new MavenTasksResultAction(build, healthReportBuilder, height, high, normal, low, result));
                 build.registerAsProjectAction(TasksReporter.this);
 
                 return null;
@@ -245,7 +271,7 @@ public class TasksReporter extends MavenReporter {
             InterruptedException {
         return build.execute(new BuildCallable<Boolean, IOException>() {
             public Boolean call(final MavenBuild mavenBuild) throws IOException, InterruptedException {
-                return mavenBuild.getAction(TasksResultAction.class) != null;
+                return mavenBuild.getAction(MavenTasksResultAction.class) != null;
             }
         });
     }
@@ -277,15 +303,7 @@ public class TasksReporter extends MavenReporter {
      * @return the height of the trend graph
      */
     public int getTrendHeight() {
-        if (!StringUtils.isEmpty(height)) {
-            try {
-                return Math.max(50, Integer.valueOf(height));
-            }
-            catch (NumberFormatException exception) {
-                // nothing to do, we use the default value
-            }
-        }
-        return HEIGHT;
+        return new TrendReportSize(height).getHeight();
     }
 }
 

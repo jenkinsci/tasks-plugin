@@ -111,7 +111,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         HealthReportBuilder healthReportBuilder = createHealthReporter(
                 Messages.Tasks_ResultAction_HealthReportSingleItem(),
                 Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
-        build.getActions().add(new TasksResultAction(build, result, healthReportBuilder));
+        build.getActions().add(new TasksResultAction(build, healthReportBuilder, result));
 
         return project;
     }

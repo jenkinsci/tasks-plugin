@@ -27,13 +27,25 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
      *
      * @param owner
      *            the associated build of this action
+     * @param healthReportBuilder
+     *            health builder to use
      * @param result
      *            the result in this build
+     */
+    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthReportBuilder healthReportBuilder, final TasksResult result) {
+        super(owner, healthReportBuilder, result);
+    }
+
+    /**
+     * Creates a new instance of <code>TasksResultAction</code>.
+     *
+     * @param owner
+     *            the associated build of this action
      * @param healthReportBuilder
      *            health builder to use
      */
-    public TasksResultAction(final AbstractBuild<?, ?> owner, final TasksResult result, final HealthReportBuilder healthReportBuilder) {
-        super(owner, healthReportBuilder, result);
+    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthReportBuilder healthReportBuilder) {
+        super(owner, healthReportBuilder);
     }
 
     /** {@inheritDoc} */

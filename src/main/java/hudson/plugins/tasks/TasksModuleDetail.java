@@ -1,15 +1,12 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
+import hudson.model.ModelObject;
 import hudson.plugins.tasks.util.ModuleDetail;
-import hudson.plugins.tasks.util.PriorityDetailFactory;
 import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
-
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Represents the details of a maven module.
@@ -49,24 +46,16 @@ public class TasksModuleDetail extends ModuleDetail {
      * @param link
      *            the link containing the path to the selected workspace file
      *            (or package)
-     * @param request
-     *            Stapler request
-     * @param response
-     *            Stapler response
      * @return the dynamic result of the FindBugs analysis (detail page for a
      *         package).
      * @see #isSinglePackageModule()
      */
     @Override
-    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+    public ModelObject getDynamic(final String link) {
         if (isSinglePackageModule()) {
-            return super.getDynamic(link, request, response);
+            return null;
         }
         else {
-            PriorityDetailFactory factory = new PriorityDetailFactory();
-            if (factory.isPriority(link)) {
-                return factory.create(link, getOwner(), this, getName());
-            }
             return new TasksPackageDetail(getOwner(), getModule().getPackage(link), getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
         }
     }

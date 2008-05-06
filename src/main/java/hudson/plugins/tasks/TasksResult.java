@@ -14,7 +14,6 @@ import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.AnnotationStream;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.JavaPackage;
-import hudson.plugins.tasks.util.model.JavaProject;
 import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 import hudson.plugins.tasks.util.model.WorkspaceFile;
@@ -57,7 +56,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
 
     /** The parsed project with annotations. */
     @SuppressWarnings("Se")
-    private transient WeakReference<JavaProject> project;
+    private transient WeakReference<TasksProject> project;
 
     /** Current build as owner of this action. */
     @SuppressWarnings("Se")
@@ -128,8 +127,8 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
         numberOfTasks = project.getNumberOfAnnotations();
         delta = numberOfTasks - previousNumberOfTasks;
 
-        numberOfFiles = project.getNumberOfFiles();
-        this.project = new WeakReference<JavaProject>(project);
+        numberOfFiles = project.getNumberOfScannedFiles();
+        this.project = new WeakReference<TasksProject>(project);
 
         try {
             Collection<FileAnnotation> files = project.getAnnotations();
@@ -170,7 +169,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
     /**
      * Returns the number of scanned files in this project.
      *
-     * @return the number of scanned files in a {@link JavaProject}
+     * @return the number of scanned files in a {@link TasksProject}
      */
     public int getNumberOfFiles() {
         return numberOfFiles;
@@ -238,7 +237,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      *
      * @return the associated project of this result.
      */
-    public synchronized JavaProject getProject() {
+    public synchronized TasksProject getProject() {
         if (project == null) {
             loadResult();
         }
@@ -254,9 +253,9 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      * get removed by the garbage collector.
      */
     private void loadResult() {
-        JavaProject result;
+        TasksProject result;
         try {
-            JavaProject newProject = new JavaProject();
+            TasksProject newProject = new TasksProject(numberOfFiles);
             FileAnnotation[] annotations = (FileAnnotation[])getDataFile().read();
             newProject.addAnnotations(annotations);
             LOGGER.log(Level.INFO, "Loaded tasks data file " + getDataFile() + " for build " + getOwner().getNumber());
@@ -264,9 +263,9 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
-            result = new JavaProject();
+            result = new TasksProject();
         }
-        project = new WeakReference<JavaProject>(result);
+        project = new WeakReference<TasksProject>(result);
     }
 
     /**
@@ -482,7 +481,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
                 module.getPackage(request.getParameter("package")), module.getAnnotationBound());
     }
 
-    // Delegates to JavaProject
+    // Delegates to TasksProject
     // CHECKSTYLE:OFF
 
     public Collection<WorkspaceFile> getFiles() {

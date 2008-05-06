@@ -8,9 +8,8 @@ import hudson.plugins.tasks.util.model.JavaProject;
 public class TasksProject extends JavaProject {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 4904609926196858707L;
-
     /** The number of scanned files in this project. */
-    private final int numberOfFiles;
+    private int numberOfFiles;
 
     /**
      * Creates a new instance of <code>TasksProject</code>.
@@ -22,6 +21,15 @@ public class TasksProject extends JavaProject {
         super();
 
         this.numberOfFiles = numberOfFiles;
+    }
+
+    /**
+     * Creates a new instance of <code>TasksProject</code>.
+     */
+    public TasksProject() {
+        super();
+
+        numberOfFiles = 0;
     }
 
     /**
@@ -39,8 +47,17 @@ public class TasksProject extends JavaProject {
      *
      * @return the number of scanned files in a {@link JavaProject}
      */
-    public int getNumberOfFiles() {
+    public int getNumberOfScannedFiles() {
         return numberOfFiles;
+    }
+
+    /**
+     * Adds the specified number of parsed files to this project.
+     *
+     * @param newFiles the new files
+     */
+    public void addScannedFiles(final int newFiles) {
+        numberOfFiles += newFiles;
     }
 }
 
