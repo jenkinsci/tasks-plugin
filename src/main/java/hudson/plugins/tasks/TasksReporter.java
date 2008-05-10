@@ -28,6 +28,8 @@ import org.apache.maven.project.MavenProject;
  * @author Ulli Hafner
  */
 public class TasksReporter extends HealthAwareMavenReporter {
+    /** Unique identifier of this class. */
+    private static final long serialVersionUID = -4159947472293502606L;
     /** Descriptor of this publisher. */
     public static final TasksReporterDescriptor TASK_SCANNER_DESCRIPTOR = new TasksReporterDescriptor(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
     /** Default files pattern. */
@@ -43,14 +45,19 @@ public class TasksReporter extends HealthAwareMavenReporter {
     /** Determines the height of the trend graph. */
     private final String height;
     /** Determines whether to use the provided threshold to mark a build as unstable. */
+    @SuppressWarnings("unused")
     private boolean isThresholdEnabled; // backward compatibility
     /** Determines whether to use the provided healthy thresholds. */
+    @SuppressWarnings("unused")
     private boolean isHealthyReportEnabled; // backward compatibility
     /** Report health as 100% when the number of warnings is less than this value. */
+    @SuppressWarnings("unused")
     private int healthyTasks; // backward compatibility
     /** Report health as 0% when the number of warnings is greater than this value. */
+    @SuppressWarnings("unused")
     private int unHealthyTasks; // backward compatibility
     /** Integer bug threshold to be reached if a build should be considered as unstable. */
+    @SuppressWarnings("unused")
     private int minimumTasks; // backward compatibility
 
     /**

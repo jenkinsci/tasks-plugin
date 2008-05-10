@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A {@link PmdResultAction} for native maven jobs. This action
+ * A {@link TasksResultAction} for native maven jobs. This action
  * additionally provides result aggregation for sub-modules and for the main
  * project.
  */
