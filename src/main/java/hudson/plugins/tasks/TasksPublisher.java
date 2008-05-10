@@ -3,7 +3,6 @@ package hudson.plugins.tasks;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
@@ -12,11 +11,12 @@ import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;
+import java.io.PrintStream;
 
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Publishes the results of the task scanner.
+ * Publishes the results of the task scanner (freestyle project type).
  *
  * @author Ulli Hafner
  */
@@ -33,7 +33,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     private final String low;
 
     /**
-     * Creates a new instance of <code>TaskScannerPublisher</code>.
+     * Creates a new instance of <code>TasksPublisher</code>.
      *
      * @param pattern
      *            Ant file-set pattern of files to scan for open tasks in
@@ -59,7 +59,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     public TasksPublisher(final String pattern, final String threshold,
             final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
-        super(pattern, threshold, healthy, unHealthy, height);
+        super(pattern, threshold, healthy, unHealthy, height, "TASKS");
 
         this.high = high;
         this.normal = normal;
@@ -101,9 +101,9 @@ public class TasksPublisher extends HealthAwarePublisher {
 
     /** {@inheritDoc} */
     @Override
-    public TasksProject perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
+    public TasksProject perform(final AbstractBuild<?, ?> build, final PrintStream logger) throws InterruptedException, IOException {
         TasksProject project;
-        listener.getLogger().println("Scanning workspace files for tasks...");
+        log(logger, "Scanning workspace files for tasks...");
         project = build.getProject().getWorkspace().act(
                 new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), high, normal, low));
 
