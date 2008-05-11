@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * Publishes the results of the task scanner (freestyle project type).
@@ -56,8 +57,8 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
-     * @stapler-constructor
      */
+    @DataBoundConstructor
     public TasksPublisher(final String pattern, final String threshold,
             final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {

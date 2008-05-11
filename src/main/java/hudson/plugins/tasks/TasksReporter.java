@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * Publishes the results of the task scanner (maven 2 project type).
@@ -82,9 +83,9 @@ public class TasksReporter extends HealthAwareMavenReporter {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
-     * @stapler-constructor
      */
     // CHECKSTYLE:OFF
+    @DataBoundConstructor
     public TasksReporter(final String pattern, final String threshold, final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
         super(threshold, healthy, unHealthy, pattern, "TASKS");

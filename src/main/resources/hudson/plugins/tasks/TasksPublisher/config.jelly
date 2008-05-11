@@ -1,7 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<f:entry title="${%Files to scan}" description="${%description.files}">
-		<f:textbox name="tasks_pattern" value="${instance.pattern}"
+		<f:textbox name="tasks.pattern" value="${instance.pattern}"
 			checkUrl="'${rootURL}/publisher/TasksPublisher/checkPattern?job=${it.fullName}&amp;value='+escape(this.value)"/>
 	</f:entry>
 	<f:entry title="${%Tasks tags}" description="${%description.tags}">
@@ -16,13 +16,13 @@
 			<tbody>
 				<tr>
 					<td>
-						<f:textbox name="tasks_high" value="${instance.high}"/>
+						<f:textbox name="tasks.high" value="${instance.high}"/>
 					</td>
 					<td>
-						<f:textbox name="tasks_normal" value="${instance.normal}"/>
+						<f:textbox name="tasks.normal" value="${instance.normal}"/>
 					</td>
 					<td>
-						<f:textbox name="tasks_low" value="${instance.low}"/>
+						<f:textbox name="tasks.low" value="${instance.low}"/>
 					</td>
 				</tr>
 			</tbody>
@@ -31,7 +31,7 @@
 	</f:entry>
   <f:advanced>
 	<f:entry title="${%Unstable threshold}" description="${%description.threshold}">
-		<f:textbox name="tasks_threshold" value="${instance.threshold}"
+		<f:textbox name="tasks.threshold" value="${instance.threshold}"
 		    checkUrl="'${rootURL}/publisher/TasksPublisher/checkThreshold?job=${it.fullName}&amp;value='+escape(this.value)"/>
 	</f:entry>
 	<f:entry title="${%Health reporting}" description="${%description.healthy}">
@@ -55,17 +55,17 @@
 						${%Number of open tasks}
 					</th>
 					<td>
-						<f:textbox name="tasks_healthy" value="${instance.healthy}"/>
+						<f:textbox name="tasks.healthy" value="${instance.healthy}"/>
 					</td>
 					<td>
-						<f:textbox name="tasks_unHealthy" value="${instance.unHealthy}"/>
+						<f:textbox name="tasks.unHealthy" value="${instance.unHealthy}"/>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</f:entry>
 	<f:entry title="${%Trend report height}" description="${%description.height}">
-		<f:textbox name="tasks_height" value="${instance.height}" />
+		<f:textbox name="tasks.height" value="${instance.height}" />
 	</f:entry>
   </f:advanced>
 </j:jelly>

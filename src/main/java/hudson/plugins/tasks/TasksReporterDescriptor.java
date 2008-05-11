@@ -1,10 +1,7 @@
 package hudson.plugins.tasks;
 
-import hudson.maven.MavenReporter;
 import hudson.plugins.tasks.util.PluginDescriptor;
 import hudson.plugins.tasks.util.ReporterDescriptor;
-
-import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Descriptor for the class {@link TasksReporter}. Used as a singleton. The
@@ -27,12 +24,6 @@ public class TasksReporterDescriptor extends ReporterDescriptor {
     @Override
     public String getConfigPage() {
         return getViewPage(TasksPublisher.class, "config.jelly");
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public MavenReporter newInstance(final StaplerRequest request) throws FormException {
-        return request.bindParameters(TasksReporter.class, getPublisherDescriptor().getPluginName() + "_");
     }
 }
 
