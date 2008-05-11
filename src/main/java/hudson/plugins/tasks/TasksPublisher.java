@@ -58,6 +58,7 @@ public class TasksPublisher extends HealthAwarePublisher {
      * @param low
      *            tag identifiers indicating low priority
      */
+    // CHECKSTYLE:OFF
     @DataBoundConstructor
     public TasksPublisher(final String pattern, final String threshold,
             final String healthy, final String unHealthy, final String height,
@@ -69,6 +70,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         this.normal = normal;
         this.low = low;
     }
+    // CHECKSTYLE:ON
 
     /**
      * Returns the Ant file-set pattern of files to work with.
