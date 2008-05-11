@@ -1,6 +1,6 @@
 <projectDescription>
   <name>tasks</name>
-  <comment/>
+  <comment>This plug-in scans the workspace files for open tasks and generates a trend report.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
