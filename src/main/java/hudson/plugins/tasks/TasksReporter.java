@@ -45,19 +45,19 @@ public class TasksReporter extends HealthAwareMavenReporter {
     /** Determines the height of the trend graph. */
     private final String height;
     /** Determines whether to use the provided threshold to mark a build as unstable. */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // NOPMD
     private boolean isThresholdEnabled; // backward compatibility
     /** Determines whether to use the provided healthy thresholds. */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // NOPMD
     private boolean isHealthyReportEnabled; // backward compatibility
     /** Report health as 100% when the number of warnings is less than this value. */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // NOPMD
     private int healthyTasks; // backward compatibility
     /** Report health as 0% when the number of warnings is greater than this value. */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // NOPMD
     private int unHealthyTasks; // backward compatibility
     /** Integer bug threshold to be reached if a build should be considered as unstable. */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // NOPMD
     private int minimumTasks; // backward compatibility
 
     /**

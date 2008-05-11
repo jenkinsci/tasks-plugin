@@ -80,7 +80,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
     /** The number of normal priority tasks in this build. */
     private final int normalPriorityTasks;
     /** The number of scanned files in the project. */
-    private int numberOfFiles;
+    private final int numberOfFiles;
 
     /**
      * Creates a new instance of <code>TasksResult</code>.
@@ -302,7 +302,8 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
         PriorityDetailFactory factory = new PriorityDetailFactory() {
             /** {@inheritDoc} */
             @Override
-            protected PrioritiesDetail createPrioritiesDetail(Priority priority, AbstractBuild<?, ?> build, AnnotationContainer container, String header) {
+            @SuppressWarnings("IMA")
+            protected PrioritiesDetail createPrioritiesDetail(final Priority priority, final AbstractBuild<?, ?> build, final AnnotationContainer container, final String header) {
                 return new TasksPrioritiesDetail(build, getProject(), priority, header, high, normal, low);
             }
         };
