@@ -31,6 +31,8 @@ public class TasksPublisher extends HealthAwarePublisher {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
+    /** Ant file-set pattern of files to work with. */
+    private final String pattern;
 
     /**
      * Creates a new instance of <code>TasksPublisher</code>.
@@ -59,11 +61,21 @@ public class TasksPublisher extends HealthAwarePublisher {
     public TasksPublisher(final String pattern, final String threshold,
             final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
-        super(pattern, threshold, healthy, unHealthy, height, "TASKS");
+        super(threshold, healthy, unHealthy, height, "TASKS");
 
+        this.pattern = pattern;
         this.high = high;
         this.normal = normal;
         this.low = low;
+    }
+
+    /**
+     * Returns the Ant file-set pattern of files to work with.
+     *
+     * @return Ant file-set pattern of files to work with
+     */
+    public String getPattern() {
+        return pattern;
     }
 
     /**

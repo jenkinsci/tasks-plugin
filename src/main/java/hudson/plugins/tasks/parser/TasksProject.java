@@ -4,6 +4,8 @@ import hudson.plugins.tasks.util.model.JavaProject;
 
 /**
  * Remembers the number of scanned files in a {@link JavaProject}.
+ *
+ * @author Ulli Hafner
  */
 public class TasksProject extends JavaProject {
     /** Unique identifier of this class. */

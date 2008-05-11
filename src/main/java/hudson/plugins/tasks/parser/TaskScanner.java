@@ -20,6 +20,8 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Scans a given input stream for open tasks.
+ *
+ * @author Ulli Hafner
  */
 public class TaskScanner {
     /** The regular expression patterns to be used to scan the files. One pattern per priority. */

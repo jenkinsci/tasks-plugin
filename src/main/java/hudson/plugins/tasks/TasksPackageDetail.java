@@ -9,6 +9,8 @@ import java.util.Collection;
 
 /**
  * Represents the tasks details of a Java package.
+ *
+ * @author Ulli Hafner
  */
 public class TasksPackageDetail extends PackageDetail {
     /** Unique identifier of this class. */

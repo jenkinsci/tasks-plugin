@@ -10,6 +10,8 @@ import java.util.Collection;
 
 /**
  * Represents the details of a maven module.
+ *
+ * @author Ulli Hafner
  */
 public class TasksModuleDetail extends ModuleDetail {
     /** Unique identifier of this class. */

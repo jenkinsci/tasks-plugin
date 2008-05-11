@@ -19,6 +19,8 @@ import java.util.Map;
  * A {@link TasksResultAction} for native maven jobs. This action
  * additionally provides result aggregation for sub-modules and for the main
  * project.
+ *
+ * @author Ulli Hafner
  */
 public class MavenTasksResultAction extends TasksResultAction implements AggregatableAction, MavenAggregatedReport {
     /** Unique identifier of this class. */

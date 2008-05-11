@@ -4,6 +4,8 @@ package hudson.plugins.tasks;
 /**
  * Represents the result summary of the FindBugs parser. This summary will be
  * shown in the summary.jelly script of the FindBugs result action.
+ *
+ * @author Ulli Hafner
  */
 public final class ResultSummary {
     /**

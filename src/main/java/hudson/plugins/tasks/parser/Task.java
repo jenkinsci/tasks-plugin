@@ -7,6 +7,8 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * A serializable Java Bean class representing an open task.
+ *
+ * @author Ulli Hafner
  */
 public class Task extends AbstractAnnotation {
     /** Unique identifier of this class. */

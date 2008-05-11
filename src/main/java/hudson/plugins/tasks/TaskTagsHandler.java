@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Handles the tags of the open tasks.
+ *
+ * @author Ulli Hafner
  */
 public class TaskTagsHandler implements Serializable {
     /** Unique ID of this class.*/
