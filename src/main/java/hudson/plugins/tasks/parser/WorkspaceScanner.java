@@ -2,7 +2,10 @@ package hudson.plugins.tasks.parser;
 
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
+import hudson.plugins.tasks.util.CsharpNamespaceDetector;
+import hudson.plugins.tasks.util.JavaPackageDetector;
 import hudson.plugins.tasks.util.MavenModuleDetector;
+import hudson.plugins.tasks.util.PackageDetector;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;
@@ -145,7 +148,7 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
                 return detector.detectPackageName(content);
             }
         }
-        return StringUtils.EMPTY;
+        return "n/a";
     }
 
     /**

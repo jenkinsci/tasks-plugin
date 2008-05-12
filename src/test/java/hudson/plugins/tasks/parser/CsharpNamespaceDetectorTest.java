@@ -2,6 +2,8 @@ package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
 
+import hudson.plugins.tasks.util.CsharpNamespaceDetector;
+
 import java.io.IOException;
 import java.io.InputStream;
 

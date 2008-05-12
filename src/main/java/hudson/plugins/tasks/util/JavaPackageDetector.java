@@ -1,4 +1,4 @@
-package hudson.plugins.tasks.parser;
+package hudson.plugins.tasks.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,9 +12,9 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author Ulli Hafner
  */
-public class JavaPackageDetector implements PackageDetector {
+public class JavaPackageDetector extends AbstractPackageDetector {
     /** {@inheritDoc}*/
-    public String detectPackageName(final InputStream stream) throws IOException {
+    public String detectPackageName(final InputStream stream) {
         try {
             LineIterator iterator = IOUtils.lineIterator(stream, "UTF-8");
             while (iterator.hasNext()) {
@@ -23,11 +23,14 @@ public class JavaPackageDetector implements PackageDetector {
                     return StringUtils.substringBetween(line, " ", ";").trim();
                 }
             }
-            return StringUtils.EMPTY;
+        }
+        catch (IOException exception) {
+            // ignore
         }
         finally {
             IOUtils.closeQuietly(stream);
         }
+        return UNKNOWN_PACKAGE;
     }
 
     /** {@inheritDoc} */

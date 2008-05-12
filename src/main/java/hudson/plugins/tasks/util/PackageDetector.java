@@ -1,6 +1,5 @@
-package hudson.plugins.tasks.parser;
+package hudson.plugins.tasks.util;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -16,10 +15,18 @@ public interface PackageDetector {
      * @param stream
      *            the content of the file to scan
      * @return the detected package or namespace name
-     * @throws IOException
-     *             if the file could not be read
      */
-    String detectPackageName(final InputStream stream) throws IOException;
+    String detectPackageName(final InputStream stream);
+
+    /**
+     * Detects the package or namespace name of the specified input stream. The
+     * stream must be closed afterwards.
+     *
+     * @param fileName
+     *            the file name of the file to scan
+     * @return the detected package or namespace name
+     */
+    String detectPackageName(final String fileName);
 
     /**
      * Returns whether this classifier accepts the specified file for
