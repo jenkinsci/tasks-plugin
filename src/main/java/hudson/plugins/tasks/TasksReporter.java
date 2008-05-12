@@ -23,11 +23,14 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+
 /**
  * Publishes the results of the task scanner (maven 2 project type).
  *
  * @author Ulli Hafner
  */
+// CHECKSTYLE:COUPLING-OFF
 public class TasksReporter extends HealthAwareMavenReporter {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -4159947472293502606L;

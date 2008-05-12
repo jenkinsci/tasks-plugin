@@ -1,4 +1,4 @@
-package hudson.plugins.tasks;
+package hudson.plugins.tasks; // NOPMD
 
 import hudson.XmlFile;
 import hudson.model.AbstractBuild;
@@ -42,6 +42,8 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  *
  * @author Ulli Hafner
  */
+//CHECKSTYLE:COUPLING-OFF
+@SuppressWarnings("PMD.TooManyFields")
 public class TasksResult implements ModelObject, Serializable, AnnotationProvider  {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -344808345805935004L;
