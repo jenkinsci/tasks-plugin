@@ -1,13 +1,11 @@
 package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
-
 import hudson.plugins.tasks.util.JavaPackageDetector;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 /**
@@ -43,7 +41,7 @@ public class JavaPackageDetectorTest {
         String fileName = "file-without-tasks.txt";
         InputStream stream = JavaPackageDetectorTest.class.getResourceAsStream(fileName);
 
-        assertEquals("Wrong namespace name guessed.", StringUtils.EMPTY, classifier.detectPackageName(stream));
+        assertEquals("Wrong namespace name guessed.", "n/a", classifier.detectPackageName(stream));
     }
 
     /**
