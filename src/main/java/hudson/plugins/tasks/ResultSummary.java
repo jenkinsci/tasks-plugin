@@ -41,7 +41,7 @@ public final class ResultSummary {
             summary.append(Messages._Tasks_ResultAction_OneFile());
         }
         if (project.getDelta() == 0) {
-            summary.append(" (±0).");
+            summary.append(" (\u00B10).");
         }
         else if (project.getDelta() > 0) {
             summary.append(" (+" + project.getDelta() + ").");

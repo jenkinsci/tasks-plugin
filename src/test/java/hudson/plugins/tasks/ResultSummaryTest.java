@@ -32,7 +32,7 @@ public class ResultSummaryTest extends AbstractEnglishLocaleTest {
      */
     @Test
     public void test0WarningsIn1File() {
-        checkSummaryText(0, 1, 0, "Task Scanner: 0 open tasks in 1 workspace file (±0).");
+        checkSummaryText(0, 1, 0, "Task Scanner: 0 open tasks in 1 workspace file (\u00B10).");
     }
 
     /**
@@ -40,7 +40,7 @@ public class ResultSummaryTest extends AbstractEnglishLocaleTest {
      */
     @Test
     public void test0WarningsIn5Files() {
-        checkSummaryText(0, 5, 0, "Task Scanner: 0 open tasks in 5 workspace files (±0).");
+        checkSummaryText(0, 5, 0, "Task Scanner: 0 open tasks in 5 workspace files (\u00B10).");
     }
 
     /**
@@ -48,7 +48,7 @@ public class ResultSummaryTest extends AbstractEnglishLocaleTest {
      */
     @Test
     public void test1WarningIn2Files() {
-        checkSummaryText(1, 2, 0, "Task Scanner: <a href=\"tasksResult\">1 open task</a> in 2 workspace files (±0).");
+        checkSummaryText(1, 2, 0, "Task Scanner: <a href=\"tasksResult\">1 open task</a> in 2 workspace files (\u00B10).");
     }
 
     /**
@@ -56,7 +56,7 @@ public class ResultSummaryTest extends AbstractEnglishLocaleTest {
      */
     @Test
     public void test5WarningsIn1File() {
-        checkSummaryText(5, 1, 0, "Task Scanner: <a href=\"tasksResult\">5 open tasks</a> in 1 workspace file (±0).");
+        checkSummaryText(5, 1, 0, "Task Scanner: <a href=\"tasksResult\">5 open tasks</a> in 1 workspace file (\u00B10).");
     }
 
     /**
