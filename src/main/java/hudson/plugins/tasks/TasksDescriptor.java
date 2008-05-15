@@ -1,6 +1,9 @@
 package hudson.plugins.tasks;
 
 import hudson.plugins.tasks.util.PluginDescriptor;
+import net.sf.json.JSONObject;
+
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Descriptor for the class {@link TasksPublisher}. Used as a singleton. The
@@ -37,5 +40,11 @@ public final class TasksDescriptor extends PluginDescriptor {
     @Override
     public String getIconUrl() {
         return ACTION_ICON;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public TasksPublisher newInstance(final StaplerRequest request, final JSONObject formData) throws FormException {
+        return request.bindParameters(TasksPublisher.class, PLUGIN_NAME + ".");
     }
 }

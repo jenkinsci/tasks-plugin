@@ -19,26 +19,26 @@ public final class ResultSummary {
         StringBuilder summary = new StringBuilder();
         int tasks = project.getNumberOfAnnotations();
 
-        summary.append(Messages._Tasks_ResultAction_Summary());
+        summary.append(Messages.Tasks_ResultAction_Summary());
         summary.append(" ");
         if (tasks > 0) {
             summary.append("<a href=\"tasksResult\">");
         }
         if (tasks == 1) {
-            summary.append(Messages._Tasks_ResultAction_OneWarning());
+            summary.append(Messages.Tasks_ResultAction_OneWarning());
         }
         else {
-            summary.append(Messages._Tasks_ResultAction_MultipleWarnings(tasks));
+            summary.append(Messages.Tasks_ResultAction_MultipleWarnings(tasks));
         }
         if (tasks > 0) {
             summary.append("</a>");
         }
         summary.append(" ");
         if (project.getNumberOfFiles() > 1) {
-            summary.append(Messages._Tasks_ResultAction_MultipleFiles(project.getNumberOfFiles()));
+            summary.append(Messages.Tasks_ResultAction_MultipleFiles(project.getNumberOfFiles()));
         }
         else {
-            summary.append(Messages._Tasks_ResultAction_OneFile());
+            summary.append(Messages.Tasks_ResultAction_OneFile());
         }
         if (project.getDelta() == 0) {
             summary.append(" (\u00B10).");
