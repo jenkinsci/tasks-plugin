@@ -29,12 +29,13 @@ public class TasksResultBuilder {
     public TasksResult build(final AbstractBuild<?, ?> build, final TasksProject project,
             final String high, final String normal, final String low) {
         Object previous = build.getPreviousBuild();
-        if (previous instanceof AbstractBuild<?, ?>) {
+        while (previous instanceof AbstractBuild<?, ?> && previous != null) {
             AbstractBuild<?, ?> previousBuild = (AbstractBuild<?, ?>)previous;
             TasksResultAction previousAction = previousBuild.getAction(TasksResultAction.class);
             if (previousAction != null) {
                 return new TasksResult(build, project, previousAction.getResult().getNumberOfAnnotations(), high, normal, low);
             }
+            previous = previousBuild.getPreviousBuild();
         }
         return new TasksResult(build, project, high, normal, low);
     }
