@@ -45,6 +45,6 @@ public final class TasksDescriptor extends PluginDescriptor {
     /** {@inheritDoc} */
     @Override
     public TasksPublisher newInstance(final StaplerRequest request, final JSONObject formData) throws FormException {
-        return request.bindParameters(TasksPublisher.class, PLUGIN_NAME + ".");
+        return request.bindJSON(TasksPublisher.class, formData);
     }
 }
