@@ -40,7 +40,8 @@ public class TasksProject extends JavaProject {
      * @return the created object
      */
     private Object readResolve() {
-        rebuildMappings(false);
+        setHierarchy(Hierarchy.PROJECT);
+        rebuildMappings();
         return this;
     }
 

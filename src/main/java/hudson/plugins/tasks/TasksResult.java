@@ -326,20 +326,25 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
     }
 
     /**
-     * Returns a tooltip showing the distribution of priorities for the selected
-     * package.
+     * Returns the module with the specified name.
      *
      * @param name
-     *            the package to show the distribution for
-     * @return a tooltip showing the distribution of priorities
+     *            the module to get
+     * @return the module
      */
-    public String getToolTip(final String name) {
-        if (isSingleModuleProject()) {
-            return getProject().getModules().iterator().next().getPackage(name).getToolTip();
-        }
-        else {
-            return getProject().getModule(name).getToolTip();
-        }
+    public MavenModule getModule(final String name) {
+        return getProject().getModule(name);
+    }
+
+    /**
+     * Returns the package with the given name.
+     *
+     * @param name
+     *            the package to get
+     * @return the package
+     */
+    public JavaPackage getPackage(final String name) {
+        return getProject().getModules().iterator().next().getPackage(name);
     }
 
     /**

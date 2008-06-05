@@ -2,6 +2,7 @@ package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
+import hudson.plugins.tasks.util.model.JavaProject;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner().scan(file);
+        assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         Iterator<Task> iterator = result.iterator();
@@ -53,6 +55,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner().scan(file);
+        assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -71,6 +74,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner("FIXME", null, null).scan(file);
+        assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -89,6 +93,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner(" FIXME , TODO ", null, null).scan(file);
+        assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -107,6 +112,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner("FIXME,TODO", null, null).scan(file);
+        assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -125,6 +131,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
         Collection<Task> result = new TaskScanner("FIXME", "FIXME,TODO", "TODO").scan(file);
+        assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 4, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -143,6 +150,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream("file-without-tasks.txt");
 
         Collection<Task> result = new TaskScanner().scan(file);
+        assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -153,15 +161,29 @@ public class TaskScannerTest {
     }
 
     /**
-     * Creates an annotation container to simplify tasks counting.
+     * Assigns properties to all tasks.
      *
      * @param result
+     *      the tasks to assign the properties for
+     */
+    private void assignProperties(final Collection<Task> result) {
+        for (Task task : result) {
+            task.setFileName("Path/To/TestFile");
+            task.setPackageName("Package");
+            task.setModuleName("Module");
+        }
+    }
+
+    /**
+     * Creates an annotation container to simplify tasks counting.
+     *
+     * @param tasks
      *            the tasks to add to the container
      * @return the annotation container
      */
-    private AnnotationContainer createContainer(final Collection<Task> result) {
-        AnnotationContainer container = new AnnotationContainer();
-        container.addAnnotations(result);
+    private AnnotationContainer createContainer(final Collection<Task> tasks) {
+        AnnotationContainer container = new JavaProject();
+        container.addAnnotations(tasks);
         return container;
     }
 }
