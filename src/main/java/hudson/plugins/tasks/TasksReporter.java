@@ -40,6 +40,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
     private static final String DEFAULT_PATTERN = "**/*.java";
     /** Ant file-set pattern of files to scan for open tasks in. */
     private final String pattern;
+	 /** Ant file-set pattern of files to exclude from scan. */
+    private final String excludePattern;
     /** Tag identifiers indicating high priority. */
     private final String high;
     /** Tag identifiers indicating normal priority. */
@@ -89,10 +91,11 @@ public class TasksReporter extends HealthAwareMavenReporter {
      */
     // CHECKSTYLE:OFF
     @DataBoundConstructor
-    public TasksReporter(final String pattern, final String threshold, final String healthy, final String unHealthy, final String height,
+    public TasksReporter(final String pattern, final String excludePattern, final String threshold, final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
         super(threshold, healthy, unHealthy, pattern, "TASKS");
         this.pattern = pattern;
+	     this.excludePattern = excludePattern;
         this.height = height;
         this.high = high;
         this.normal = normal;
@@ -107,6 +110,15 @@ public class TasksReporter extends HealthAwareMavenReporter {
      */
     public String getPattern() {
         return pattern;
+    }
+
+	 /**
+     * Returns the Ant file-set pattern of files to exclude from work.
+     *
+     * @return Ant file-set pattern of files to exclude from work.
+     */
+    public String getExcludePattern() {
+        return excludePattern;
     }
 
     /**
@@ -162,7 +174,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
             if (filePath.exists()) {
                 log(logger, String.format("Scanning folder '%s' for tasks ... ", sourcePath));
                 WorkspaceScanner workspaceScanner = new WorkspaceScanner(
-                        StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
+                        StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN), excludePattern,
                         high, normal, low, pom.getName());
                 workspaceScanner.setPrefix(sourcePath);
                 TasksProject subProject = filePath.act(workspaceScanner);

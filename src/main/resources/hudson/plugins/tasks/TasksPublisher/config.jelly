@@ -4,6 +4,10 @@
 		<f:textbox name="pattern" value="${instance.pattern}"
 			checkUrl="'${rootURL}/publisher/TasksPublisher/checkPattern?job=${it.fullName}&amp;value='+escape(this.value)"/>
 	</f:entry>
+	<f:entry title="${%Files to exclude from scan}" description="${%description.exclude.files}">
+		<f:textbox name="excludePattern" value="${instance.excludePattern}"
+			checkUrl="'${rootURL}/publisher/TasksPublisher/checkPattern?job=${it.fullName}&amp;value='+escape(this.value)"/>
+	</f:entry>
 	<f:entry title="${%Tasks tags}" description="${%description.tags}">
 		<table>
 			<thead>

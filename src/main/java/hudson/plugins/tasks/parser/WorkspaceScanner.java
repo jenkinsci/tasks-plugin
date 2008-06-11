@@ -29,6 +29,8 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
     private static final long serialVersionUID = -4355362392102020724L;
     /** Ant file-set pattern to scan for FindBugs files. */
     private final String filePattern;
+	 /** Ant file-set pattern to scan for FindBugs files. */
+    private final String excludeFilePattern;
     /** The maven module. If <code>null</code>, then the scanner tries to guess it (freestyle project). */
     private String moduleName;
     /** Tag identifiers indicating high priority. */
@@ -45,6 +47,8 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
      *
      * @param filePattern
      *            ant file-set pattern to scan for files
+     * @param excludeFilePattern
+     *            ant file-set pattern to exclude from scan
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -52,8 +56,9 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public WorkspaceScanner(final String filePattern, final String high, final String normal, final String low) {
+    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String high, final String normal, final String low) {
         this.filePattern = filePattern;
+	     this.excludeFilePattern = excludeFilePattern;
         this.high = high;
         this.normal = normal;
         this.low = low;
@@ -66,6 +71,8 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
      *            the maven module name
      * @param filePattern
      *            ant file-set pattern to scan for files
+     * @param excludeFilePattern
+     *            ant file-set pattern to exclude from scan
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -73,8 +80,8 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public WorkspaceScanner(final String filePattern, final String high, final String normal, final String low, final String moduleName) {
-        this(filePattern, high, normal, low);
+    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String high, final String normal, final String low, final String moduleName) {
+        this(filePattern, excludeFilePattern, high, normal, low);
         this.moduleName = moduleName;
     }
 
@@ -165,6 +172,9 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
         fileSet.setProject(project);
         fileSet.setDir(workspaceRoot);
         fileSet.setIncludes(filePattern);
+
+	    if (excludeFilePattern != null && excludeFilePattern.length() > 0)
+		     fileSet.setExcludes(excludeFilePattern);
 
         return fileSet.getDirectoryScanner(project).getIncludedFiles();
     }

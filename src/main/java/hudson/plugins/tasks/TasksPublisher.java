@@ -34,12 +34,16 @@ public class TasksPublisher extends HealthAwarePublisher {
     private final String low;
     /** Ant file-set pattern of files to work with. */
     private final String pattern;
+	 /** Ant file-set pattern of files to exclude from work. */
+	 private final String excludePattern;
 
     /**
      * Creates a new instance of <code>TasksPublisher</code>.
      *
      * @param pattern
      *            Ant file-set pattern of files to scan for open tasks in
+     * @param excludePattern
+     *            Ant file-set pattern of files to exclude from scan
      * @param threshold
      *            Tasks threshold to be reached if a build should be considered
      *            as unstable.
@@ -60,12 +64,13 @@ public class TasksPublisher extends HealthAwarePublisher {
      */
     // CHECKSTYLE:OFF
     @DataBoundConstructor
-    public TasksPublisher(final String pattern, final String threshold,
+    public TasksPublisher(final String pattern, final String excludePattern, final String threshold,
             final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
         super(threshold, healthy, unHealthy, height, "TASKS");
 
         this.pattern = pattern;
+	     this.excludePattern = excludePattern;
         this.high = high;
         this.normal = normal;
         this.low = low;
@@ -79,6 +84,15 @@ public class TasksPublisher extends HealthAwarePublisher {
      */
     public String getPattern() {
         return pattern;
+    }
+
+	 /**
+     * Returns the Ant file-set pattern of files to exclude from work.
+     *
+     * @return Ant file-set pattern of files to exclude from work
+     */
+    public String getExcludePattern() {
+        return excludePattern;
     }
 
     /**
@@ -120,7 +134,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         TasksProject project;
         log(logger, "Scanning workspace files for tasks...");
         project = build.getProject().getWorkspace().act(
-                new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), high, normal, low));
+                new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), high, normal, low));
 
         TasksResult result = new TasksResultBuilder().build(build, project, high, normal, low);
         HealthReportBuilder healthReportBuilder = createHealthReporter(
