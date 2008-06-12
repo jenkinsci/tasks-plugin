@@ -27,9 +27,9 @@ import org.apache.tools.ant.types.FileSet;
 public class WorkspaceScanner implements FileCallable<TasksProject> {
     /** Generated ID. */
     private static final long serialVersionUID = -4355362392102020724L;
-    /** Ant file-set pattern to scan for FindBugs files. */
+    /** Ant file-set pattern to define the files to scan. */
     private final String filePattern;
-	 /** Ant file-set pattern to scan for FindBugs files. */
+    /** Ant file-set pattern to define the files to exclude from scan. */
     private final String excludeFilePattern;
     /** The maven module. If <code>null</code>, then the scanner tries to guess it (freestyle project). */
     private String moduleName;
@@ -58,7 +58,7 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
      */
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String high, final String normal, final String low) {
         this.filePattern = filePattern;
-	     this.excludeFilePattern = excludeFilePattern;
+        this.excludeFilePattern = excludeFilePattern;
         this.high = high;
         this.normal = normal;
         this.low = low;
@@ -163,7 +163,7 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
      * the workspace.
      *
      * @param workspaceRoot
-     *            root directory of the workspace
+     *      root directory of the workspace
      * @return the filenames of the FindBugs files
      */
     private String[] findFiles(final File workspaceRoot) {
@@ -173,8 +173,9 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
         fileSet.setDir(workspaceRoot);
         fileSet.setIncludes(filePattern);
 
-	    if (excludeFilePattern != null && excludeFilePattern.length() > 0)
-		     fileSet.setExcludes(excludeFilePattern);
+        if (StringUtils.isNotBlank(excludeFilePattern)) {
+            fileSet.setExcludes(excludeFilePattern);
+        }
 
         return fileSet.getDirectoryScanner(project).getIncludedFiles();
     }

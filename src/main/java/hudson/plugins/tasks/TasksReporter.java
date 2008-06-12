@@ -40,7 +40,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     private static final String DEFAULT_PATTERN = "**/*.java";
     /** Ant file-set pattern of files to scan for open tasks in. */
     private final String pattern;
-	 /** Ant file-set pattern of files to exclude from scan. */
+    /** Ant file-set pattern of files to exclude from scan. */
     private final String excludePattern;
     /** Tag identifiers indicating high priority. */
     private final String high;
@@ -95,7 +95,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
             final String high, final String normal, final String low) {
         super(threshold, healthy, unHealthy, pattern, "TASKS");
         this.pattern = pattern;
-	     this.excludePattern = excludePattern;
+        this.excludePattern = excludePattern;
         this.height = height;
         this.high = high;
         this.normal = normal;
@@ -112,7 +112,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
         return pattern;
     }
 
-	 /**
+     /**
      * Returns the Ant file-set pattern of files to exclude from work.
      *
      * @return Ant file-set pattern of files to exclude from work.
@@ -155,7 +155,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
+    @java.lang.SuppressWarnings("unchecked")
     @Override
     public JavaProject perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PrintStream logger) throws InterruptedException, IOException {
 

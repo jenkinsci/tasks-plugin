@@ -34,8 +34,8 @@ public class TasksPublisher extends HealthAwarePublisher {
     private final String low;
     /** Ant file-set pattern of files to work with. */
     private final String pattern;
-	 /** Ant file-set pattern of files to exclude from work. */
-	 private final String excludePattern;
+    /** Ant file-set pattern of files to exclude from work. */
+    private final String excludePattern;
 
     /**
      * Creates a new instance of <code>TasksPublisher</code>.
@@ -70,7 +70,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         super(threshold, healthy, unHealthy, height, "TASKS");
 
         this.pattern = pattern;
-	     this.excludePattern = excludePattern;
+        this.excludePattern = excludePattern;
         this.high = high;
         this.normal = normal;
         this.low = low;
@@ -86,7 +86,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         return pattern;
     }
 
-	 /**
+     /**
      * Returns the Ant file-set pattern of files to exclude from work.
      *
      * @return Ant file-set pattern of files to exclude from work
