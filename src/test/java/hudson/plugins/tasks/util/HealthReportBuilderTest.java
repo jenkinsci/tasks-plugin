@@ -2,6 +2,7 @@ package hudson.plugins.tasks.util;
 
 import static org.junit.Assert.*;
 import hudson.model.HealthReport;
+import hudson.plugins.tasks.util.HealthReportBuilder;
 
 import java.util.List;
 

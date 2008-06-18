@@ -23,7 +23,7 @@ public class Task extends AbstractAnnotation {
      *            the message of the task (the text after the task keyword)
      */
     public Task(final Priority priority, final int lineNumber, final String message) {
-        super(priority, message, lineNumber, lineNumber);
+        super(priority, message, lineNumber, lineNumber, StringUtils.EMPTY, StringUtils.EMPTY);
     }
 
     /**

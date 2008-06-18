@@ -12,6 +12,7 @@ import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.AnnotationStream;
+import hudson.plugins.tasks.util.model.DefaultAnnotationContainer;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.JavaPackage;
 import hudson.plugins.tasks.util.model.MavenModule;
@@ -25,6 +26,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -310,19 +312,22 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
             }
         };
         if (factory.isPriority(link)) {
-            return factory.create(link, owner, getProject(), Messages.Tasks_ProjectAction_Name());
+            return factory.create(link, owner, getProject(), getDisplayName());
         }
-        if (isSingleModuleProject()) {
-            if (isSinglePackageProject()) {
-                return new SourceDetail(getOwner(), getProject().getAnnotation(link));
-            }
-            else {
-                return new TasksPackageDetail(getOwner(), getProject().getPackage(link), high, normal, low);
-            }
+        else if (link.startsWith("module.")) {
+            return new TasksModuleDetail(getOwner(), getModule(StringUtils.substringAfter(link, "module.")), getDisplayName(), high, normal, low);
         }
-        else {
-            return new TasksModuleDetail(getOwner(), getProject().getModule(link), high, normal, low);
+        else if (link.startsWith("package.")) {
+            return new TasksPackageDetail(getOwner(), getProject().getPackage(StringUtils.substringAfter(link, "package.")), getDisplayName(), high, normal, low);
         }
+        else if (link.startsWith("source.")) {
+            return new SourceDetail(getOwner(), getProject().getAnnotation(StringUtils.substringAfter(link, "source.")));
+        }
+        return null;
+    }
+
+    public AnnotationContainer getContainer() {
+        return getProject();
     }
 
     /**
@@ -334,37 +339,6 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      */
     public MavenModule getModule(final String name) {
         return getProject().getModule(name);
-    }
-
-    /**
-     * Returns the package with the given name.
-     *
-     * @param name
-     *            the package to get
-     * @return the package
-     */
-    public JavaPackage getPackage(final String name) {
-        return getProject().getModules().iterator().next().getPackage(name);
-    }
-
-    /**
-     * Returns whether we only have a single module. In this case the module
-     * statistics are suppressed and only the package statistics are shown.
-     *
-     * @return <code>true</code> for single module projects
-     */
-    public boolean isSingleModuleProject() {
-        return getProject().getModules().size() == 1;
-    }
-
-    /**
-     * Returns whether we only have a single package. In this case the module
-     * and package statistics are suppressed and only the tasks are shown.
-     *
-     * @return <code>true</code> for single module projects
-     */
-    public boolean isSinglePackageProject() {
-        return isSingleModuleProject() && getProject().getPackages().size() == 1;
     }
 
     /**
@@ -459,7 +433,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
     }
 
     /**
-     * Generates a PNG image for high/normal/low distribution of a maven module.
+     * Generates a PNG image for high/normal/low distribution of the specified object.
      *
      * @param request
      *            Stapler request
@@ -468,25 +442,25 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      * @throws IOException
      *             in case of an error
      */
-    public final void doModuleStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        ChartRenderer.renderPriorititesChart(request, response,
-                getProject().getModule(request.getParameter("module")), getProject().getAnnotationBound());
-    }
-
-    /**
-     * Generates a PNG image for high/normal/low distribution of a java package.
-     *
-     * @param request
-     *            Stapler request
-     * @param response
-     *            Stapler response
-     * @throws IOException
-     *             in case of an error
-     */
-    public final void doPackageStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        MavenModule module = getProject().getModules().iterator().next();
-        ChartRenderer.renderPriorititesChart(request, response,
-                module.getPackage(request.getParameter("package")), module.getAnnotationBound());
+    public final void doStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
+        String parameter = request.getParameter("object");
+        if (parameter.startsWith("category.")) {
+            Set<FileAnnotation> annotations = getProject().getCategory(StringUtils.substringAfter(parameter, "category."));
+            ChartRenderer.renderPriorititesChart(request, response, new DefaultAnnotationContainer(annotations), getProject().getAnnotationBound());
+        }
+        else if (parameter.startsWith("type.")) {
+            Set<FileAnnotation> annotations = getProject().getType(StringUtils.substringAfter(parameter, "type."));
+            ChartRenderer.renderPriorititesChart(request, response, new DefaultAnnotationContainer(annotations), getProject().getAnnotationBound());
+        }
+        else if (parameter.startsWith("package.")) {
+            AnnotationContainer annotations = getProject().getPackage(StringUtils.substringAfter(parameter, "package."));
+            ChartRenderer.renderPriorititesChart(request, response, annotations, getProject().getAnnotationBound());
+        }
+        else if (parameter.startsWith("module.")) {
+            AnnotationContainer annotations = getModule(StringUtils.substringAfter(parameter, "module."));
+            ChartRenderer.renderPriorititesChart(request, response, annotations, getProject().getAnnotationBound());
+        }
+        // TODO: we should parameterize the annotation bound (second parameter instead of getChild)
     }
 
     // Delegates to TasksProject

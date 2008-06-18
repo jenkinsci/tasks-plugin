@@ -4,7 +4,7 @@ import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.plugins.tasks.util.CsharpNamespaceDetector;
 import hudson.plugins.tasks.util.JavaPackageDetector;
-import hudson.plugins.tasks.util.MavenModuleDetector;
+import hudson.plugins.tasks.util.ModuleDetector;
 import hudson.plugins.tasks.util.PackageDetector;
 import hudson.remoting.VirtualChannel;
 
@@ -114,7 +114,7 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
         TaskScanner taskScanner = new TaskScanner(high, normal, low);
 
         TasksProject javaProject = new TasksProject(files.length);
-        MavenModuleDetector moduleDetector = new MavenModuleDetector();
+        ModuleDetector moduleDetector = new ModuleDetector();
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
             Collection<Task> tasks = taskScanner.scan(new FilePath(originalFile).read());

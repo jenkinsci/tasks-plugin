@@ -1,6 +1,7 @@
 package hudson.plugins.tasks.util;
 
 import static org.junit.Assert.*;
+import hudson.plugins.tasks.util.AnnotationDifferencer;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.Priority;
 

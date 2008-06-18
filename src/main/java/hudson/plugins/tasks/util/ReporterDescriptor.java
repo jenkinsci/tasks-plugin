@@ -27,13 +27,13 @@ public abstract class ReporterDescriptor extends MavenReporterDescriptor {
 
     /** {@inheritDoc} */
     @Override
-    public String getDisplayName() {
+    public final String getDisplayName() {
         return publisherDescriptor.getDisplayName();
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getHelpFile() {
+    public final String getHelpFile() {
         return publisherDescriptor.getHelpFile();
     }
 

@@ -1,12 +1,15 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.model.ModelObject;
 import hudson.plugins.tasks.util.ModuleDetail;
 import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
+
+import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
 
 /**
  * Represents the details of a maven module.
@@ -33,9 +36,9 @@ public class TasksModuleDetail extends ModuleDetail {
      * @param module
      *            the selected module to show
      */
-    public TasksModuleDetail(final AbstractBuild<?, ?> owner, final MavenModule module,
+    public TasksModuleDetail(final AbstractBuild<?, ?> owner, final MavenModule module, final String header,
             final String high, final String normal, final String low) {
-        super(owner, module, Messages.Tasks_ProjectAction_Name());
+        super(owner, module, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, module);
     }
@@ -50,16 +53,14 @@ public class TasksModuleDetail extends ModuleDetail {
      *            (or package)
      * @return the dynamic result of the FindBugs analysis (detail page for a
      *         package).
-     * @see #isSinglePackageModule()
      */
     @Override
-    public ModelObject getDynamic(final String link) {
-        if (isSinglePackageModule()) {
-            return null;
+    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        if (link.startsWith("package.")) {
+            return new TasksPackageDetail(getOwner(), getPackage(StringUtils.substringAfter(link, "package.")), getDisplayName(),
+                    getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
         }
-        else {
-            return new TasksPackageDetail(getOwner(), getModule().getPackage(link), getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
-        }
+        return super.getDynamic(link, request, response);
     }
 
     // CHECKSTYLE:OFF - generated delegate -

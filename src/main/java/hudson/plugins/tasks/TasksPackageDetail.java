@@ -32,9 +32,9 @@ public class TasksPackageDetail extends PackageDetail {
      * @param javaPackage
      *            the selected Java package to show
      */
-    public TasksPackageDetail(final AbstractBuild<?, ?> owner, final JavaPackage javaPackage,
+    public TasksPackageDetail(final AbstractBuild<?, ?> owner, final JavaPackage javaPackage, final String header,
             final String high, final String normal, final String low) {
-        super(owner, javaPackage, Messages.Tasks_ProjectAction_Name());
+        super(owner, javaPackage, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, javaPackage);
     }
