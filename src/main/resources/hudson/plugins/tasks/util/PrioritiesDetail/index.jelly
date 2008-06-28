@@ -9,7 +9,7 @@
 
       <h1>${it.header}</h1>
 
-      <st:include page="/tabview/main.jelly" />
+      <st:include page="/tasks/main.jelly" />
 
     </l:main-panel>
   </l:layout>

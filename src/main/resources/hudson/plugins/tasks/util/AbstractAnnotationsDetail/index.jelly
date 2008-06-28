@@ -11,7 +11,7 @@
 
       <st:include page="/summaryTable.jelly" />
 
-      <st:include page="/tabview/main.jelly" />
+      <st:include page="/tasks/main.jelly" />
 
     </l:main-panel>
 

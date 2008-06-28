@@ -7,7 +7,7 @@
       <td class="pane-header">${%Line}</td>
       <td class="pane-header">${%Priority}</td>
       <td class="pane-header">${%Type}</td>
-      <td class="pane-header">${%Category}</td>
+      <td class="pane-header">${%Message}</td>
     </tr>
     <tbody>
       <j:forEach var="warning" items="${it.container.annotations}">
@@ -22,10 +22,10 @@
             <div tooltip="${warning.message}"> ${warning.priority.localizedString} </div>
           </td>
           <td class="pane">
-            <div tooltip="${warning.message}"> ${warning.type} </div>
+            <div tooltip="${warning.message}"> ${it.getTags(warning.priority)} </div>
           </td>
           <td class="pane">
-            <div tooltip="${warning.message}"> ${warning.category} </div>
+            <div tooltip="${warning.message}"> ${warning.detailMessage} </div>
           </td>
         </tr>
       </j:forEach>
