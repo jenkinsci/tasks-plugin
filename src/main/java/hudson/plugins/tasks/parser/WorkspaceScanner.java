@@ -13,7 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.FileSet;
@@ -115,13 +119,15 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
 
         TasksProject javaProject = new TasksProject(files.length);
         ModuleDetector moduleDetector = new ModuleDetector();
+        Map<String, String> pathNameToModuleMapping = moduleDetector.getModules(workspace);
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
             Collection<Task> tasks = taskScanner.scan(new FilePath(originalFile).read());
             if (!tasks.isEmpty()) {
                 String unixName = fileName.replace('\\', '/');
                 String packageName = detectPackageName(detectors, unixName, new FilePath(originalFile).read());
-                String actualModule = StringUtils.defaultIfEmpty(moduleName, moduleDetector.guessModuleName(originalFile.getAbsolutePath()));
+                String guessedModule = guessModuleName(pathNameToModuleMapping, originalFile);
+                String actualModule = StringUtils.defaultIfEmpty(moduleName, guessedModule);
 
                 for (Task task : tasks) {
                     task.setFileName(getPrefix() + unixName);
@@ -134,6 +140,29 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
         }
 
         return javaProject;
+    }
+
+    /**
+     * Uses the path prefixes of pom.xml or build.xml files to guess a module name for the specified file.
+     *
+     * @param pathNameToModuleMapping mapping of file prefixes to module names
+     * @param originalFile file name to guess a module for
+     * @return a module name or an empty string
+     */
+    private String guessModuleName(final Map<String, String> pathNameToModuleMapping, final File originalFile) {
+        ArrayList<String> prefixes = new ArrayList<String>(pathNameToModuleMapping.keySet());
+        Collections.sort(prefixes);
+
+        String fullPath = originalFile.getAbsolutePath().replace('\\', '/');
+
+        String guessedModule = StringUtils.EMPTY;
+        for (String path : prefixes) {
+            if (fullPath.startsWith(path)) {
+                Logger.getLogger(WorkspaceScanner.class.getName()).log(Level.WARNING, "TREFFER!");
+                guessedModule = pathNameToModuleMapping.get(path);
+            }
+        }
+        return guessedModule;
     }
 
     /**
