@@ -75,7 +75,7 @@ public class TaskScanner {
             for (int i = 0; i < tags.length; i++) {
                 tags[i] = tags[i].trim();
             }
-            return Pattern.compile("^.*(?:" + StringUtils.join(tags, "|") + ")(.*)$");
+            return Pattern.compile("^.*(?:\\b" + StringUtils.join(tags, "\\b|\\b") + "\\b)(.*)$");
         }
         catch (PatternSyntaxException exception) {
             throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n", exception);

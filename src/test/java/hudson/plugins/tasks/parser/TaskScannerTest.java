@@ -28,6 +28,20 @@ public class TaskScannerTest {
     private static final String WRONG_NUMBER_OF_TASKS_ERROR = "Wrong number of tasks found.";
 
     /**
+     * Checks whether we find tasks at word boundaries.
+     *
+     * @throws IOException if we can't read the file
+     */
+    @Test
+    public void scanFileWithWords() throws IOException {
+        InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-words-test.txt");
+
+        Collection<Task> result = new TaskScanner("WARNING", "TODO", "").scan(file);
+        assignProperties(result);
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 7, result.size());
+    }
+
+    /**
      * Checks whether we find the two task in the test file.
      *
      * @throws IOException if we can't read the file
