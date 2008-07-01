@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.FileSet;
@@ -158,7 +156,6 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
         String guessedModule = StringUtils.EMPTY;
         for (String path : prefixes) {
             if (fullPath.startsWith(path)) {
-                Logger.getLogger(WorkspaceScanner.class.getName()).log(Level.WARNING, "TREFFER!");
                 guessedModule = pathNameToModuleMapping.get(path);
             }
         }

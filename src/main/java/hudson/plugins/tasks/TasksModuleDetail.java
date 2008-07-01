@@ -7,7 +7,6 @@ import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
 
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -44,9 +43,7 @@ public class TasksModuleDetail extends ModuleDetail {
     }
 
     /**
-     * Returns the dynamic result of this module detail view, which is either a
-     * task detail object for a single workspace file or a package detail
-     * object.
+     * Returns the dynamic result of this module detail view.
      *
      * @param link
      *            the link containing the path to the selected workspace file
@@ -56,11 +53,8 @@ public class TasksModuleDetail extends ModuleDetail {
      */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        if (link.startsWith("package.")) {
-            return new TasksPackageDetail(getOwner(), getPackage(StringUtils.substringAfter(link, "package.")), getDisplayName(),
+        return new TaskDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
                     getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
-        }
-        return super.getDynamic(link, request, response);
     }
 
     // CHECKSTYLE:OFF - generated delegate -

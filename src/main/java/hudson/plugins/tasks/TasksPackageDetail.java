@@ -7,6 +7,9 @@ import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
 
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
 /**
  * Represents the tasks details of a Java package.
  *
@@ -37,6 +40,21 @@ public class TasksPackageDetail extends PackageDetail {
         super(owner, javaPackage, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, javaPackage);
+    }
+
+    /**
+     * Returns the dynamic result of this module detail view.
+     *
+     * @param link
+     *            the link containing the path to the selected workspace file
+     *            (or package)
+     * @return the dynamic result of the FindBugs analysis (detail page for a
+     *         package).
+     */
+    @Override
+    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        return new TaskDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+                    getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 
     // CHECKSTYLE:OFF - generated delegate -

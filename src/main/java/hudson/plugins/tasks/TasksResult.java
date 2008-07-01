@@ -12,7 +12,6 @@ import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.AnnotationStream;
-import hudson.plugins.tasks.util.model.DefaultAnnotationContainer;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.JavaPackage;
 import hudson.plugins.tasks.util.model.MavenModule;
@@ -26,7 +25,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -320,12 +318,20 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
         else if (link.startsWith("package.")) {
             return new TasksPackageDetail(getOwner(), getProject().getPackage(StringUtils.substringAfter(link, "package.")), getDisplayName(), high, normal, low);
         }
+        else if (link.startsWith("file.")) {
+            return new TasksFileDetail(getOwner(), getProject().getFile(StringUtils.substringAfter(link, "file.")), getDisplayName(), high, normal, low);
+        }
         else if (link.startsWith("source.")) {
             return new SourceDetail(getOwner(), getProject().getAnnotation(StringUtils.substringAfter(link, "source.")));
         }
         return null;
     }
 
+    /**
+     * Gets the annotation container.
+     *
+     * @return the container
+     */
     public AnnotationContainer getContainer() {
         return getProject();
     }
@@ -443,24 +449,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      *             in case of an error
      */
     public final void doStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        String parameter = request.getParameter("object");
-        if (parameter.startsWith("category.")) {
-            Set<FileAnnotation> annotations = getProject().getCategory(StringUtils.substringAfter(parameter, "category."));
-            ChartRenderer.renderPriorititesChart(request, response, new DefaultAnnotationContainer(annotations), getProject().getAnnotationBound());
-        }
-        else if (parameter.startsWith("type.")) {
-            Set<FileAnnotation> annotations = getProject().getType(StringUtils.substringAfter(parameter, "type."));
-            ChartRenderer.renderPriorititesChart(request, response, new DefaultAnnotationContainer(annotations), getProject().getAnnotationBound());
-        }
-        else if (parameter.startsWith("package.")) {
-            AnnotationContainer annotations = getProject().getPackage(StringUtils.substringAfter(parameter, "package."));
-            ChartRenderer.renderPriorititesChart(request, response, annotations, getProject().getAnnotationBound());
-        }
-        else if (parameter.startsWith("module.")) {
-            AnnotationContainer annotations = getModule(StringUtils.substringAfter(parameter, "module."));
-            ChartRenderer.renderPriorititesChart(request, response, annotations, getProject().getAnnotationBound());
-        }
-        // TODO: we should parameterize the annotation bound (second parameter instead of getChild)
+        new ChartRenderer().doStatistics(request, response, getContainer());
     }
 
     // Delegates to TasksProject

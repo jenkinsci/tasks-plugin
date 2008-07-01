@@ -33,6 +33,14 @@
           </li>
           <j:set var="class" value="" />
         </j:if>
+        <j:if test="${it.container.files.size() > 1}">
+          <li class="${class}">
+            <a href="#tab_files">
+              <em>${%Files}</em>
+            </a>
+          </li>
+          <j:set var="class" value="" />
+        </j:if>
         <j:if test="${it.container.numberOfAnnotations > 1}">
           <li class="${class}">
             <a href="#tab_warnings">
@@ -42,7 +50,7 @@
           <j:set var="class" value="" />
         </j:if>
         <j:if test="${it.container.highAnnotations.size() > 0}">
-          <li>m
+          <li class="${class}">
             <j:set var="priority" value="${it.container.highPriority}" />
             <a href="#tab_high">
               <em>${priority.getLongLocalizedString()}: ${it.getTags(priority)}</em>
@@ -51,7 +59,7 @@
           <j:set var="class" value="" />
         </j:if>
         <j:if test="${it.container.normalAnnotations.size() > 0}">
-          <li>
+          <li class="${class}">
             <j:set var="priority" value="${it.container.normalPriority}" />
             <a href="#tab_normal">
               <em>${priority.getLongLocalizedString()}: ${it.getTags(priority)}</em>
@@ -60,7 +68,7 @@
           <j:set var="class" value="" />
         </j:if>
         <j:if test="${it.container.lowAnnotations.size() > 0}">
-          <li>
+          <li class="${class}">
             <j:set var="priority" value="${it.container.lowPriority}" />
             <a href="#tab_low">
               <em>${priority.getLongLocalizedString()}: ${it.getTags(priority)}</em>
@@ -78,6 +86,11 @@
         <j:if test="${it.container.packages.size() > 1}">
           <div id="tab_packages">
             <st:include page="/tabview/packages.jelly" />
+          </div>
+        </j:if>
+        <j:if test="${it.container.files.size() > 1}">
+          <div id="tab_files">
+            <st:include page="/tabview/files.jelly" />
           </div>
         </j:if>
         <j:if test="${it.container.numberOfAnnotations > 1}">
