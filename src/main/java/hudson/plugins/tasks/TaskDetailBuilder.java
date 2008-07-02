@@ -58,7 +58,7 @@ public class TaskDetailBuilder {
             return new TasksPackageDetail(owner, container.getPackage(StringUtils.substringAfter(link, "package.")), displayName, high, normal, low);
         }
         else if (link.startsWith("file.")) {
-            return new TasksFileDetail(owner, container.getFile(StringUtils.substringAfter(link, "file.")), displayName, high, normal, low);
+            return new TasksFileDetail(owner, container.getFile(Integer.valueOf(StringUtils.substringAfter(link, "file."))), displayName, high, normal, low);
         }
         else if (link.startsWith("source.")) {
             return new SourceDetail(owner, container.getAnnotation(StringUtils.substringAfter(link, "source.")));
