@@ -6,9 +6,6 @@ import hudson.model.ModelObject;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksProject;
 import hudson.plugins.tasks.util.ChartRenderer;
-import hudson.plugins.tasks.util.PrioritiesDetail;
-import hudson.plugins.tasks.util.PriorityDetailFactory;
-import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.AnnotationStream;
@@ -301,30 +298,8 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      *         package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        PriorityDetailFactory factory = new PriorityDetailFactory() {
-            /** {@inheritDoc} */
-            @Override
-            @SuppressWarnings("IMA")
-            protected PrioritiesDetail createPrioritiesDetail(final Priority priority, final AbstractBuild<?, ?> build, final AnnotationContainer container, final String header) {
-                return new TasksPrioritiesDetail(build, getProject(), priority, header, high, normal, low);
-            }
-        };
-        if (factory.isPriority(link)) {
-            return factory.create(link, owner, getProject(), getDisplayName());
-        }
-        else if (link.startsWith("module.")) {
-            return new TasksModuleDetail(getOwner(), getModule(StringUtils.substringAfter(link, "module.")), getDisplayName(), high, normal, low);
-        }
-        else if (link.startsWith("package.")) {
-            return new TasksPackageDetail(getOwner(), getProject().getPackage(StringUtils.substringAfter(link, "package.")), getDisplayName(), high, normal, low);
-        }
-        else if (link.startsWith("file.")) {
-            return new TasksFileDetail(getOwner(), getProject().getFile(StringUtils.substringAfter(link, "file.")), getDisplayName(), high, normal, low);
-        }
-        else if (link.startsWith("source.")) {
-            return new SourceDetail(getOwner(), getProject().getAnnotation(StringUtils.substringAfter(link, "source.")));
-        }
-        return null;
+        return new TaskDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+                getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 
     /**
