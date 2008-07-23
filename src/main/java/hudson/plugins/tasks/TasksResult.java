@@ -1,23 +1,19 @@
 package hudson.plugins.tasks; // NOPMD
 
-import hudson.XmlFile;
 import hudson.model.AbstractBuild;
-import hudson.model.ModelObject;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksProject;
+import hudson.plugins.tasks.util.BuildResult;
 import hudson.plugins.tasks.util.ChartRenderer;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
-import hudson.plugins.tasks.util.model.AnnotationStream;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.JavaPackage;
 import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 import hudson.plugins.tasks.util.model.WorkspaceFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,8 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import com.thoughtworks.xstream.XStream;
-
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 /**
@@ -41,14 +35,11 @@ import edu.umd.cs.findbugs.annotations.SuppressWarnings;
  */
 //CHECKSTYLE:COUPLING-OFF
 @SuppressWarnings("PMD.TooManyFields")
-public class TasksResult implements ModelObject, Serializable, AnnotationProvider  {
+public class TasksResult extends BuildResult  {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -344808345805935004L;
     /** Error logger. */
     private static final Logger LOGGER = Logger.getLogger(TasksResult.class.getName());
-    /** Serialization provider. */
-    private static final XStream XSTREAM = new AnnotationStream();
-
     static {
         XSTREAM.alias("task", Task.class);
     }
@@ -56,10 +47,6 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
     /** The parsed project with annotations. */
     @SuppressWarnings("Se")
     private transient WeakReference<TasksProject> project;
-
-    /** Current build as owner of this action. */
-    @SuppressWarnings("Se")
-    private final AbstractBuild<?, ?> owner;
 
     /** Tag identifiers indicating high priority. */
     private final String high;
@@ -113,7 +100,7 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      *            tag identifiers indicating low priority
      */
     public TasksResult(final AbstractBuild<?, ?> build, final TasksProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
-        owner = build;
+        super(build);
 
         highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
         lowPriorityTasks = project.getNumberOfAnnotations(Priority.LOW);
@@ -145,24 +132,6 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
      */
     public String getSummary() {
         return ResultSummary.createSummary(this);
-    }
-
-    /**
-     * Returns whether this result belongs to the last build.
-     *
-     * @return <code>true</code> if this result belongs to the last build
-     */
-    public final boolean isCurrent() {
-        return owner.getProject().getLastBuild().number == owner.number;
-    }
-
-    /**
-     * Returns the build as owner of this action.
-     *
-     * @return the owner
-     */
-    public final AbstractBuild<?, ?> getOwner() {
-        return owner;
     }
 
     /**
@@ -267,13 +236,10 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
         project = new WeakReference<TasksProject>(result);
     }
 
-    /**
-     * Returns the serialization file.
-     *
-     * @return the serialization file.
-     */
-    private XmlFile getDataFile() {
-        return new XmlFile(XSTREAM, new File(getOwner().getRootDir(), "open-tasks.xml"));
+    /** {@inheritDoc} */
+    @Override
+    protected String getSerializationFileName() {
+        return "open-tasks.xml";
     }
 
     /**
@@ -430,53 +396,12 @@ public class TasksResult implements ModelObject, Serializable, AnnotationProvide
     // Delegates to TasksProject
     // CHECKSTYLE:OFF
 
+    /**
+     * Returns the files of the project.
+     *
+     * @return the files of the project
+     */
     public Collection<WorkspaceFile> getFiles() {
         return getProject().getFiles();
-    }
-
-
-    /** {@inheritDoc} */
-    public FileAnnotation getAnnotation(final long key) {
-        return getProject().getAnnotation(key);
-    }
-
-    /** {@inheritDoc} */
-    public FileAnnotation getAnnotation(final String key) {
-        return getProject().getAnnotation(key);
-    }
-
-    /** {@inheritDoc} */
-    public Collection<FileAnnotation> getAnnotations(final Priority priority) {
-        return getProject().getAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public Collection<FileAnnotation> getAnnotations(final String priority) {
-        return getProject().getAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public boolean hasAnnotations(final Priority priority) {
-        return getProject().hasAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public boolean hasAnnotations(final String priority) {
-        return getProject().hasAnnotations(priority);
-    }
-
-    /** {@inheritDoc} */
-    public final boolean hasAnnotations() {
-        return getProject().hasAnnotations();
-    }
-
-    /** {@inheritDoc} */
-    public Collection<FileAnnotation> getAnnotations() {
-        return getProject().getAnnotations();
-    }
-
-    /** {@inheritDoc} */
-    public int getNumberOfAnnotations(final String priority) {
-        return getNumberOfAnnotations(Priority.fromString(priority));
     }
 }
