@@ -23,8 +23,6 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 /**
  * Publishes the results of the task scanner (maven 2 project type).
  *
@@ -48,8 +46,6 @@ public class TasksReporter extends HealthAwareMavenReporter {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
-    /** Determines the height of the trend graph. */
-    private final String height;
     /** Determines whether to use the provided threshold to mark a build as unstable. */
     @SuppressWarnings("unused") // NOPMD
     private boolean isThresholdEnabled; // backward compatibility
@@ -71,6 +67,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
      *
      * @param pattern
      *            Ant file-set pattern of files to scan for open tasks in
+     * @param excludePattern
+     *            Ant file-set pattern of files to exclude from scan
      * @param threshold
      *            Tasks threshold to be reached if a build should be considered
      *            as unstable.
@@ -93,10 +91,9 @@ public class TasksReporter extends HealthAwareMavenReporter {
     @DataBoundConstructor
     public TasksReporter(final String pattern, final String excludePattern, final String threshold, final String healthy, final String unHealthy, final String height,
             final String high, final String normal, final String low) {
-        super(threshold, healthy, unHealthy, pattern, "TASKS");
+        super(threshold, healthy, unHealthy, height, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
-        this.height = height;
         this.high = high;
         this.normal = normal;
         this.low = low;
@@ -201,7 +198,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
             HealthReportBuilder healthReportBuilder = createHealthBuilder(
                     Messages.Tasks_ResultAction_HealthReportSingleItem(),
                     Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
-            build.getActions().add(new MavenTasksResultAction(build, healthReportBuilder, height, high, normal, low, result));
+            build.getActions().add(new MavenTasksResultAction(build, healthReportBuilder, getHeight(), high, normal, low, result));
             build.registerAsProjectAction(TasksReporter.this);
         }
     }
