@@ -26,7 +26,7 @@ import org.apache.tools.ant.types.FileSet;
  *
  * @author Ulli Hafner
  */
-public class WorkspaceScanner implements FileCallable<TasksProject> {
+public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     /** Generated ID. */
     private static final long serialVersionUID = -4355362392102020724L;
     /** Ant file-set pattern to define the files to scan. */
@@ -106,7 +106,7 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
     }
 
     /** {@inheritDoc} */
-    public TasksProject invoke(final File workspace, final VirtualChannel channel) throws IOException {
+    public TasksParserResult invoke(final File workspace, final VirtualChannel channel) throws IOException {
         String[] files = findFiles(workspace);
 
         List<PackageDetector> detectors = new ArrayList<PackageDetector>();
@@ -115,7 +115,7 @@ public class WorkspaceScanner implements FileCallable<TasksProject> {
 
         TaskScanner taskScanner = new TaskScanner(high, normal, low);
 
-        TasksProject javaProject = new TasksProject(files.length);
+        TasksParserResult javaProject = new TasksParserResult(files.length);
         ModuleDetector moduleDetector = new ModuleDetector();
         Map<String, String> pathNameToModuleMapping = moduleDetector.getModules(workspace);
         for (String fileName : files) {

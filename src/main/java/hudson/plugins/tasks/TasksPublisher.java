@@ -4,7 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Descriptor;
-import hudson.plugins.tasks.parser.TasksProject;
+import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.HealthAwarePublisher;
 import hudson.plugins.tasks.util.HealthReportBuilder;
@@ -130,8 +130,8 @@ public class TasksPublisher extends HealthAwarePublisher {
 
     /** {@inheritDoc} */
     @Override
-    public TasksProject perform(final AbstractBuild<?, ?> build, final PrintStream logger) throws InterruptedException, IOException {
-        TasksProject project;
+    public TasksParserResult perform(final AbstractBuild<?, ?> build, final PrintStream logger) throws InterruptedException, IOException {
+        TasksParserResult project;
         log(logger, "Scanning workspace files for tasks...");
         project = build.getProject().getWorkspace().act(
                 new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), high, normal, low));

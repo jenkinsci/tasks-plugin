@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.parser.TasksProject;
+import hudson.plugins.tasks.parser.TasksParserResult;
 
 /**
  * Creates a new Tasks result based on the values of a previous build and the
@@ -26,7 +26,7 @@ public class TasksResultBuilder {
      *            tag identifiers indicating low priority
      * @return the result action
      */
-    public TasksResult build(final AbstractBuild<?, ?> build, final TasksProject project,
+    public TasksResult build(final AbstractBuild<?, ?> build, final TasksParserResult project,
             final String high, final String normal, final String low) {
         Object previous = build.getPreviousBuild();
         while (previous instanceof AbstractBuild<?, ?> && previous != null) {

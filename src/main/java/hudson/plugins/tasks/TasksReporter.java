@@ -7,11 +7,11 @@ import hudson.maven.MavenModule;
 import hudson.maven.MavenReporterDescriptor;
 import hudson.maven.MojoInfo;
 import hudson.model.Action;
-import hudson.plugins.tasks.parser.TasksProject;
+import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.HealthAwareMavenReporter;
 import hudson.plugins.tasks.util.HealthReportBuilder;
-import hudson.plugins.tasks.util.model.JavaProject;
+import hudson.plugins.tasks.util.ParserResult;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -154,15 +154,14 @@ public class TasksReporter extends HealthAwareMavenReporter {
     /** {@inheritDoc} */
     @java.lang.SuppressWarnings("unchecked")
     @Override
-    public JavaProject perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PrintStream logger) throws InterruptedException, IOException {
-
+    public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PrintStream logger) throws InterruptedException, IOException {
         List<String> foldersToScan = new ArrayList<String>(pom.getCompileSourceRoots());
         List<Resource> resources = pom.getResources();
         for (Resource resource : resources) {
             foldersToScan.add(resource.getDirectory());
         }
         FilePath basedir = new FilePath(pom.getBasedir());
-        final TasksProject project = new TasksProject();
+        final TasksParserResult project = new TasksParserResult();
         for (String sourcePath : foldersToScan) {
             if (StringUtils.isEmpty(sourcePath)) {
                 continue;
@@ -174,7 +173,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
                         StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN), excludePattern,
                         high, normal, low, pom.getName());
                 workspaceScanner.setPrefix(sourcePath);
-                TasksProject subProject = filePath.act(workspaceScanner);
+                TasksParserResult subProject = filePath.act(workspaceScanner);
                 if (subProject.hasAnnotations()) {
                     project.addModules(subProject.getModules());
                 }
@@ -191,9 +190,9 @@ public class TasksReporter extends HealthAwareMavenReporter {
 
     /** {@inheritDoc} */
     @Override
-    protected void persistResult(final JavaProject project, final MavenBuild build) {
-        if (project instanceof TasksProject) {
-            TasksResult result = new TasksResultBuilder().build(build, (TasksProject)project, high, normal, low);
+    protected void persistResult(final ParserResult project, final MavenBuild build) {
+        if (project instanceof TasksParserResult) {
+            TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, high, normal, low);
 
             HealthReportBuilder healthReportBuilder = createHealthBuilder(
                     Messages.Tasks_ResultAction_HealthReportSingleItem(),

@@ -8,8 +8,9 @@ import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
-import hudson.plugins.tasks.parser.TasksProject;
+import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.util.HealthReportBuilder;
+import hudson.plugins.tasks.util.ParserResult;
 import hudson.plugins.tasks.util.TrendReportSize;
 
 import java.util.List;
@@ -111,31 +112,11 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      *      Newly completed build.
      */
     public void update(final Map<MavenModule, List<MavenBuild>> moduleBuilds, final MavenBuild newBuild) {
-        TasksProject project = new TasksProject();
-        for (List<MavenBuild> builds : moduleBuilds.values()) {
-            if (!builds.isEmpty()) {
-                addModule(project, builds);
-            }
-        }
-        setResult(new TasksResultBuilder().build(getOwner(), project, high, normal, low));
-    }
 
-    /**
-     * Adds a new module to the specified project. The new module is obtained
-     * from the specified list of builds.
-     *
-     * @param project
-     *            the project to add the module to
-     * @param builds
-     *            the builds for a module
-     */
-    private void addModule(final TasksProject project, final List<MavenBuild> builds) {
-        MavenBuild mavenBuild = builds.get(0);
-        MavenTasksResultAction action = mavenBuild.getAction(getClass());
-        if (action != null) {
-            TasksProject subProject = action.getResult().getProject();
-            project.addModules(subProject.getModules());
-            project.addScannedFiles(subProject.getNumberOfScannedFiles());
+        ParserResult result = createAggregatedResult(moduleBuilds);
+
+        if (result instanceof TasksParserResult) {
+            setResult(new TasksResultBuilder().build(getOwner(), (TasksParserResult)result, high, normal, low));
         }
     }
 }

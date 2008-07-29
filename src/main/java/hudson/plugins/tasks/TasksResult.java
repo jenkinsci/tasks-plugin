@@ -2,13 +2,14 @@ package hudson.plugins.tasks; // NOPMD
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.parser.Task;
-import hudson.plugins.tasks.parser.TasksProject;
+import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.util.BuildResult;
 import hudson.plugins.tasks.util.ChartRenderer;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.JavaPackage;
+import hudson.plugins.tasks.util.model.JavaProject;
 import hudson.plugins.tasks.util.model.MavenModule;
 import hudson.plugins.tasks.util.model.Priority;
 import hudson.plugins.tasks.util.model.WorkspaceFile;
@@ -46,7 +47,7 @@ public class TasksResult extends BuildResult  {
 
     /** The parsed project with annotations. */
     @SuppressWarnings("Se")
-    private transient WeakReference<TasksProject> project;
+    private transient WeakReference<JavaProject> project;
 
     /** Tag identifiers indicating high priority. */
     private final String high;
@@ -74,7 +75,7 @@ public class TasksResult extends BuildResult  {
      * @param build
      *            the current build as owner of this action
      * @param project
-     *            the parsed FindBugs result
+     *            the parsed annotations
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -82,7 +83,7 @@ public class TasksResult extends BuildResult  {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final TasksProject project, final String high, final String normal, final String low) {
+    public TasksResult(final AbstractBuild<?, ?> build, final TasksParserResult project, final String high, final String normal, final String low) {
         this(build, project, project.getNumberOfAnnotations(), high, normal, low);
     }
 
@@ -99,7 +100,7 @@ public class TasksResult extends BuildResult  {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final TasksProject project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
+    public TasksResult(final AbstractBuild<?, ?> build, final TasksParserResult project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
         super(build);
 
         highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
@@ -114,7 +115,6 @@ public class TasksResult extends BuildResult  {
         delta = numberOfTasks - previousNumberOfTasks;
 
         numberOfFiles = project.getNumberOfScannedFiles();
-        this.project = new WeakReference<TasksProject>(project);
 
         try {
             Collection<FileAnnotation> files = project.getAnnotations();
@@ -137,7 +137,7 @@ public class TasksResult extends BuildResult  {
     /**
      * Returns the number of scanned files in this project.
      *
-     * @return the number of scanned files in a {@link TasksProject}
+     * @return the number of scanned files in this project
      */
     public int getNumberOfFiles() {
         return numberOfFiles;
@@ -205,7 +205,7 @@ public class TasksResult extends BuildResult  {
      *
      * @return the associated project of this result.
      */
-    public synchronized TasksProject getProject() {
+    public synchronized JavaProject getProject() {
         if (project == null) {
             loadResult();
         }
@@ -221,9 +221,9 @@ public class TasksResult extends BuildResult  {
      * get removed by the garbage collector.
      */
     private void loadResult() {
-        TasksProject result;
+        JavaProject result;
         try {
-            TasksProject newProject = new TasksProject(numberOfFiles);
+            JavaProject newProject = new JavaProject();
             FileAnnotation[] annotations = (FileAnnotation[])getDataFile().read();
             newProject.addAnnotations(annotations);
             LOGGER.log(Level.INFO, "Loaded tasks data file " + getDataFile() + " for build " + getOwner().getNumber());
@@ -231,9 +231,9 @@ public class TasksResult extends BuildResult  {
         }
         catch (IOException exception) {
             LOGGER.log(Level.WARNING, "Failed to load " + getDataFile(), exception);
-            result = new TasksProject();
+            result = new JavaProject();
         }
-        project = new WeakReference<TasksProject>(result);
+        project = new WeakReference<JavaProject>(result);
     }
 
     /** {@inheritDoc} */
@@ -273,6 +273,7 @@ public class TasksResult extends BuildResult  {
      *
      * @return the container
      */
+    @Override
     public AnnotationContainer getContainer() {
         return getProject();
     }

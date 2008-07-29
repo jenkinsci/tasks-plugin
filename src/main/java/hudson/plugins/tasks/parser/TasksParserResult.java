@@ -1,5 +1,6 @@
 package hudson.plugins.tasks.parser;
 
+import hudson.plugins.tasks.util.ParserResult;
 import hudson.plugins.tasks.util.model.JavaProject;
 
 /**
@@ -7,7 +8,7 @@ import hudson.plugins.tasks.util.model.JavaProject;
  *
  * @author Ulli Hafner
  */
-public class TasksProject extends JavaProject {
+public class TasksParserResult extends ParserResult {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 4904609926196858707L;
     /** The number of scanned files in this project. */
@@ -19,7 +20,7 @@ public class TasksProject extends JavaProject {
      * @param numberOfFiles
      *            the number of scanned files in this project
      */
-    public TasksProject(final int numberOfFiles) {
+    public TasksParserResult(final int numberOfFiles) {
         super();
 
         this.numberOfFiles = numberOfFiles;
@@ -28,21 +29,10 @@ public class TasksProject extends JavaProject {
     /**
      * Creates a new instance of <code>TasksProject</code>.
      */
-    public TasksProject() {
+    public TasksParserResult() {
         super();
 
         numberOfFiles = 0;
-    }
-
-    /**
-     * Rebuilds the priorities mapping.
-     *
-     * @return the created object
-     */
-    private Object readResolve() {
-        setHierarchy(Hierarchy.PROJECT);
-        rebuildMappings();
-        return this;
     }
 
     /**
