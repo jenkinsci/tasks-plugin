@@ -46,21 +46,19 @@ public class TasksReporter extends HealthAwareMavenReporter {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
-    /** Determines whether to use the provided threshold to mark a build as unstable. */
-    @SuppressWarnings("unused") // NOPMD
+
+    @SuppressWarnings("all") // NOPMD
     private boolean isThresholdEnabled; // backward compatibility
-    /** Determines whether to use the provided healthy thresholds. */
-    @SuppressWarnings("unused") // NOPMD
+    @SuppressWarnings("all") // NOPMD
     private boolean isHealthyReportEnabled; // backward compatibility
-    /** Report health as 100% when the number of warnings is less than this value. */
-    @SuppressWarnings("unused") // NOPMD
+    @SuppressWarnings("all") // NOPMD
     private int healthyTasks; // backward compatibility
-    /** Report health as 0% when the number of warnings is greater than this value. */
-    @SuppressWarnings("unused") // NOPMD
+    @SuppressWarnings("all") // NOPMD
     private int unHealthyTasks; // backward compatibility
-    /** Integer bug threshold to be reached if a build should be considered as unstable. */
-    @SuppressWarnings("unused") // NOPMD
+    @SuppressWarnings("all") // NOPMD
     private int minimumTasks; // backward compatibility
+    @SuppressWarnings("all") // NOPMD
+    private String height; // backward compatibility
 
     /**
      * Creates a new instance of <code>TasksReporter</code>.
