@@ -181,7 +181,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                 return detector.detectPackageName(content);
             }
         }
-        return "n/a";
+        return "undefined";
     }
 
     /**
