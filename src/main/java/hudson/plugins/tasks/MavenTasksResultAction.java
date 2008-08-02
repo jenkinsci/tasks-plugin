@@ -112,12 +112,17 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      *      Newly completed build.
      */
     public void update(final Map<MavenModule, List<MavenBuild>> moduleBuilds, final MavenBuild newBuild) {
-
         ParserResult result = createAggregatedResult(moduleBuilds);
 
         if (result instanceof TasksParserResult) {
             setResult(new TasksResultBuilder().build(getOwner(), (TasksParserResult)result, high, normal, low));
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected ParserResult createResult() {
+        return new TasksParserResult();
     }
 }
 

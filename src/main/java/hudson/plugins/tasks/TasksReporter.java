@@ -172,9 +172,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
                         high, normal, low, pom.getName());
                 workspaceScanner.setPrefix(sourcePath);
                 TasksParserResult subProject = filePath.act(workspaceScanner);
-                if (subProject.hasAnnotations()) {
-                    project.addModules(subProject.getModules());
-                }
+                project.addAnnotations(subProject.getAnnotations());
+                project.addModule(pom.getName());
                 project.addScannedFiles(subProject.getNumberOfScannedFiles());
                 log(logger, String.format("Found %d.", subProject.getNumberOfAnnotations()));
             }
