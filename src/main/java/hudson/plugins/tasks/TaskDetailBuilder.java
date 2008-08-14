@@ -57,6 +57,12 @@ public class TaskDetailBuilder {
         else if (link.startsWith("package.")) {
             return new TasksPackageDetail(owner, container.getPackage(StringUtils.substringAfter(link, "package.")), displayName, high, normal, low);
         }
+        else if (link.startsWith("tab.tasks.")) {
+            return new TasksTabDetail(owner, container, "/tasks/" + StringUtils.substringAfter(link, "tab.tasks.") + ".jelly", high, normal, low);
+        }
+        else if (link.startsWith("tab.")) {
+            return new TasksTabDetail(owner, container, "/tabview/" + StringUtils.substringAfter(link, "tab.") + ".jelly", high, normal, low);
+        }
         else if (link.startsWith("file.")) {
             return new TasksFileDetail(owner, container.getFile(Integer.valueOf(StringUtils.substringAfter(link, "file."))), displayName, high, normal, low);
         }
