@@ -29,7 +29,7 @@ public class TasksResultBuilder {
     public TasksResult build(final AbstractBuild<?, ?> build, final TasksParserResult project,
             final String high, final String normal, final String low) {
         Object previous = build.getPreviousBuild();
-        while (previous instanceof AbstractBuild<?, ?> && previous != null) {
+        while (previous instanceof AbstractBuild<?, ?>) {
             AbstractBuild<?, ?> previousBuild = (AbstractBuild<?, ?>)previous;
             TasksResultAction previousAction = previousBuild.getAction(TasksResultAction.class);
             if (previousAction != null) {

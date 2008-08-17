@@ -7,6 +7,9 @@ import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
 
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
 /**
  * Result object to visualize the priorities statistics of an annotation container.
  *
@@ -43,21 +46,54 @@ public class TasksPrioritiesDetail extends PrioritiesDetail {
         taskTagsHandler = new TaskTagsHandler(high, normal, low, container);
     }
 
+    /**
+     * Returns the dynamic result of this module detail view.
+     *
+     * @param link
+     *            the link containing the path to the selected workspace file
+     *            (or package)
+     * @return the dynamic result of the FindBugs analysis (detail page for a
+     *         package).
+     */
+    @Override
+    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
+        return new TaskDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+                    getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
+    }
+
     // CHECKSTYLE:OFF - generated delegate -
 
+    /**
+     * Returns all priorities that have a user defined tag.
+     *
+     * @return all priorities that have a user defined tag
+     */
     public Collection<String> getAvailablePriorities() {
         return taskTagsHandler.getAvailablePriorities();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Priority[] getPriorities() {
         return taskTagsHandler.getPriorities();
     }
 
+    /**
+     * Returns the defined tags for the given priority.
+     *
+     * @param priority the priority
+     * @return the defined tags for the given priority
+     */
     public final String getTags(final Priority priority) {
         return taskTagsHandler.getTags(priority);
     }
 
+    /**
+     * Returns the defined tags for the given priority.
+     *
+     * @param priority the priority
+     * @return the defined tags for the given priority
+     */
     public final String getTags(final String priority) {
         return taskTagsHandler.getTags(priority);
     }

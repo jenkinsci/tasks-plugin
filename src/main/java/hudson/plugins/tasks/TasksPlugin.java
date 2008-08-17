@@ -9,7 +9,6 @@ import hudson.tasks.BuildStep;
  *
  * @author Ulli Hafner
  */
-@SuppressWarnings("PMD")
 public class TasksPlugin extends Plugin {
     /** {@inheritDoc} */
     @Override

@@ -3,7 +3,6 @@
   xmlns:i="jelly:fmt">
 
   <j:set var="priority" value="${it.container.lowPriority}" />
-  <j:set var="annotations" value="${it.container.lowAnnotations}" />
   <st:include page="/tasks/details.jelly" />
 
 </j:jelly>

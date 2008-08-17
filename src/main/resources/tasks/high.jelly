@@ -2,7 +2,6 @@
   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
   xmlns:i="jelly:fmt">
 
-  <j:set var="annotations" value="${it.container.highAnnotations}" />
   <j:set var="priority" value="${it.container.highPriority}" />
   <st:include page="/tasks/details.jelly" />
 

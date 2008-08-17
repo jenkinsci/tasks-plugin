@@ -34,6 +34,8 @@ public class TasksModuleDetail extends ModuleDetail {
      *            tag identifiers indicating low priority
      * @param module
      *            the selected module to show
+     * @param header
+     *            header to be shown on detail page
      */
     public TasksModuleDetail(final AbstractBuild<?, ?> owner, final MavenModule module, final String header,
             final String high, final String normal, final String low) {
@@ -59,19 +61,37 @@ public class TasksModuleDetail extends ModuleDetail {
 
     // CHECKSTYLE:OFF - generated delegate -
 
+    /**
+     * Returns all priorities that have a user defined tag.
+     *
+     * @return all priorities that have a user defined tag
+     */
     public Collection<String> getAvailablePriorities() {
         return taskTagsHandler.getAvailablePriorities();
     }
 
+    /** {@inheritDoc} */
     @Override
     public Priority[] getPriorities() {
         return taskTagsHandler.getPriorities();
     }
 
+    /**
+     * Returns the defined tags for the given priority.
+     *
+     * @param priority the priority
+     * @return the defined tags for the given priority
+     */
     public final String getTags(final Priority priority) {
         return taskTagsHandler.getTags(priority);
     }
 
+    /**
+     * Returns the defined tags for the given priority.
+     *
+     * @param priority the priority
+     * @return the defined tags for the given priority
+     */
     public final String getTags(final String priority) {
         return taskTagsHandler.getTags(priority);
     }
