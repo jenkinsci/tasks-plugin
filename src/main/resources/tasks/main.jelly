@@ -2,87 +2,71 @@
   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
   xmlns:i="jelly:fmt" xmlns:local="local">
   <j:if test="${it.hasAnnotations()}">
-    <script type="text/javascript" src="${rootURL}/plugin/checkstyle/yui/utilities.js"></script>
-    <script type="text/javascript" src="${rootURL}/plugin/checkstyle/yui/tabview-min.js"></script>
-    <script type="text/javascript" src="${rootURL}/plugin/checkstyle/yui/dispatcher-min.js"></script>
+    <script type="text/javascript" src="${rootURL}/plugin/tasks/yui/utilities.js"></script>
+    <script type="text/javascript" src="${rootURL}/plugin/tasks/yui/tabview-min.js"></script>
+    <script type="text/javascript" src="${rootURL}/plugin/tasks/yui/dispatcher-min.js"></script>
 
     <script type="text/javascript">
       var myTabs = new YAHOO.widget.TabView("statistics");
-    </script>
 
-    <j:if test="${it.container.modules.size() > 1}">
-      <script>
+      <j:if test="${it.container.modules.size() > 1}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
-            label: 'Modules',
+            label: '${%Modules} (${it.container.modules.size()})',
             dataSrc: 'tab.modules',
             cacheData: true,
             active: false
         }), myTabs);
-      </script>
-    </j:if>
-    <j:if test="${it.container.packages.size() > 1}">
-      <script>
+      </j:if>
+      <j:if test="${it.container.packages.size() > 1}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
-            label: 'Packages',
+            label: '${%Packages} (${it.container.packages.size()})',
             dataSrc: 'tab.packages',
             cacheData: true,
             active: false
         }), myTabs);
-      </script>
     </j:if>
     <j:if test="${it.container.files.size() > 1}">
-      <script>
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
-            label: 'Files',
+            label: '${%Files} (${it.container.files.size()})',
             dataSrc: 'tab.files',
             cacheData: true,
             active: false
         }), myTabs);
-      </script>
     </j:if>
     <j:if test="${it.container.numberOfAnnotations > 1}">
-      <script>
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
-            label: 'Tasks',
+            label: '${%Tasks} (${it.container.numberOfAnnotations})',
             dataSrc: 'tab.tasks.warnings',
             cacheData: true,
             active: false
         }), myTabs);
-      </script>
     </j:if>
-    <j:if test="${it.container.highAnnotations.size() > 0}">
-      <script>
+    <j:if test="${it.container.highAnnotations.size() > 0 and it.container.highAnnotations.size() != it.container.numberOfAnnotations}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
-            label: 'High',
+            label: '${%High} (${it.container.highAnnotations.size()})',
             dataSrc: 'tab.tasks.high',
             cacheData: true,
             active: false
         }), myTabs);
-      </script>
     </j:if>
-    <j:if test="${it.container.normalAnnotations.size() > 0}">
-      <script>
+    <j:if test="${it.container.normalAnnotations.size() > 0 and it.container.normalAnnotations.size() != it.container.numberOfAnnotations}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
-            label: 'Normal',
+            label: '${%Normal} (${it.container.normalAnnotations.size()})',
             dataSrc: 'tab.tasks.normal',
             cacheData: true,
             active: false
         }), myTabs);
-      </script>
     </j:if>
-    <j:if test="${it.container.lowAnnotations.size() > 0}">
-      <script>
+    <j:if test="${it.container.lowAnnotations.size() > 0 and it.container.lowAnnotations.size() != it.container.numberOfAnnotations}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
-            label: 'Low',
+            label: '${%Low} (${it.container.lowAnnotations.size()})',
             dataSrc: 'tab.tasks.low',
             cacheData: true,
             active: false
         }), myTabs);
-      </script>
     </j:if>
 
-    <script>
-      myTabs.set('activeIndex', 0);
+     myTabs.set('activeIndex', 0);
     </script>
 
     <st:include page="/tabview/css.jelly" />
