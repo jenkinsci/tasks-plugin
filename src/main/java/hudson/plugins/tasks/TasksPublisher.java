@@ -55,6 +55,9 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            than this value
      * @param height
      *            the height of the trend graph
+     * @param thresholdLimit
+     *            determines which warning priorities should be considered when
+     *            evaluating the build stability and health
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -65,9 +68,9 @@ public class TasksPublisher extends HealthAwarePublisher {
     // CHECKSTYLE:OFF
     @DataBoundConstructor
     public TasksPublisher(final String pattern, final String excludePattern, final String threshold,
-            final String healthy, final String unHealthy, final String height,
+            final String healthy, final String unHealthy, final String height, final String thresholdLimit,
             final String high, final String normal, final String low) {
-        super(threshold, healthy, unHealthy, height, "TASKS");
+        super(threshold, healthy, unHealthy, height, thresholdLimit, "TASKS");
 
         this.pattern = pattern;
         this.excludePattern = excludePattern;
@@ -139,7 +142,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         TasksResult result = new TasksResultBuilder().build(build, project, high, normal, low);
         HealthReportBuilder healthReportBuilder = createHealthReporter(
                 Messages.Tasks_ResultAction_HealthReportSingleItem(),
-                Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
+                Messages.Tasks_ResultAction_HealthReportMultipleItem());
         build.getActions().add(new TasksResultAction(build, healthReportBuilder, result));
 
         return project;

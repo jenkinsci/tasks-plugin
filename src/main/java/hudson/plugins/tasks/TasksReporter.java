@@ -78,6 +78,9 @@ public class TasksReporter extends HealthAwareMavenReporter {
      *            than this value
      * @param height
      *            the height of the trend graph
+     * @param thresholdLimit
+     *            determines which warning priorities should be considered when
+     *            evaluating the build stability and health
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -87,9 +90,9 @@ public class TasksReporter extends HealthAwareMavenReporter {
      */
     // CHECKSTYLE:OFF
     @DataBoundConstructor
-    public TasksReporter(final String pattern, final String excludePattern, final String threshold, final String healthy, final String unHealthy, final String height,
+    public TasksReporter(final String pattern, final String excludePattern, final String threshold, final String healthy, final String unHealthy, final String height, final String thresholdLimit,
             final String high, final String normal, final String low) {
-        super(threshold, healthy, unHealthy, height, "TASKS");
+        super(threshold, healthy, unHealthy, height, thresholdLimit, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -193,7 +196,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
 
             HealthReportBuilder healthReportBuilder = createHealthBuilder(
                     Messages.Tasks_ResultAction_HealthReportSingleItem(),
-                    Messages.Tasks_ResultAction_HealthReportMultipleItem("%d"));
+                    Messages.Tasks_ResultAction_HealthReportMultipleItem());
             build.getActions().add(new MavenTasksResultAction(build, healthReportBuilder, getHeight(), high, normal, low, result));
             build.registerAsProjectAction(TasksReporter.this);
         }
