@@ -7,7 +7,7 @@
       <td class="pane-header">${%Line}</td>
       <td class="pane-header">${%Priority}</td>
       <td class="pane-header">${%Type}</td>
-      <td class="pane-header">${%Message}</td>
+      <td class="pane-header">${%Category}</td>
     </tr>
     <tbody>
       <j:forEach var="warning" items="${it.container.annotations}">
@@ -15,7 +15,7 @@
           <td class="pane">
             <div tooltip="${warning.message}">
               <j:choose>
-                <j:when test="${it.isCurrent() and warning.fileName != null}">
+                <j:when test="${it.isCurrent() and warning.canDisplayFile()}">
                   <a href="source.${warning.key}/#${warning.primaryLineNumber}">${warning.shortFileName}</a>
                 </j:when>
                 <j:otherwise>${warning.shortFileName}</j:otherwise>
@@ -29,10 +29,10 @@
             <div tooltip="${warning.message}"> ${warning.priority.localizedString} </div>
           </td>
           <td class="pane">
-            <div tooltip="${warning.message}"> ${it.getTags(warning.priority)} </div>
+            <div tooltip="${warning.message}"> ${warning.type} </div>
           </td>
           <td class="pane">
-            <div tooltip="${warning.message}"> ${warning.detailMessage} </div>
+            <div tooltip="${warning.message}"> ${warning.category} </div>
           </td>
         </tr>
       </j:forEach>
