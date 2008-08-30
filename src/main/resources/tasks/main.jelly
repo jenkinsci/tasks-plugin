@@ -41,7 +41,7 @@
             active: false
         }), myTabs);
     </j:if>
-    <j:if test="${it.container.highAnnotations.size() > 0 and it.container.highAnnotations.size() != it.container.numberOfAnnotations}">
+    <j:if test="${it.container.highAnnotations.size() > 0}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
             label: '${%High}',
             dataSrc: 'tab.tasks.high',
@@ -49,7 +49,7 @@
             active: false
         }), myTabs);
     </j:if>
-    <j:if test="${it.container.normalAnnotations.size() > 0 and it.container.normalAnnotations.size() != it.container.numberOfAnnotations}">
+    <j:if test="${it.container.normalAnnotations.size() > 0}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
             label: '${%Normal}',
             dataSrc: 'tab.tasks.normal',
@@ -57,7 +57,7 @@
             active: false
         }), myTabs);
     </j:if>
-    <j:if test="${it.container.lowAnnotations.size() > 0 and it.container.lowAnnotations.size() != it.container.numberOfAnnotations}">
+    <j:if test="${it.container.lowAnnotations.size() > 0}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
             label: '${%Low}',
             dataSrc: 'tab.tasks.low',
