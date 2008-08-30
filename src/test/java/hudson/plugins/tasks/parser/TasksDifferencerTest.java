@@ -11,9 +11,11 @@ import hudson.plugins.tasks.util.model.Priority;
 public class TasksDifferencerTest extends AnnotationDifferencerTest {
     /** {@inheritDoc} */
     @Override
-    public FileAnnotation createAnnotation(final Priority priority, final String message, final String category,
+    public FileAnnotation createAnnotation(final String fileName, final Priority priority, final String message, final String category,
             final String type, final int start, final int end) {
-        return new Task(priority, start, message);
+        Task task = new Task(priority, start, message);
+        task.setFileName(fileName);
+        return task;
     }
 }
 

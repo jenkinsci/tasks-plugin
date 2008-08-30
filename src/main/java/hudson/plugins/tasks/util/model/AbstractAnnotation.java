@@ -1,6 +1,5 @@
 package hudson.plugins.tasks.util.model;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +52,10 @@ public abstract class AbstractAnnotation implements FileAnnotation, Serializable
      *            the first line of the line range
      * @param end
      *            the last line of the line range
+     * @param category
+     *            the category of the annotation
+     * @param type
+     *            the type of the annotation
      */
     public AbstractAnnotation(final Priority priority, final String message, final int start, final int end,
             final String category, final String type) {
@@ -263,6 +266,11 @@ public abstract class AbstractAnnotation implements FileAnnotation, Serializable
      * @return the short file name
      */
     public String getShortFileName() {
-        return StringUtils.substringAfterLast(getFileName(), "/");
+        if (getFileName().contains("/")) {
+            return StringUtils.substringAfterLast(getFileName(), "/");
+        }
+        else {
+            return getFileName();
+        }
     }
 }
