@@ -128,7 +128,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                 String actualModule = StringUtils.defaultIfEmpty(moduleName, guessedModule);
 
                 for (Task task : tasks) {
-                    task.setFileName(getPrefix() + unixName);
+                    task.setFileName(originalFile.getAbsolutePath());
                     task.setPackageName(packageName);
                     task.setModuleName(actualModule);
                 }
