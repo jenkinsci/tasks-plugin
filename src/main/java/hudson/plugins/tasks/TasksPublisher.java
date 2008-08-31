@@ -66,6 +66,7 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            tag identifiers indicating low priority
      */
     // CHECKSTYLE:OFF
+    @SuppressWarnings("PMD.ExcessiveParameterList")
     @DataBoundConstructor
     public TasksPublisher(final String pattern, final String excludePattern, final String threshold,
             final String healthy, final String unHealthy, final String height, final String thresholdLimit,

@@ -12,6 +12,7 @@ import hudson.tasks.BuildStep;
 public class TasksPlugin extends Plugin {
     /** {@inheritDoc} */
     @Override
+    @SuppressWarnings("PMD")
     public void start() throws Exception {
         BuildStep.PUBLISHERS.addRecorder(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
 

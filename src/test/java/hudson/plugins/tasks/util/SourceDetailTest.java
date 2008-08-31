@@ -1,7 +1,6 @@
 package hudson.plugins.tasks.util;
 
 import static org.easymock.EasyMock.*;
-import hudson.plugins.tasks.util.SourceDetail;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.LineRange;
 

@@ -47,18 +47,24 @@ public class TasksReporter extends HealthAwareMavenReporter {
     /** Tag identifiers indicating low priority. */
     private final String low;
 
-    @SuppressWarnings("all") // NOPMD
-    private boolean isThresholdEnabled; // backward compatibility
-    @SuppressWarnings("all") // NOPMD
-    private boolean isHealthyReportEnabled; // backward compatibility
-    @SuppressWarnings("all") // NOPMD
-    private int healthyTasks; // backward compatibility
-    @SuppressWarnings("all") // NOPMD
-    private int unHealthyTasks; // backward compatibility
-    @SuppressWarnings("all") // NOPMD
-    private int minimumTasks; // backward compatibility
-    @SuppressWarnings("all") // NOPMD
-    private String height; // backward compatibility
+    /** The is threshold enabled. */
+    @SuppressWarnings("all")
+    private boolean isThresholdEnabled; // backward compatibility NOPMD
+    /** The is healthy report enabled. */
+    @SuppressWarnings("all")
+    private boolean isHealthyReportEnabled; // backward compatibility NOPMD
+    /** The healthy tasks. */
+    @SuppressWarnings("all")
+    private int healthyTasks; // backward compatibility NOPMD
+    /** The un healthy tasks. */
+    @SuppressWarnings("all")
+    private int unHealthyTasks; // backward compatibility NOPMD
+    /** The minimum tasks. */
+    @SuppressWarnings("all")
+    private int minimumTasks; // backward compatibility NOPMD
+    /** The height. */
+    @SuppressWarnings("all")
+    private String height; // backward compatibility NOPMD
 
     /**
      * Creates a new instance of <code>TasksReporter</code>.
@@ -89,6 +95,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
      *            tag identifiers indicating low priority
      */
     // CHECKSTYLE:OFF
+    @SuppressWarnings("PMD.ExcessiveParameterList")
     @DataBoundConstructor
     public TasksReporter(final String pattern, final String excludePattern, final String threshold, final String healthy, final String unHealthy, final String height, final String thresholdLimit,
             final String high, final String normal, final String low) {
@@ -153,7 +160,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     }
 
     /** {@inheritDoc} */
-    @java.lang.SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "PMD.AvoidFinalLocalVariable"})
     @Override
     public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PrintStream logger) throws InterruptedException, IOException {
         List<String> foldersToScan = new ArrayList<String>(pom.getCompileSourceRoots());

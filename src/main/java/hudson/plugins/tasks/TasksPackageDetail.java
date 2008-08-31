@@ -44,15 +44,7 @@ public class TasksPackageDetail extends PackageDetail {
         taskTagsHandler = new TaskTagsHandler(high, normal, low, javaPackage);
     }
 
-    /**
-     * Returns the dynamic result of this module detail view.
-     *
-     * @param link
-     *            the link containing the path to the selected workspace file
-     *            (or package)
-     * @return the dynamic result of the FindBugs analysis (detail page for a
-     *         package).
-     */
+    /** {@inheritDoc} */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
         return new TaskDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
