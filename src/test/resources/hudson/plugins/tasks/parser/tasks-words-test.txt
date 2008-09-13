@@ -24,3 +24,17 @@ here we have ATODO in a line
 
 ATODO at the beginning
 
+here is a @todo marker
+
+@todo at the beginning
+
+and one at the end @todo
+
+no to do: @todos
+
+Text:@todo: is this one?
+
+Text@todo: is this one?
+
+
+

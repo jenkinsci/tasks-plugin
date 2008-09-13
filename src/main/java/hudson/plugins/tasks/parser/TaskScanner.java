@@ -72,10 +72,19 @@ public class TaskScanner {
             else {
                 tags = StringUtils.split(tagIdentifiers, ",");
             }
+            List<String> regexps = new ArrayList<String>();
             for (int i = 0; i < tags.length; i++) {
-                tags[i] = tags[i].trim();
+                String tag = tags[i].trim();
+                if (StringUtils.isNotBlank(tag)) {
+                    if (Character.isLetterOrDigit(tag.charAt(0))) {
+                        regexps.add("\\b" + tag + "\\b");
+                    }
+                    else {
+                        regexps.add(tag + "\\b");
+                    }
+                }
             }
-            return Pattern.compile("^.*(?:\\b" + StringUtils.join(tags, "\\b|\\b") + "\\b)(.*)$");
+            return Pattern.compile("^.*(?:" + StringUtils.join(regexps, "|") + ")(.*)$");
         }
         catch (PatternSyntaxException exception) {
             throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n", exception);

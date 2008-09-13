@@ -1,6 +1,7 @@
 package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
+import hudson.plugins.tasks.util.ParserResult;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.JavaProject;
 import hudson.plugins.tasks.util.model.Priority;
@@ -36,9 +37,16 @@ public class TaskScannerTest {
     public void scanFileWithWords() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-words-test.txt");
 
-        Collection<Task> result = new TaskScanner("WARNING", "TODO", "").scan(file);
+        Collection<Task> result = new TaskScanner("WARNING", "TODO", "@todo").scan(file);
         assignProperties(result);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 7, result.size());
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 12, result.size());
+
+        ParserResult parserResult = new ParserResult();
+        parserResult.addAnnotations(result);
+
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, parserResult.getNumberOfAnnotations(Priority.HIGH));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 7, parserResult.getNumberOfAnnotations(Priority.NORMAL));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 5, parserResult.getNumberOfAnnotations(Priority.LOW));
     }
 
     /**
