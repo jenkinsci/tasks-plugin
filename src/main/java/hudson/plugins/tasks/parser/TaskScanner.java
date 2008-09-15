@@ -84,7 +84,7 @@ public class TaskScanner {
                     }
                 }
             }
-            return Pattern.compile("^.*(?:" + StringUtils.join(regexps, "|") + ")(.*)$");
+            return Pattern.compile("^.*(?:" + StringUtils.join(regexps.iterator(), "|") + ")(.*)$");
         }
         catch (PatternSyntaxException exception) {
             throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n", exception);
