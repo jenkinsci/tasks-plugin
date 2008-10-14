@@ -51,10 +51,10 @@ public class TaskDetailBuilder {
             return factory.create(link, owner, container, displayName);
         }
         else if (link.startsWith("module.")) {
-            return new TasksModuleDetail(owner, container.getModule(StringUtils.substringAfter(link, "module.")), displayName, high, normal, low);
+            return new TasksModuleDetail(owner, container.getModule(Integer.valueOf(StringUtils.substringAfter(link, "module."))), displayName, high, normal, low);
         }
         else if (link.startsWith("package.")) {
-            return new TasksPackageDetail(owner, container.getPackage(StringUtils.substringAfter(link, "package.")), displayName, high, normal, low);
+            return new TasksPackageDetail(owner, container.getPackage(Integer.valueOf(StringUtils.substringAfter(link, "package."))), displayName, high, normal, low);
         }
         else if (link.startsWith("tab.tasks.")) {
             return new TasksTabDetail(owner, container, "/tasks/" + StringUtils.substringAfter(link, "tab.tasks.") + ".jelly", high, normal, low);
