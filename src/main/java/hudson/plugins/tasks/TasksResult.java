@@ -101,7 +101,7 @@ public class TasksResult extends BuildResult  {
      *            tag identifiers indicating low priority
      */
     public TasksResult(final AbstractBuild<?, ?> build, final TasksParserResult project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
-        super(build);
+        super(build, project.getModules());
 
         highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
         lowPriorityTasks = project.getNumberOfAnnotations(Priority.LOW);
