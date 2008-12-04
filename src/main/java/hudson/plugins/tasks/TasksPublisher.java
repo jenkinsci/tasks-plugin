@@ -7,7 +7,6 @@ import hudson.model.Descriptor;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.HealthAwarePublisher;
-import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;
@@ -141,10 +140,7 @@ public class TasksPublisher extends HealthAwarePublisher {
                 new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), high, normal, low));
 
         TasksResult result = new TasksResultBuilder().build(build, project, high, normal, low);
-        HealthReportBuilder healthReportBuilder = createHealthReporter(
-                Messages.Tasks_ResultAction_HealthReportSingleItem(),
-                Messages.Tasks_ResultAction_HealthReportMultipleItem());
-        build.getActions().add(new TasksResultAction(build, healthReportBuilder, result));
+        build.getActions().add(new TasksResultAction(build, this, result));
 
         return project;
     }

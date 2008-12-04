@@ -10,7 +10,6 @@ import hudson.model.Action;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.HealthAwareMavenReporter;
-import hudson.plugins.tasks.util.HealthReportBuilder;
 import hudson.plugins.tasks.util.ParserResult;
 
 import java.io.IOException;
@@ -201,10 +200,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
         if (project instanceof TasksParserResult) {
             TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, high, normal, low);
 
-            HealthReportBuilder healthReportBuilder = createHealthBuilder(
-                    Messages.Tasks_ResultAction_HealthReportSingleItem(),
-                    Messages.Tasks_ResultAction_HealthReportMultipleItem());
-            build.getActions().add(new MavenTasksResultAction(build, healthReportBuilder, getHeight(), high, normal, low, result));
+            build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), high, normal, low, result));
             build.registerAsProjectAction(TasksReporter.this);
         }
     }

@@ -9,7 +9,7 @@ import hudson.maven.MavenModuleSetBuild;
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.plugins.tasks.parser.TasksParserResult;
-import hudson.plugins.tasks.util.HealthReportBuilder;
+import hudson.plugins.tasks.util.HealthDescriptor;
 import hudson.plugins.tasks.util.ParserResult;
 import hudson.plugins.tasks.util.TrendReportSize;
 
@@ -40,8 +40,8 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      *
      * @param owner
      *            the associated build of this action
-     * @param healthReportBuilder
-     *            health builder to use
+     * @param healthDescriptor
+     *            health descriptor to use
      * @param height
      *            the height of the trend graph
      * @param high
@@ -53,8 +53,8 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      * @param result
      *            the result in this build
      */
-    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthReportBuilder healthReportBuilder, final String height, final String high, final String normal, final String low, final TasksResult result) {
-        super(owner, healthReportBuilder, result);
+    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String height, final String high, final String normal, final String low, final TasksResult result) {
+        super(owner, healthDescriptor, result);
         this.height = height;
         this.high = high;
         this.normal = normal;
@@ -66,8 +66,8 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      *
      * @param owner
      *            the associated build of this action
-     * @param healthReportBuilder
-     *            health builder to use
+     * @param healthDescriptor
+     *            health descriptor to use
      * @param height
      *            the height of the trend graph
      * @param high
@@ -77,8 +77,8 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      * @param low
      *            tag identifiers indicating low priority
      */
-    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthReportBuilder healthReportBuilder, final String height, final String high, final String normal, final String low) {
-        super(owner, healthReportBuilder);
+    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String height, final String high, final String normal, final String low) {
+        super(owner, healthDescriptor);
         this.height = height;
         this.high = high;
         this.normal = normal;
@@ -87,7 +87,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
 
     /** {@inheritDoc} */
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
-        return new MavenTasksResultAction(build, getHealthReportBuilder(), height, high, normal, low);
+        return new MavenTasksResultAction(build, getHealthDescriptor(), height, high, normal, low);
     }
 
     /** {@inheritDoc} */

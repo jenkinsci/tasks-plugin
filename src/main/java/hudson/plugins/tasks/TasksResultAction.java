@@ -2,7 +2,7 @@ package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.util.AbstractResultAction;
-import hudson.plugins.tasks.util.HealthReportBuilder;
+import hudson.plugins.tasks.util.HealthDescriptor;
 import hudson.plugins.tasks.util.PluginDescriptor;
 
 import java.util.NoSuchElementException;
@@ -27,13 +27,13 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
      *
      * @param owner
      *            the associated build of this action
-     * @param healthReportBuilder
-     *            health builder to use
+     * @param healthDescriptor
+     *            health descriptor to use
      * @param result
      *            the result in this build
      */
-    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthReportBuilder healthReportBuilder, final TasksResult result) {
-        super(owner, healthReportBuilder, result);
+    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final TasksResult result) {
+        super(owner, new TasksHealthDescriptor(healthDescriptor), result);
     }
 
     /**
@@ -41,11 +41,11 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
      *
      * @param owner
      *            the associated build of this action
-     * @param healthReportBuilder
-     *            health builder to use
+     * @param healthDescriptor
+     *            health descriptor to use
      */
-    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthReportBuilder healthReportBuilder) {
-        super(owner, healthReportBuilder);
+    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor) {
+        super(owner, new TasksHealthDescriptor(healthDescriptor));
     }
 
     /** {@inheritDoc} */

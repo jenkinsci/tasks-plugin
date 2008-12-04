@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringUtils;
  * @author Ulli Hafner
  */
 @SuppressWarnings("PMD")
-public class TaskDetailBuilder {
+public class TasksDetailBuilder {
     /**
      * Returns a detail object for the selected element of a tasks container.
      *
