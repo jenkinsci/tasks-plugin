@@ -4,7 +4,6 @@ import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.util.BuildResult;
-import hudson.plugins.tasks.util.ChartRenderer;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 import hudson.plugins.tasks.util.model.FileAnnotation;
@@ -378,20 +377,6 @@ public class TasksResult extends BuildResult  {
             }
         }
         return hudson.plugins.tasks.util.Messages.PackageDetail_header();
-    }
-
-    /**
-     * Generates a PNG image for high/normal/low distribution of the specified object.
-     *
-     * @param request
-     *            Stapler request
-     * @param response
-     *            Stapler response
-     * @throws IOException
-     *             in case of an error
-     */
-    public final void doStatistics(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        new ChartRenderer().doStatistics(request, response, getContainer());
     }
 
     // Delegates to TasksProject
