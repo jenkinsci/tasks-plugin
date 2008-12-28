@@ -27,13 +27,15 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 1273798369273225973L;
     /** Determines the height of the trend graph. */
-    private final String height;
+    private String height;
     /** Tag identifiers indicating high priority. */
-    private final String high;
+    private String high;
     /** Tag identifiers indicating normal priority. */
-    private final String normal;
+    private String normal;
     /** Tag identifiers indicating low priority. */
-    private final String low;
+    private String low;
+    /** The default encoding to be used when reading and parsing files. */
+    private String defaultEncoding;
 
     /**
      * Creates a new instance of <code>MavenFindBugsResultAction</code>.
@@ -44,6 +46,8 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      *            health descriptor to use
      * @param height
      *            the height of the trend graph
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -53,13 +57,12 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      * @param result
      *            the result in this build
      */
-    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String height, final String high, final String normal, final String low, final TasksResult result) {
+    // CHECKSTYLE:OFF
+    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String height, final String defaultEncoding, final String high, final String normal, final String low, final TasksResult result) {
         super(owner, healthDescriptor, result);
-        this.height = height;
-        this.high = high;
-        this.normal = normal;
-        this.low = low;
+        initializeFields(height, defaultEncoding, high, normal, low);
     }
+    // CHECKSTYLE:ON
 
     /**
      * Creates a new instance of <code>MavenFindBugsResultAction</code>.
@@ -70,6 +73,8 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      *            health descriptor to use
      * @param height
      *            the height of the trend graph
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -77,17 +82,39 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      * @param low
      *            tag identifiers indicating low priority
      */
-    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String height, final String high, final String normal, final String low) {
+    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String height, final String defaultEncoding, final String high, final String normal, final String low) {
         super(owner, healthDescriptor);
+        initializeFields(height, defaultEncoding, high, normal, low);
+    }
+
+    /**
+     * Initializes the fields of this action.
+     *
+     * @param height
+     *            the height of the trend graph
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     */
+    // CHECKSTYLE:OFF
+    @SuppressWarnings("hiding")
+    private void initializeFields(final String height, final String defaultEncoding, final String high, final String normal, final String low) {
         this.height = height;
         this.high = high;
         this.normal = normal;
         this.low = low;
+        this.defaultEncoding = defaultEncoding;
     }
+    // CHECKSTYLE:ON
 
     /** {@inheritDoc} */
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
-        return new MavenTasksResultAction(build, getHealthDescriptor(), height, high, normal, low);
+        return new MavenTasksResultAction(build, getHealthDescriptor(), height, defaultEncoding, high, normal, low);
     }
 
     /** {@inheritDoc} */
@@ -115,7 +142,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
         ParserResult result = createAggregatedResult(moduleBuilds);
 
         if (result instanceof TasksParserResult) {
-            setResult(new TasksResultBuilder().build(getOwner(), (TasksParserResult)result, high, normal, low));
+            setResult(new TasksResultBuilder().build(getOwner(), (TasksParserResult)result, defaultEncoding, high, normal, low));
         }
     }
 

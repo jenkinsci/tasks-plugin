@@ -198,9 +198,9 @@ public class TasksReporter extends HealthAwareMavenReporter {
     @Override
     protected void persistResult(final ParserResult project, final MavenBuild build) {
         if (project instanceof TasksParserResult) {
-            TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, high, normal, low);
+            TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, getDefaultEncoding(), high, normal, low);
 
-            build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), high, normal, low, result));
+            build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), getDefaultEncoding(), high, normal, low, result));
             build.registerAsProjectAction(TasksReporter.this);
         }
     }

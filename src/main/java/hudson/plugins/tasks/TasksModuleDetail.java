@@ -26,20 +26,22 @@ public class TasksModuleDetail extends ModuleDetail {
      *
      * @param owner
      *            the current build as owner of this result object
+     * @param module
+     *            the selected module to show
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param header
+     *            header to be shown on detail page
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
-     * @param module
-     *            the selected module to show
-     * @param header
-     *            header to be shown on detail page
      */
-    public TasksModuleDetail(final AbstractBuild<?, ?> owner, final MavenModule module, final String header,
+    public TasksModuleDetail(final AbstractBuild<?, ?> owner, final MavenModule module, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, module, header);
+        super(owner, module, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, module);
     }
@@ -47,7 +49,7 @@ public class TasksModuleDetail extends ModuleDetail {
     /** {@inheritDoc} */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
                     getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 

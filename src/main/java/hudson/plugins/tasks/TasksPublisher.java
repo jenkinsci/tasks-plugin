@@ -21,6 +21,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Ulli Hafner
  */
 public class TasksPublisher extends HealthAwarePublisher {
+    /** Unique ID of this class. */
+    private static final long serialVersionUID = 3787892530045641806L;
     /** Default files pattern. */
     private static final String DEFAULT_PATTERN = "**/*.java";
     /** Descriptor of this publisher. */
@@ -63,14 +65,16 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
     @DataBoundConstructor
     public TasksPublisher(final String pattern, final String excludePattern, final String threshold,
             final String healthy, final String unHealthy, final String height, final String thresholdLimit,
-            final String high, final String normal, final String low) {
-        super(threshold, healthy, unHealthy, height, thresholdLimit, "TASKS");
+            final String high, final String normal, final String low, final String defaultEncoding) {
+        super(threshold, healthy, unHealthy, height, thresholdLimit, defaultEncoding, "TASKS");
 
         this.pattern = pattern;
         this.excludePattern = excludePattern;
@@ -139,7 +143,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         project = build.getProject().getWorkspace().act(
                 new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), high, normal, low));
 
-        TasksResult result = new TasksResultBuilder().build(build, project, high, normal, low);
+        TasksResult result = new TasksResultBuilder().build(build, project, getDefaultEncoding(), high, normal, low);
         build.getActions().add(new TasksResultAction(build, this, result));
 
         return project;

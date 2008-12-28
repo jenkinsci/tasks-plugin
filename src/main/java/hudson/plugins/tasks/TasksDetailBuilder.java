@@ -25,6 +25,8 @@ public class TasksDetailBuilder {
      *            the build as owner of the detail page
      * @param container
      *            the annotation container to get the details for
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param displayName
      *            the name of the selected object
      * @param high
@@ -37,39 +39,40 @@ public class TasksDetailBuilder {
      *         package).
      */
     @edu.umd.cs.findbugs.annotations.SuppressWarnings({"IMA", "SIC"})
+    // CHECKSTYLE:OFF
     public Object getDynamic(final String link, final AbstractBuild<?, ?> owner,
-            final AnnotationContainer container, final String displayName,
+            final AnnotationContainer container, final String defaultEncoding, final String displayName,
             final String high, final String normal, final String low) {
+    // CHECKSTYLE:ON
         PriorityDetailFactory factory = new PriorityDetailFactory() {
             /** {@inheritDoc} */
             @Override
-            protected PrioritiesDetail createPrioritiesDetail(final Priority priority, final AbstractBuild<?, ?> build, final AnnotationContainer annotationContainer, final String header) {
-                return new TasksPrioritiesDetail(build, annotationContainer, priority, header, high, normal, low);
+            protected PrioritiesDetail createPrioritiesDetail(final Priority priority, final AbstractBuild<?, ?> build, final AnnotationContainer annotationContainer, @SuppressWarnings("hiding") final String defaultEncoding, final String header) {
+                return new TasksPrioritiesDetail(build, annotationContainer, priority, defaultEncoding, header, high, normal, low);
             }
         };
         if (factory.isPriority(link)) {
-            return factory.create(link, owner, container, displayName);
+            return factory.create(link, owner, container, defaultEncoding, displayName);
         }
         else if (link.startsWith("module.")) {
-            return new TasksModuleDetail(owner, container.getModule(Integer.valueOf(StringUtils.substringAfter(link, "module."))), displayName, high, normal, low);
+            return new TasksModuleDetail(owner, container.getModule(Integer.valueOf(StringUtils.substringAfter(link, "module."))), defaultEncoding, displayName, high, normal, low);
         }
         else if (link.startsWith("package.")) {
-            return new TasksPackageDetail(owner, container.getPackage(Integer.valueOf(StringUtils.substringAfter(link, "package."))), displayName, high, normal, low);
+            return new TasksPackageDetail(owner, container.getPackage(Integer.valueOf(StringUtils.substringAfter(link, "package."))), defaultEncoding, displayName, high, normal, low);
         }
         else if (link.startsWith("tab.tasks.")) {
-            return new TasksTabDetail(owner, container, "/tasks/" + StringUtils.substringAfter(link, "tab.tasks.") + ".jelly", high, normal, low);
+            return new TasksTabDetail(owner, container, "/tasks/" + StringUtils.substringAfter(link, "tab.tasks.") + ".jelly", defaultEncoding, high, normal, low);
         }
         else if (link.startsWith("tab.")) {
-            return new TasksTabDetail(owner, container, "/tabview/" + StringUtils.substringAfter(link, "tab.") + ".jelly", high, normal, low);
+            return new TasksTabDetail(owner, container, "/tabview/" + StringUtils.substringAfter(link, "tab.") + ".jelly", defaultEncoding, high, normal, low);
         }
         else if (link.startsWith("file.")) {
-            return new TasksFileDetail(owner, container.getFile(Integer.valueOf(StringUtils.substringAfter(link, "file."))), displayName, high, normal, low);
+            return new TasksFileDetail(owner, container.getFile(Integer.valueOf(StringUtils.substringAfter(link, "file."))), defaultEncoding, displayName, high, normal, low);
         }
         else if (link.startsWith("source.")) {
-            return new SourceDetail(owner, container.getAnnotation(StringUtils.substringAfter(link, "source.")));
+            return new SourceDetail(owner, container.getAnnotation(StringUtils.substringAfter(link, "source.")), defaultEncoding);
         }
         return null;
     }
-
 }
 

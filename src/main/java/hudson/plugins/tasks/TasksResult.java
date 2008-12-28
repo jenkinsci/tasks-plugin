@@ -73,6 +73,8 @@ public class TasksResult extends BuildResult  {
      *
      * @param build
      *            the current build as owner of this action
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param project
      *            the parsed annotations
      * @param high
@@ -82,16 +84,22 @@ public class TasksResult extends BuildResult  {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final TasksParserResult project, final String high, final String normal, final String low) {
-        this(build, project, project.getNumberOfAnnotations(), high, normal, low);
+    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult project, final String high, final String normal, final String low) {
+        this(build, defaultEncoding, project, project.getNumberOfAnnotations(), high, normal, low);
     }
+
 
     /**
      * Creates a new instance of <code>TasksResult</code>.
      *
-     * @param build the current build as owner of this action
-     * @param project the parsed FindBugs result
-     * @param previousNumberOfTasks the previous number of open tasks
+     * @param build
+     *            the current build as owner of this action
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param project
+     *            the parsed FindBugs result
+     * @param previousNumberOfTasks
+     *            the previous number of open tasks
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -99,8 +107,8 @@ public class TasksResult extends BuildResult  {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final TasksParserResult project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
-        super(build, project.getModules());
+    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult project, final int previousNumberOfTasks, final String high, final String normal, final String low) {
+        super(build, project.getModules(), defaultEncoding);
 
         highPriorityTasks = project.getNumberOfAnnotations(Priority.HIGH);
         lowPriorityTasks = project.getNumberOfAnnotations(Priority.LOW);
@@ -263,7 +271,7 @@ public class TasksResult extends BuildResult  {
      *         package).
      */
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
                 getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 

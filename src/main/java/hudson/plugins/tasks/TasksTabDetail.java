@@ -30,6 +30,8 @@ public class TasksTabDetail extends TabDetail {
      *            the container to show the details for
      * @param url
      *            URL to render the content of this tab
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -37,9 +39,9 @@ public class TasksTabDetail extends TabDetail {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksTabDetail(final AbstractBuild<?, ?> owner, final AnnotationContainer container, final String url,
+    public TasksTabDetail(final AbstractBuild<?, ?> owner, final AnnotationContainer container, final String url, final String defaultEncoding,
             final String high, final String normal, final String low) {
-        super(owner, container.getAnnotations(), url);
+        super(owner, container.getAnnotations(), url, defaultEncoding);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, container);
     }
@@ -47,7 +49,7 @@ public class TasksTabDetail extends TabDetail {
     /** {@inheritDoc} */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
                     getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 

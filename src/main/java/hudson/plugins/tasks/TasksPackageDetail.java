@@ -26,20 +26,22 @@ public class TasksPackageDetail extends PackageDetail {
      *
      * @param owner
      *            the current build as owner of this result object
+     * @param javaPackage
+     *            the selected Java package to show
+     * @param header
+     *            header to be shown on detail page
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
-     * @param javaPackage
-     *            the selected Java package to show
-     * @param header
-     *            header to be shown on detail page
      */
-    public TasksPackageDetail(final AbstractBuild<?, ?> owner, final JavaPackage javaPackage, final String header,
+    public TasksPackageDetail(final AbstractBuild<?, ?> owner, final JavaPackage javaPackage, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, javaPackage, header);
+        super(owner, javaPackage, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, javaPackage);
     }
@@ -47,7 +49,7 @@ public class TasksPackageDetail extends PackageDetail {
     /** {@inheritDoc} */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
                     getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 

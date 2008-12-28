@@ -26,20 +26,22 @@ public class TasksFileDetail extends FileDetail {
      *
      * @param owner
      *            the current build as owner of this result object
+     * @param file
+     *            the selected file to show
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param header
+     *            header to be shown on detail page
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
-     * @param file
-     *            the selected file to show
-     * @param header
-     *            header to be shown on detail page
      */
-    public TasksFileDetail(final AbstractBuild<?, ?> owner, final WorkspaceFile file, final String header,
+    public TasksFileDetail(final AbstractBuild<?, ?> owner, final WorkspaceFile file, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, file, header);
+        super(owner, file, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, file);
     }
@@ -47,7 +49,7 @@ public class TasksFileDetail extends FileDetail {
     /** {@inheritDoc} */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
                     getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 

@@ -30,6 +30,8 @@ public class TasksPrioritiesDetail extends PrioritiesDetail {
      *            the annotations to show the details for
      * @param priority
      *            the priority of all annotations
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param header
      *            header to be shown on detail page
      * @param high
@@ -39,17 +41,19 @@ public class TasksPrioritiesDetail extends PrioritiesDetail {
      * @param low
      *            tag identifiers indicating low priority
      */
+    // CHECKSTYLE:OFF
     public TasksPrioritiesDetail(final AbstractBuild<?, ?> owner, final AnnotationContainer container,
-            final Priority priority, final String header, final String high, final String normal, final String low) {
-        super(owner, container.getAnnotations(priority), priority, header);
+            final Priority priority, final String defaultEncoding, final String header, final String high, final String normal, final String low) {
+        super(owner, container.getAnnotations(priority), priority, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, container);
     }
+    // CHECKSTYLE:ON
 
     /** {@inheritDoc} */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDisplayName(),
+        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
                     getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 
