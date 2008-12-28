@@ -4,7 +4,7 @@ import hudson.plugins.tasks.util.AbortException;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -94,14 +94,14 @@ public class TaskScanner {
     /**
      * Scans the specified input stream for open tasks.
      *
-     * @param file
+     * @param reader
      *            the file to scan
      * @return the result stored as java project
      * @throws IOException
      *             if we can't read the file
      */
-    public Collection<Task> scan(final InputStream file) throws IOException {
-        LineIterator lineIterator = IOUtils.lineIterator(file, null);
+    public Collection<Task> scan(final Reader reader) throws IOException {
+        LineIterator lineIterator = IOUtils.lineIterator(reader);
         List<Task> tasks = new ArrayList<Task>();
         for (int lineNumber = 1; lineIterator.hasNext(); lineNumber++) {
             String line = (String)lineIterator.next();
@@ -116,7 +116,7 @@ public class TaskScanner {
                 }
             }
         }
-        file.close();
+        reader.close();
 
         return tasks;
     }

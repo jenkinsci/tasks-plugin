@@ -3,6 +3,7 @@ package hudson.plugins.tasks.parser;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.plugins.tasks.util.CsharpNamespaceDetector;
+import hudson.plugins.tasks.util.EncodingValidator;
 import hudson.plugins.tasks.util.JavaPackageDetector;
 import hudson.plugins.tasks.util.ModuleDetector;
 import hudson.plugins.tasks.util.PackageDetector;
@@ -11,6 +12,7 @@ import hudson.remoting.VirtualChannel;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +43,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     private final String low;
     /** Prefix of path. */
     private String prefix;
+    /** The default encoding to be used when reading and parsing files. */
+    private final String defaultEncoding;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -49,6 +53,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            ant file-set pattern to scan for files
      * @param excludeFilePattern
      *            ant file-set pattern to exclude from scan
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -56,9 +62,10 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String high, final String normal, final String low) {
+    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding, final String high, final String normal, final String low) {
         this.filePattern = filePattern;
         this.excludeFilePattern = excludeFilePattern;
+        this.defaultEncoding = defaultEncoding;
         this.high = high;
         this.normal = normal;
         this.low = low;
@@ -73,6 +80,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            ant file-set pattern to scan for files
      * @param excludeFilePattern
      *            ant file-set pattern to exclude from scan
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -80,8 +89,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String high, final String normal, final String low, final String moduleName) {
-        this(filePattern, excludeFilePattern, high, normal, low);
+    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding, final String high, final String normal, final String low, final String moduleName) {
+        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low);
         this.moduleName = moduleName;
     }
 
@@ -117,7 +126,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         ModuleDetector moduleDetector = new ModuleDetector(workspace);
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
-            Collection<Task> tasks = taskScanner.scan(new FilePath(originalFile).read());
+            Collection<Task> tasks = taskScanner.scan(new InputStreamReader(new FilePath(originalFile).read(),
+                    EncodingValidator.defaultCharset(defaultEncoding)));
             if (!tasks.isEmpty()) {
                 String unixName = fileName.replace('\\', '/');
                 String packageName = detectPackageName(detectors, unixName, new FilePath(originalFile).read());

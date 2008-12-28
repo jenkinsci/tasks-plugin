@@ -8,6 +8,7 @@ import hudson.plugins.tasks.util.model.Priority;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -37,7 +38,7 @@ public class TaskScannerTest {
     public void scanFileWithWords() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-words-test.txt");
 
-        Collection<Task> result = new TaskScanner("WARNING", "TODO", "@todo").scan(file);
+        Collection<Task> result = new TaskScanner("WARNING", "TODO", "@todo").scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 12, result.size());
 
@@ -58,7 +59,7 @@ public class TaskScannerTest {
     public void scanFileWithTasksAndDefaults() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner().scan(file);
+        Collection<Task> result = new TaskScanner().scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
@@ -76,7 +77,7 @@ public class TaskScannerTest {
     public void testPriorities() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner().scan(file);
+        Collection<Task> result = new TaskScanner().scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
@@ -95,7 +96,7 @@ public class TaskScannerTest {
     public void testHighPriority() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner("FIXME", null, null).scan(file);
+        Collection<Task> result = new TaskScanner("FIXME", null, null).scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
 
@@ -114,7 +115,7 @@ public class TaskScannerTest {
     public void testTwoItemsWithWhiteSpaceAndHighPriority() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner(" FIXME , TODO ", null, null).scan(file);
+        Collection<Task> result = new TaskScanner(" FIXME , TODO ", null, null).scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
@@ -133,7 +134,7 @@ public class TaskScannerTest {
     public void testTwoItemsWithHighPriority() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner("FIXME,TODO", null, null).scan(file);
+        Collection<Task> result = new TaskScanner("FIXME,TODO", null, null).scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
@@ -152,7 +153,7 @@ public class TaskScannerTest {
     public void testAllPriorities() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner("FIXME", "FIXME,TODO", "TODO").scan(file);
+        Collection<Task> result = new TaskScanner("FIXME", "FIXME,TODO", "TODO").scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 4, result.size());
 
@@ -171,7 +172,7 @@ public class TaskScannerTest {
     public void scanFileWithoutTasks() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream("file-without-tasks.txt");
 
-        Collection<Task> result = new TaskScanner().scan(file);
+        Collection<Task> result = new TaskScanner().scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, result.size());
 

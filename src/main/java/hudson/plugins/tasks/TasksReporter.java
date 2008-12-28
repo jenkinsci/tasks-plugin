@@ -176,9 +176,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
             FilePath filePath = new FilePath(basedir, sourcePath);
             if (filePath.exists()) {
                 log(logger, String.format("Scanning folder '%s' for tasks ... ", sourcePath));
-                WorkspaceScanner workspaceScanner = new WorkspaceScanner(
-                        StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN), excludePattern,
-                        high, normal, low, pom.getName());
+                WorkspaceScanner workspaceScanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
+                        excludePattern, getDefaultEncoding(), high, normal, low, pom.getName());
                 workspaceScanner.setPrefix(sourcePath);
                 TasksParserResult subProject = filePath.act(workspaceScanner);
                 project.addAnnotations(subProject.getAnnotations());
