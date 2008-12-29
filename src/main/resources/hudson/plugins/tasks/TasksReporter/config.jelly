@@ -1,11 +1,10 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
-      xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:u="/util" xmlns:c="/hudson/plugins/tasks/config">
+    xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:u="/util" xmlns:c="/hudson/plugins/tasks/config">
 
   <c:tasks/>
   <f:advanced>
     <u:thresholds id="tasks"/>
     <u:trendHeight/>
-    <u:defaultEncoding id="tasks"/>
   </f:advanced>
 
 </j:jelly>

@@ -26,12 +26,6 @@ public class TasksReporterDescriptor extends ReporterDescriptor {
 
     /** {@inheritDoc} */
     @Override
-    public String getConfigPage() {
-        return getViewPage(TasksPublisher.class, "config.jelly");
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public MavenReporter newInstance(final StaplerRequest request, final JSONObject formData) throws FormException {
         return request.bindJSON(TasksReporter.class, formData);
     }
