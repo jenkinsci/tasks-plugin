@@ -11,7 +11,7 @@
   <artifactId>tasks</artifactId>
   <packaging>hpi</packaging>
   <name>Hudson Task Scanner Plug-in</name>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0</version>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/Task+Scanner+Plugin</url>
   <description>This plug-in scans the workspace files for open tasks
     and generates a trend report.</description>
@@ -144,4 +144,10 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <scm>
+    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/tasks-3.0</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/tasks-3.0</developerConnection>
+    <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/tasks/tags/tasks-3.0</url>
+  </scm>
 </project>
