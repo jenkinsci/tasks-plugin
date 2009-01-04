@@ -33,32 +33,22 @@ public class TaskSerializeModelTest extends AbstractSerializeModelTest {
         XSTREAM.alias("task", Task.class);
     }
 
-    /**
-     * Verifies the first created annotation.
-     *
-     * @param annotation
-     *            the first created annotation
-     */
+    /** {@inheritDoc} */
     @Override
     protected void verifyFirstAnnotation(final AbstractAnnotation annotation) {
         Task task = (Task)annotation;
         Assert.assertEquals("Wrong detail message." , TEST_TASK1, task.getDetailMessage());
     }
 
-    /**
-     * Creates an annotation.
-     *
-     * @param line
-     *            the line
-     * @param message
-     *            the message
-     * @param priority
-     *            the priority
-     * @return the annotation
-     */
+    /** {@inheritDoc} */
     @Override
-    protected AbstractAnnotation createAnnotation(final int line, final String message, final Priority priority) {
-        return new Task(priority, line, message);
+    protected AbstractAnnotation createAnnotation(final int line, final String message, final Priority priority, final String fileName, final String packageName, final String moduleName) {
+        Task annotation = new Task(priority, line, message);
+        annotation.setFileName(fileName);
+        annotation.setPackageName(packageName);
+        annotation.setModuleName(moduleName);
+
+        return annotation;
     }
 
     /**
