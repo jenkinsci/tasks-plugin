@@ -7,6 +7,7 @@ import hudson.model.Descriptor;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.HealthAwarePublisher;
+import hudson.plugins.tasks.util.model.Priority;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            than this value
      * @param height
      *            the height of the trend graph
-     * @param thresholdLimit
+     * @param minimumPriority
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
      * @param high
@@ -72,9 +73,9 @@ public class TasksPublisher extends HealthAwarePublisher {
     @SuppressWarnings("PMD.ExcessiveParameterList")
     @DataBoundConstructor
     public TasksPublisher(final String pattern, final String excludePattern, final String threshold,
-            final String healthy, final String unHealthy, final String height, final String thresholdLimit,
+            final String healthy, final String unHealthy, final String height, final Priority minimumPriority,
             final String high, final String normal, final String low, final String defaultEncoding) {
-        super(threshold, healthy, unHealthy, height, thresholdLimit, defaultEncoding, "TASKS");
+        super(threshold, healthy, unHealthy, height, minimumPriority, defaultEncoding, "TASKS");
 
         this.pattern = pattern;
         this.excludePattern = excludePattern;
