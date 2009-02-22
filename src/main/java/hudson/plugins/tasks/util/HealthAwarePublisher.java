@@ -48,9 +48,15 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
     /** Unique ID of this class. */
     private static final long serialVersionUID = -7945220365563528457L;
     /** Default threshold priority limit. */
-    private static final Priority DEFAULT_PRIORITY_THRESHOLD_LIMIT = Priority.LOW;
+    private static final String DEFAULT_PRIORITY_THRESHOLD_LIMIT = "low";
     /** Annotation threshold to be reached if a build should be considered as unstable. */
     private final String threshold;
+    /** Threshold for new annotations to be reached if a build should be considered as unstable. */
+    private final String newThreshold;
+    /** Annotation threshold to be reached if a build should be considered as failure. */
+    private final String failureThreshold;
+    /** Threshold for new annotations to be reached if a build should be considered as failure. */
+    private final String newFailureThreshold;
     /** Determines whether to use the provided threshold to mark a build as unstable. */
     private boolean thresholdEnabled;
     /** Integer threshold to be reached if a build should be considered as unstable. */
@@ -70,17 +76,25 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
     /** The name of the plug-in. */
     private final String pluginName;
     /** Determines which warning priorities should be considered when evaluating the build stability and health. */
-    private Priority minimumPriority;
+    private String thresholdLimit;
     /** The default encoding to be used when reading and parsing files. */
     private final String defaultEncoding;
-
 
     /**
      * Creates a new instance of <code>HealthAwarePublisher</code>.
      *
      * @param threshold
-     *            Tasks threshold to be reached if a build should be considered
-     *            as unstable.
+     *            Annotations threshold to be reached if a build should be
+     *            considered as unstable.
+     * @param newThreshold
+     *            New annotations threshold to be reached if a build should be
+     *            considered as unstable.
+     * @param failureThreshold
+     *            Annotation threshold to be reached if a build should be considered as
+     *            failure.
+     * @param newFailureThreshold
+     *            New annotations threshold to be reached if a build should be
+     *            considered as failure.
      * @param healthy
      *            Report health as 100% when the number of open tasks is less
      *            than this value
@@ -89,7 +103,7 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
      *            than this value
      * @param height
      *            the height of the trend graph
-     * @param minimumPriority
+     * @param thresholdLimit
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
      * @param pluginName
@@ -97,20 +111,30 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
      */
-    public HealthAwarePublisher(final String threshold, final String healthy, final String unHealthy,
-            final String height, final Priority minimumPriority, final String defaultEncoding, final String pluginName) {
+    // CHECKSTYLE:OFF
+    public HealthAwarePublisher(final String threshold, final String newThreshold,
+            final String failureThreshold, final String newFailureThreshold, final String healthy,
+            final String unHealthy, final String height, final String thresholdLimit,
+            final String defaultEncoding, final String pluginName) {
         super();
         this.threshold = threshold;
+        this.newThreshold = newThreshold;
+        this.failureThreshold = failureThreshold;
+        this.newFailureThreshold = newFailureThreshold;
         this.healthy = healthy;
         this.unHealthy = unHealthy;
         this.height = height;
-        this.minimumPriority = minimumPriority;
+        this.thresholdLimit = thresholdLimit;
         this.defaultEncoding = defaultEncoding;
         this.pluginName = "[" + pluginName + "] ";
 
         validateThreshold(threshold);
         validateHealthiness(healthy, unHealthy);
+        if (StringUtils.isBlank(thresholdLimit)) {
+            this.thresholdLimit = DEFAULT_PRIORITY_THRESHOLD_LIMIT;
+        }
     }
+    // CHECKSTYLE:ON
 
     /**
      * Validates the healthiness parameters and sets the according fields.
@@ -136,7 +160,7 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
     }
 
     /**
-     * Validates the threshold parameter and sets the according fields.
+     * Validates the threshold parameter and sets the corresponding fields.
      *
      * @param thresholdParameter
      *            the threshold to validate
@@ -161,13 +185,8 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
      * @return the object
      */
     protected Object readResolve() {
-        if (minimumPriority == null) {
-            if (thresholdLimit == null) {
-                minimumPriority = DEFAULT_PRIORITY_THRESHOLD_LIMIT;
-            }
-            else {
-                minimumPriority = Priority.fromString(thresholdLimit);
-            }
+        if (thresholdLimit == null) {
+            thresholdLimit = DEFAULT_PRIORITY_THRESHOLD_LIMIT;
         }
         return this;
     }
@@ -176,23 +195,32 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
     @Override
     public final boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
         if (canContinue(build.getResult())) {
-            PrintStream logger = listener.getLogger();
+            PluginLogger logger = new PluginLogger(listener.getLogger(), pluginName);
             try {
-                ParserResult project = perform(build, logger);
-                evaluateBuildResult(build, logger, project);
+                AnnotationsBuildResult annotationsResult = perform(build, logger);
+                ParserResult result = new ParserResult(annotationsResult.getAnnotations());
+                ParserResult newResult = new ParserResult(annotationsResult.getNewWarnings());
+
+                Result buildResult = new BuildResultEvaluator().evaluateBuildResult(
+                        logger, getMinimumPriority(),
+                        result, getThreshold(), getFailureThreshold(),
+                        newResult, getNewThreshold(), getNewFailureThreshold());
+                if (buildResult != Result.SUCCESS) {
+                    build.setResult(buildResult);
+                }
+
                 if (build.getProject().getWorkspace().isRemote()) {
-                    copyFilesFromSlaveToMaster(build.getRootDir(), launcher.getChannel(), project.getAnnotations());
+                    copyFilesFromSlaveToMaster(build.getRootDir(), launcher.getChannel(), annotationsResult.getAnnotations());
                 }
             }
             catch (AbortException exception) {
-                logger.println(exception.getMessage());
+                logger.log(exception);
                 build.setResult(Result.FAILURE);
                 return false;
             }
         }
         return true;
     }
-
 
     /**
      * Copies all files with annotations from the slave to the master.
@@ -228,8 +256,7 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
                     new FilePath(channel, file.getName()).copyTo(outputStream);
                 }
                 catch (IOException exception) {
-                    String message = "Can't copy file from slave to master: slave="
-                            + file.getName() + ", master=" + masterFile.getAbsolutePath();
+                    String message = "Can't copy file from slave to master: slave=" + file.getName() + ", master=" + masterFile.getAbsolutePath();
                     IOUtils.write(message, outputStream);
                     exception.printStackTrace(new PrintStream(outputStream));
                     outputStream.close();
@@ -249,15 +276,15 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
         return result != Result.ABORTED && result != Result.FAILURE;
     }
 
+
     /**
      * Performs the publishing of the results of this plug-in.
      *
      * @param build
      *            the build
-     * @param logger the logger to report the progress to
-     *
+     * @param logger
+     *            the logger to report the progress to
      * @return the java project containing the found annotations
-     *
      * @throws InterruptedException
      *             If the build is interrupted by the user (in an attempt to
      *             abort the build.) Normally the {@link BuildStep}
@@ -272,40 +299,7 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
      *             a better error message, if it can do so, so that users have
      *             better understanding on why it failed.
      */
-    protected abstract ParserResult perform(AbstractBuild<?, ?> build, PrintStream logger) throws InterruptedException, IOException;
-
-    /**
-     * Evaluates the build result. The build is marked as unstable if the
-     * threshold has been exceeded.
-     *
-     * @param build
-     *            the build to create the action for
-     * @param logger
-     *            the logger
-     * @param project
-     *            the project with the annotations
-     */
-    private void evaluateBuildResult(final AbstractBuild<?, ?> build, final PrintStream logger, final ParserResult project) {
-        int annotationCount = 0;
-        for (Priority priority : Priority.collectPrioritiesFrom(getMinimumPriority())) {
-            int numberOfAnnotations = project.getNumberOfAnnotations(priority);
-            log(logger, "A total of " + numberOfAnnotations + " annotations have been found for priority " + priority);
-            annotationCount += numberOfAnnotations;
-        }
-        if (annotationCount > 0 && isThresholdEnabled() && annotationCount >= getMinimumAnnotations()) {
-            build.setResult(Result.UNSTABLE);
-        }
-    }
-
-    /**
-     * Logs the specified message.
-     *
-     * @param logger the logger
-     * @param message the message
-     */
-    protected void log(final PrintStream logger, final String message) {
-        logger.println(StringUtils.defaultString(pluginName) + message);
-    }
+    protected abstract AnnotationsBuildResult perform(AbstractBuild<?, ?> build, PluginLogger logger) throws InterruptedException, IOException;
 
     /** {@inheritDoc} */
     public boolean isThresholdEnabled() {
@@ -313,12 +307,47 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
     }
 
     /**
-     * Returns the annotation threshold to be reached if a build should be considered as unstable.
+     * Returns the annotation threshold to be reached if a build should be
+     * considered as unstable.
      *
-     * @return the annotation threshold to be reached if a build should be considered as unstable.
+     * @return the annotation threshold to be reached if a build should be
+     *         considered as unstable.
      */
     public String getThreshold() {
         return threshold;
+    }
+
+    /**
+     * Returns the threshold of new annotations to be reached if a build should
+     * be considered as unstable.
+     *
+     * @return the threshold of new annotations to be reached if a build should
+     *         be considered as unstable.
+     */
+    public String getNewThreshold() {
+        return newThreshold;
+    }
+
+    /**
+     * Returns the annotation threshold to be reached if a build should be
+     * considered as failure.
+     *
+     * @return the annotation threshold to be reached if a build should be
+     *         considered as failure.
+     */
+    public String getFailureThreshold() {
+        return failureThreshold;
+    }
+
+    /**
+     * Returns the threshold of new annotations to be reached if a build should
+     * be considered as failure.
+     *
+     * @return the threshold of new annotations to be reached if a build should
+     *         be considered as failure.
+     */
+    public String getNewFailureThreshold() {
+        return newFailureThreshold;
     }
 
     /** {@inheritDoc} */
@@ -430,10 +459,15 @@ public abstract class HealthAwarePublisher extends Publisher implements HealthDe
 
     /** {@inheritDoc} */
     public Priority getMinimumPriority() {
-        return minimumPriority;
+        return Priority.valueOf(StringUtils.upperCase(getThresholdLimit()));
     }
 
-    /** Not used anymore */
-    @Deprecated
-    private transient String thresholdLimit;
+    /**
+     * Returns the threshold limit.
+     *
+     * @return the threshold limit
+     */
+    public String getThresholdLimit() {
+        return thresholdLimit;
+    }
 }

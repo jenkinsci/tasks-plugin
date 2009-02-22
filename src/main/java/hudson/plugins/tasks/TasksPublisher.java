@@ -6,12 +6,12 @@ import hudson.model.Action;
 import hudson.model.Descriptor;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
+import hudson.plugins.tasks.util.AnnotationsBuildResult;
 import hudson.plugins.tasks.util.HealthAwarePublisher;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.tasks.util.PluginLogger;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;
-import java.io.PrintStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -47,8 +47,17 @@ public class TasksPublisher extends HealthAwarePublisher {
      * @param excludePattern
      *            Ant file-set pattern of files to exclude from scan
      * @param threshold
-     *            Tasks threshold to be reached if a build should be considered
-     *            as unstable.
+     *            Annotation threshold to be reached if a build should be considered as
+     *            unstable.
+     * @param newThreshold
+     *            New annotations threshold to be reached if a build should be
+     *            considered as unstable.
+     * @param failureThreshold
+     *            Annotation threshold to be reached if a build should be considered as
+     *            failure.
+     * @param newFailureThreshold
+     *            New annotations threshold to be reached if a build should be
+     *            considered as failure.
      * @param healthy
      *            Report health as 100% when the number of open tasks is less
      *            than this value
@@ -57,7 +66,7 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            than this value
      * @param height
      *            the height of the trend graph
-     * @param minimumPriority
+     * @param thresholdLimit
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
      * @param high
@@ -72,10 +81,13 @@ public class TasksPublisher extends HealthAwarePublisher {
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
     @DataBoundConstructor
-    public TasksPublisher(final String pattern, final String excludePattern, final String threshold,
-            final String healthy, final String unHealthy, final String height, final Priority minimumPriority,
+    public TasksPublisher(final String pattern, final String excludePattern,
+            final String threshold, final String newThreshold,
+            final String failureThreshold, final String newFailureThreshold,
+            final String healthy, final String unHealthy, final String height, final String thresholdLimit,
             final String high, final String normal, final String low, final String defaultEncoding) {
-        super(threshold, healthy, unHealthy, height, minimumPriority, defaultEncoding, "TASKS");
+        super(threshold, newThreshold, failureThreshold, newFailureThreshold,
+                healthy, unHealthy, height, thresholdLimit, defaultEncoding, "TASKS");
 
         this.pattern = pattern;
         this.excludePattern = excludePattern;
@@ -138,16 +150,16 @@ public class TasksPublisher extends HealthAwarePublisher {
 
     /** {@inheritDoc} */
     @Override
-    public TasksParserResult perform(final AbstractBuild<?, ?> build, final PrintStream logger) throws InterruptedException, IOException {
+    protected AnnotationsBuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         TasksParserResult project;
-        log(logger, "Scanning workspace files for tasks...");
+        logger.log("Scanning workspace files for tasks...");
         project = build.getProject().getWorkspace().act(
                 new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), getDefaultEncoding(), high, normal, low));
 
         TasksResult result = new TasksResultBuilder().build(build, project, getDefaultEncoding(), high, normal, low);
         build.getActions().add(new TasksResultAction(build, this, result));
 
-        return project;
+        return result;
     }
 
     /** {@inheritDoc} */

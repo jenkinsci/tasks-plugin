@@ -9,12 +9,12 @@ import hudson.maven.MojoInfo;
 import hudson.model.Action;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
+import hudson.plugins.tasks.util.AnnotationsBuildResult;
 import hudson.plugins.tasks.util.HealthAwareMavenReporter;
 import hudson.plugins.tasks.util.ParserResult;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.tasks.util.PluginLogger;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +74,17 @@ public class TasksReporter extends HealthAwareMavenReporter {
      * @param excludePattern
      *            Ant file-set pattern of files to exclude from scan
      * @param threshold
-     *            Tasks threshold to be reached if a build should be considered
-     *            as unstable.
+     *            Annotation threshold to be reached if a build should be considered as
+     *            unstable.
+     * @param newThreshold
+     *            New annotations threshold to be reached if a build should be
+     *            considered as unstable.
+     * @param failureThreshold
+     *            Annotation threshold to be reached if a build should be considered as
+     *            failure.
+     * @param newFailureThreshold
+     *            New annotations threshold to be reached if a build should be
+     *            considered as failure.
      * @param healthy
      *            Report health as 100% when the number of open tasks is less
      *            than this value
@@ -84,7 +93,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
      *            than this value
      * @param height
      *            the height of the trend graph
-     * @param minimumPriority
+     * @param thresholdLimit
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
      * @param high
@@ -97,10 +106,13 @@ public class TasksReporter extends HealthAwareMavenReporter {
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
     @DataBoundConstructor
-    public TasksReporter(final String pattern, final String excludePattern, final String threshold, final String healthy, final String unHealthy,
-            final String height, final Priority minimumPriority,
+    public TasksReporter(final String pattern, final String excludePattern,
+            final String threshold, final String newThreshold,
+            final String failureThreshold, final String newFailureThreshold,
+            final String healthy, final String unHealthy,
+            final String height, final String thresholdLimit,
             final String high, final String normal, final String low) {
-        super(threshold, healthy, unHealthy, height, minimumPriority, "TASKS");
+        super(threshold, newThreshold, failureThreshold, newFailureThreshold, healthy, unHealthy, height, thresholdLimit, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -163,7 +175,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     /** {@inheritDoc} */
     @SuppressWarnings({"unchecked", "PMD.AvoidFinalLocalVariable"})
     @Override
-    public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PrintStream logger) throws InterruptedException, IOException {
+    public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PluginLogger logger) throws InterruptedException, IOException {
         List<String> foldersToScan = new ArrayList<String>(pom.getCompileSourceRoots());
         List<Resource> resources = pom.getResources();
         for (Resource resource : resources) {
@@ -177,7 +189,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
             }
             FilePath filePath = new FilePath(basedir, sourcePath);
             if (filePath.exists()) {
-                log(logger, String.format("Scanning folder '%s' for tasks ... ", sourcePath));
+                logger.log(String.format("Scanning folder '%s' for tasks ... ", sourcePath));
                 WorkspaceScanner workspaceScanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
                         excludePattern, getDefaultEncoding(), high, normal, low, pom.getName());
                 workspaceScanner.setPrefix(sourcePath);
@@ -185,10 +197,10 @@ public class TasksReporter extends HealthAwareMavenReporter {
                 project.addAnnotations(subProject.getAnnotations());
                 project.addModule(pom.getName());
                 project.addScannedFiles(subProject.getNumberOfScannedFiles());
-                log(logger, String.format("Found %d.", subProject.getNumberOfAnnotations()));
+                logger.log(String.format("Found %d.", subProject.getNumberOfAnnotations()));
             }
             else {
-                log(logger, String.format("Scipping non-existent folder '%s'...", sourcePath));
+                logger.log(String.format("Scipping non-existent folder '%s'...", sourcePath));
             }
         }
 
@@ -197,13 +209,13 @@ public class TasksReporter extends HealthAwareMavenReporter {
 
     /** {@inheritDoc} */
     @Override
-    protected void persistResult(final ParserResult project, final MavenBuild build) {
-        if (project instanceof TasksParserResult) {
-            TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, getDefaultEncoding(), high, normal, low);
+    protected AnnotationsBuildResult persistResult(final ParserResult project, final MavenBuild build) {
+        TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, getDefaultEncoding(), high, normal, low);
 
-            build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), getDefaultEncoding(), high, normal, low, result));
-            build.registerAsProjectAction(TasksReporter.this);
-        }
+        build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), getDefaultEncoding(), high, normal, low, result));
+        build.registerAsProjectAction(TasksReporter.this);
+
+        return result;
     }
 
     /** {@inheritDoc} */

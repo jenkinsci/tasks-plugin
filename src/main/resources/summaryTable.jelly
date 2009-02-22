@@ -5,16 +5,16 @@
 	<table class="pane sortable" id="tasks.summary">
 		<tr>
 			<td class="pane-header">${%Total}</td>
-			<j:forEach var="priority" items="${it.availablePriorities}">
+			<j:forEach var="priority" items="${it.priorities}">
 				<td class="pane-header">
-					${it.getLocalizedPriority(priority)} (${it.getTags(priority)})
+					${priority.longLocalizedString} (${it.getTags(priority)})
 				</td>
 			</j:forEach>
 		</tr>
 		<tbody>
 			<tr>
 				<td class="pane">${it.numberOfAnnotations}</td>
-				<j:forEach var="priority" items="${it.availablePriorities}">
+				<j:forEach var="priority" items="${it.priorities}">
 				  <td class="pane">
 					<j:if test="${it.getNumberOfAnnotations(priority) == 0}">
 						0
