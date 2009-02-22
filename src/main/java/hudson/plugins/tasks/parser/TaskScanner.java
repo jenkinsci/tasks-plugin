@@ -31,7 +31,7 @@ public class TaskScanner {
      * Creates a new instance of <code>TaskScanner</code>.
      */
     public TaskScanner() {
-        this("FIXME", "TODO", "@deprecated");
+        this("FIXME", "TODO", "@deprecated", false);
     }
 
     /**
@@ -43,16 +43,19 @@ public class TaskScanner {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
+     * @param ignoreCase
+     *            if case should be ignored during matching
      */
-    public TaskScanner(final String high, final String normal, final String low) {
+    public TaskScanner(final String high, final String normal, final String low,
+            final boolean ignoreCase) {
         if (StringUtils.isNotBlank(high)) {
-            patterns.put(Priority.HIGH, compile(high));
+            patterns.put(Priority.HIGH, compile(high, ignoreCase));
         }
         if (StringUtils.isNotBlank(normal)) {
-            patterns.put(Priority.NORMAL, compile(normal));
+            patterns.put(Priority.NORMAL, compile(normal, ignoreCase));
         }
         if (StringUtils.isNotBlank(low)) {
-            patterns.put(Priority.LOW, compile(low));
+            patterns.put(Priority.LOW, compile(low, ignoreCase));
         }
     }
 
@@ -61,9 +64,11 @@ public class TaskScanner {
      *
      * @param tagIdentifiers
      *            the identifiers to scan for
+     * @param ignoreCase
+     *            specifies if case should be ignored
      * @return the compiled pattern
      */
-    private Pattern compile(final String tagIdentifiers) {
+    private Pattern compile(final String tagIdentifiers, final boolean ignoreCase) {
         try {
             String[] tags;
             if (tagIdentifiers.indexOf(',') == -1) {
@@ -84,7 +89,14 @@ public class TaskScanner {
                     }
                 }
             }
-            return Pattern.compile("^.*(?:" + StringUtils.join(regexps.iterator(), "|") + ")(.*)$");
+            int flags;
+            if (ignoreCase) {
+                flags = Pattern.CASE_INSENSITIVE;
+            }
+            else {
+                flags = 0;
+            }
+            return Pattern.compile("^.*(?:" + StringUtils.join(regexps.iterator(), "|") + ")(.*)$", flags);
         }
         catch (PatternSyntaxException exception) {
             throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n", exception);

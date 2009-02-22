@@ -46,25 +46,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
-
-    /** The is threshold enabled. */
-    @SuppressWarnings("all")
-    private boolean isThresholdEnabled; // backward compatibility NOPMD
-    /** The is healthy report enabled. */
-    @SuppressWarnings("all")
-    private boolean isHealthyReportEnabled; // backward compatibility NOPMD
-    /** The healthy tasks. */
-    @SuppressWarnings("all")
-    private int healthyTasks; // backward compatibility NOPMD
-    /** The un healthy tasks. */
-    @SuppressWarnings("all")
-    private int unHealthyTasks; // backward compatibility NOPMD
-    /** The minimum tasks. */
-    @SuppressWarnings("all")
-    private int minimumTasks; // backward compatibility NOPMD
-    /** The height. */
-    @SuppressWarnings("all")
-    private String height; // backward compatibility NOPMD
+    /** Tag identifiers indicating case sensitivity. */
+    private final boolean ignoreCase;
 
     /**
      * Creates a new instance of <code>TasksReporter</code>.
@@ -102,6 +85,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
+     * @param ignoreCase
+     *            if case should be ignored during matching
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -111,13 +96,15 @@ public class TasksReporter extends HealthAwareMavenReporter {
             final String failureThreshold, final String newFailureThreshold,
             final String healthy, final String unHealthy,
             final String height, final String thresholdLimit,
-            final String high, final String normal, final String low) {
+            final String high, final String normal, final String low,
+            final boolean ignoreCase) {
         super(threshold, newThreshold, failureThreshold, newFailureThreshold, healthy, unHealthy, height, thresholdLimit, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
         this.normal = normal;
         this.low = low;
+        this.ignoreCase = ignoreCase;
     }
     // CHECKSTYLE:ON
 
@@ -166,6 +153,15 @@ public class TasksReporter extends HealthAwareMavenReporter {
         return low;
     }
 
+    /**
+     * Returns whether case should be ignored during the scanning.
+     *
+     * @return <code>true</code> if case should be ignored during the scanning
+     */
+    public boolean getIgnoreCase() {
+        return ignoreCase;
+    }
+
     /** {@inheritDoc} */
     @Override
     protected boolean acceptGoal(final String goal) {
@@ -191,7 +187,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
             if (filePath.exists()) {
                 logger.log(String.format("Scanning folder '%s' for tasks ... ", sourcePath));
                 WorkspaceScanner workspaceScanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
-                        excludePattern, getDefaultEncoding(), high, normal, low, pom.getName());
+                        excludePattern, getDefaultEncoding(), high, normal, low, ignoreCase, pom.getName());
                 workspaceScanner.setPrefix(sourcePath);
                 TasksParserResult subProject = filePath.act(workspaceScanner);
                 project.addAnnotations(subProject.getAnnotations());
@@ -210,7 +206,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
     /** {@inheritDoc} */
     @Override
     protected BuildResult persistResult(final ParserResult project, final MavenBuild build) {
-        TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, getDefaultEncoding(), high, normal, low);
+        TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, getDefaultEncoding(),
+                high, normal, low);
 
         build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), getDefaultEncoding(), high, normal, low, result));
         build.registerAsProjectAction(TasksReporter.this);
@@ -235,5 +232,32 @@ public class TasksReporter extends HealthAwareMavenReporter {
     public MavenReporterDescriptor getDescriptor() {
         return TASK_SCANNER_DESCRIPTOR;
     }
+
+    // Backward compatibility. Do not remove.
+    // CHECKSTYLE:OFF
+    @SuppressWarnings("all")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @Deprecated
+    private transient boolean isThresholdEnabled;
+    @SuppressWarnings("all")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @Deprecated
+    private transient boolean isHealthyReportEnabled;
+    @SuppressWarnings("all")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @Deprecated
+    private transient int healthTasks;
+    @SuppressWarnings("all")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @Deprecated
+    private transient int unHealthyTasks;
+    @SuppressWarnings("all")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @Deprecated
+    private transient int minimumTasks;
+    @SuppressWarnings("all")
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @Deprecated
+    private transient String height;
 }
 

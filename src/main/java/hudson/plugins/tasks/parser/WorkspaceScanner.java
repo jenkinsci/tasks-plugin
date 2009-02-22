@@ -41,10 +41,13 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
+    /** Tag identifiers indicating case sensitive parsing. */
+    private boolean ignoreCase;
     /** Prefix of path. */
     private String prefix;
     /** The default encoding to be used when reading and parsing files. */
     private final String defaultEncoding;
+
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -61,14 +64,18 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
+     * @param ignoreCase
+     *            if case should be ignored during matching
      */
-    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding, final String high, final String normal, final String low) {
+    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
+            final String high, final String normal, final String low, final boolean ignoreCase) {
         this.filePattern = filePattern;
         this.excludeFilePattern = excludeFilePattern;
         this.defaultEncoding = defaultEncoding;
         this.high = high;
         this.normal = normal;
         this.low = low;
+        this.ignoreCase = ignoreCase;
     }
 
     /**
@@ -89,8 +96,10 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding, final String high, final String normal, final String low, final String moduleName) {
-        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low);
+    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
+            final String high, final String normal, final String low, final boolean caseSensitive,
+            final String moduleName) {
+        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive);
         this.moduleName = moduleName;
     }
 
@@ -120,8 +129,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         detectors.add(new JavaPackageDetector());
         detectors.add(new CsharpNamespaceDetector());
 
-        TaskScanner taskScanner = new TaskScanner(high, normal, low);
-
+        TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase);
         TasksParserResult javaProject = new TasksParserResult(files.length);
         ModuleDetector moduleDetector = new ModuleDetector(workspace);
         for (String fileName : files) {

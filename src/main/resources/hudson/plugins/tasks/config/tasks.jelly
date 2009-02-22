@@ -18,9 +18,10 @@
     <table>
       <thead>
         <tr>
-          <td width="33%">${%High priority}</td>
-          <td width="33%">${%Normal priority}</td>
-          <td width="33%">${%Low priority}</td>
+          <td width="25%">${%High priority}</td>
+          <td width="25%">${%Normal priority}</td>
+          <td width="25%">${%Low priority}</td>
+          <td width="25%">${%Ignore case}</td>
         </tr>
       </thead>
       <tbody>
@@ -33,6 +34,9 @@
           </td>
           <td>
             <f:textbox name="low" value="${instance.low}"/>
+          </td>
+          <td>
+            <f:checkbox name="ignoreCase" checked="${instance.ignoreCase}"/>
           </td>
         </tr>
       </tbody>

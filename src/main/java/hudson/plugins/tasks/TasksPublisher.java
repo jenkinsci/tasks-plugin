@@ -34,6 +34,8 @@ public class TasksPublisher extends HealthAwarePublisher {
     private final String normal;
     /** Tag identifiers indicating low priority. */
     private final String low;
+    /** Tag identifiers indicating case sensitivity. */
+    private final boolean ignoreCase;
     /** Ant file-set pattern of files to work with. */
     private final String pattern;
     /** Ant file-set pattern of files to exclude from work. */
@@ -75,6 +77,8 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
+     * @param ignoreCase
+     *            if case should be ignored during matching
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
      */
@@ -85,7 +89,8 @@ public class TasksPublisher extends HealthAwarePublisher {
             final String threshold, final String newThreshold,
             final String failureThreshold, final String newFailureThreshold,
             final String healthy, final String unHealthy, final String height, final String thresholdLimit,
-            final String high, final String normal, final String low, final String defaultEncoding) {
+            final String high, final String normal, final String low, final boolean ignoreCase,
+            final String defaultEncoding) {
         super(threshold, newThreshold, failureThreshold, newFailureThreshold,
                 healthy, unHealthy, height, thresholdLimit, defaultEncoding, "TASKS");
 
@@ -94,6 +99,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         this.high = high;
         this.normal = normal;
         this.low = low;
+        this.ignoreCase = ignoreCase;
     }
     // CHECKSTYLE:ON
 
@@ -142,6 +148,15 @@ public class TasksPublisher extends HealthAwarePublisher {
         return low;
     }
 
+    /**
+     * Returns whether case should be ignored during the scanning.
+     *
+     * @return <code>true</code> if case should be ignored during the scanning
+     */
+    public boolean getIgnoreCase() {
+        return ignoreCase;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
@@ -154,7 +169,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         TasksParserResult project;
         logger.log("Scanning workspace files for tasks...");
         project = build.getProject().getWorkspace().act(
-                new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), getDefaultEncoding(), high, normal, low));
+                new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), getDefaultEncoding(), high, normal, low, ignoreCase));
 
         TasksResult result = new TasksResultBuilder().build(build, project, getDefaultEncoding(), high, normal, low);
         build.getActions().add(new TasksResultAction(build, this, result));
