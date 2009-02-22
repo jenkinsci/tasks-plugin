@@ -9,7 +9,7 @@ import hudson.maven.MojoInfo;
 import hudson.model.Action;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
-import hudson.plugins.tasks.util.AnnotationsBuildResult;
+import hudson.plugins.tasks.util.BuildResult;
 import hudson.plugins.tasks.util.HealthAwareMavenReporter;
 import hudson.plugins.tasks.util.ParserResult;
 import hudson.plugins.tasks.util.PluginLogger;
@@ -209,7 +209,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
 
     /** {@inheritDoc} */
     @Override
-    protected AnnotationsBuildResult persistResult(final ParserResult project, final MavenBuild build) {
+    protected BuildResult persistResult(final ParserResult project, final MavenBuild build) {
         TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, getDefaultEncoding(), high, normal, low);
 
         build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), getDefaultEncoding(), high, normal, low, result));

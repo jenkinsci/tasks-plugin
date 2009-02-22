@@ -3,7 +3,7 @@ package hudson.plugins.tasks; // NOPMD
 import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksParserResult;
-import hudson.plugins.tasks.util.AnnotationsBuildResult;
+import hudson.plugins.tasks.util.BuildResult;
 import hudson.plugins.tasks.util.model.JavaProject;
 import hudson.plugins.tasks.util.model.Priority;
 
@@ -13,17 +13,13 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
-
 /**
  * Represents the results of the task scanner. One instance of this class is persisted for
  * each build via an XML file.
  *
  * @author Ulli Hafner
  */
-//CHECKSTYLE:COUPLING-OFF
-@SuppressWarnings("PMD.TooManyFields")
-public class TasksResult extends AnnotationsBuildResult {
+public class TasksResult extends BuildResult {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -344808345805935004L;
     static {
@@ -108,7 +104,7 @@ public class TasksResult extends AnnotationsBuildResult {
      * @param lowTags
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result, final AnnotationsBuildResult previous, final String highTags, final String normalTags, final String lowTags) {
+    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result, final BuildResult previous, final String highTags, final String normalTags, final String lowTags) {
         super(build, defaultEncoding, result, previous);
 
         this.highTags = highTags;
