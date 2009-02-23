@@ -246,7 +246,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
     @Deprecated
-    private transient int healthTasks;
+    private transient int healthyTasks;
     @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
     @Deprecated
