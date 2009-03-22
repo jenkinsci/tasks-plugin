@@ -27,17 +27,17 @@ public class TasksResult extends BuildResult {
     }
 
     /** Tag identifiers indicating high priority. */
-    private String highTags;
+    private final String highTags;
     /** Tag identifiers indicating normal priority. */
-    private String normalTags;
+    private final String normalTags;
     /** Tag identifiers indicating low priority. */
-    private String lowTags;
+    private final String lowTags;
 
     /** The number of scanned files in the project. */
     private final int numberOfFiles;
 
     /**
-     * Creates a new instance of <code>TasksResult</code>.
+     * Creates a new instance of {@link TasksResult}.
      *
      * @param build
      *            the current build as owner of this action
@@ -52,7 +52,8 @@ public class TasksResult extends BuildResult {
      * @param lowTags
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result, final String highTags, final String normalTags, final String lowTags) {
+    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
+            final TasksParserResult result, final String highTags, final String normalTags, final String lowTags) {
         super(build, defaultEncoding, result);
 
         this.highTags = highTags;
@@ -62,32 +63,8 @@ public class TasksResult extends BuildResult {
         numberOfFiles = result.getNumberOfScannedFiles();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    protected Object readResolve() {
-        super.readResolve();
-
-        if (numberOfTasks != 0) {
-            setHighWarnings(highPriorityTasks);
-            setNormalWarnings(normalPriorityTasks);
-            setLowWarnings(lowPriorityTasks);
-            setWarnings(numberOfTasks);
-            if (high != null) {
-                highTags = high;
-            }
-            if (normal != null) {
-                normalTags = normal;
-            }
-            if (low != null) {
-                lowTags = low;
-            }
-        }
-
-        return this;
-    }
-
     /**
-     * Creates a new instance of <code>TasksResult</code>.
+     * Creates a new instance of {@link TasksResult}.
      *
      * @param build
      *            the current build as owner of this action
@@ -104,7 +81,9 @@ public class TasksResult extends BuildResult {
      * @param lowTags
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result, final BuildResult previous, final String highTags, final String normalTags, final String lowTags) {
+    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
+            final TasksParserResult result, final BuildResult previous,
+            final String highTags, final String normalTags, final String lowTags) {
         super(build, defaultEncoding, result, previous);
 
         this.highTags = highTags;
@@ -113,7 +92,6 @@ public class TasksResult extends BuildResult {
 
         numberOfFiles = result.getNumberOfScannedFiles();
     }
-
 
     /**
      * Returns a summary message for the summary.jelly file.

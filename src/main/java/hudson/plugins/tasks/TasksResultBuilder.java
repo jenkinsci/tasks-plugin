@@ -41,5 +41,37 @@ public class TasksResultBuilder {
         }
         return new TasksResult(build, defaultEncoding, result, high, normal, low);
     }
+
+    /**
+     * Creates a result that persists the Tasks information for the
+     * specified m2 build.
+     *
+     * @param build
+     *            the build to create the action for
+     * @param result
+     *            the project containing the annotations
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     * @return the result action
+     */
+    public TasksMavenResult buildMaven(final AbstractBuild<?, ?> build, final TasksParserResult result,
+            final String defaultEncoding, final String high, final String normal, final String low) {
+        Object previous = build.getPreviousBuild();
+        while (previous instanceof AbstractBuild<?, ?>) {
+            AbstractBuild<?, ?> previousBuild = (AbstractBuild<?, ?>)previous;
+            TasksResultAction previousAction = previousBuild.getAction(TasksResultAction.class);
+            if (previousAction != null) {
+                return new TasksMavenResult(build, defaultEncoding, result, previousAction.getResult(), high, normal, low);
+            }
+            previous = previousBuild.getPreviousBuild();
+        }
+        return new TasksMavenResult(build, defaultEncoding, result, high, normal, low);
+    }
 }
 

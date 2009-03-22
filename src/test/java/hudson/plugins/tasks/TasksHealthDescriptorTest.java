@@ -2,7 +2,9 @@ package hudson.plugins.tasks;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import hudson.plugins.tasks.util.AbstractEnglishLocaleTest;
+import hudson.plugins.tasks.util.AbstractHealthDescriptor;
+import hudson.plugins.tasks.util.AbstractHealthDescriptorTest;
+import hudson.plugins.tasks.util.HealthDescriptor;
 import hudson.plugins.tasks.util.NullHealthDescriptor;
 import hudson.plugins.tasks.util.model.AnnotationProvider;
 
@@ -14,7 +16,7 @@ import org.jvnet.localizer.Localizable;
  *
  * @author Ulli Hafner
  */
-public class TasksHealthDescriptorTest extends AbstractEnglishLocaleTest {
+public class TasksHealthDescriptorTest extends AbstractHealthDescriptorTest {
     /**
      * Verifies the different messages if the number of items are 0, 1, and 2.
      */
@@ -33,6 +35,12 @@ public class TasksHealthDescriptorTest extends AbstractEnglishLocaleTest {
         when(provider.getNumberOfAnnotations()).thenReturn(2);
         description = healthDescriptor.createDescription(provider);
         assertEquals(Messages.Tasks_ResultAction_HealthReportMultipleItem(2), description.toString());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected AbstractHealthDescriptor createHealthDescriptor(final HealthDescriptor healthDescriptor) {
+        return new TasksHealthDescriptor(healthDescriptor);
     }
 }
 

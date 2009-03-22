@@ -38,7 +38,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     private String defaultEncoding;
 
     /**
-     * Creates a new instance of <code>MavenFindBugsResultAction</code>.
+     * Creates a new instance of {@link MavenTasksResultAction}.
      *
      * @param owner
      *            the associated build of this action
@@ -65,7 +65,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     // CHECKSTYLE:ON
 
     /**
-     * Creates a new instance of <code>MavenFindBugsResultAction</code>.
+     * Creates a new instance of {@link MavenTasksResultAction}.
      *
      * @param owner
      *            the associated build of this action
@@ -128,21 +128,24 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     }
 
     /**
-     * Called whenever a new module build is completed, to update the
-     * aggregated report. When multiple builds complete simultaneously,
-     * Hudson serializes the execution of this method, so this method
-     * needs not be concurrency-safe.
+     * Called whenever a new module build is completed, to update the aggregated
+     * report. When multiple builds complete simultaneously, Hudson serializes
+     * the execution of this method, so this method needs not be
+     * concurrency-safe.
      *
      * @param moduleBuilds
-     *      Same as <tt>MavenModuleSet.getModuleBuilds()</tt> but provided for convenience and efficiency.
+     *            Same as <tt>MavenModuleSet.getModuleBuilds()</tt> but provided
+     *            for convenience and efficiency.
      * @param newBuild
-     *      Newly completed build.
+     *            Newly completed build.
      */
     public void update(final Map<MavenModule, List<MavenBuild>> moduleBuilds, final MavenBuild newBuild) {
         ParserResult result = createAggregatedResult(moduleBuilds);
 
         if (result instanceof TasksParserResult) {
-            setResult(new TasksResultBuilder().build(getOwner(), (TasksParserResult)result, defaultEncoding, high, normal, low));
+            TasksMavenResult mavenResult = new TasksResultBuilder().buildMaven(getOwner(), (TasksParserResult)result, defaultEncoding, high, normal, low);
+            setResult(mavenResult);
+            updateBuildHealth(newBuild, mavenResult);
         }
     }
 
