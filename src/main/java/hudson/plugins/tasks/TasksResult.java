@@ -4,7 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.util.BuildResult;
-import hudson.plugins.tasks.util.model.JavaProject;
+import hudson.plugins.tasks.util.ResultAction;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.ArrayList;
@@ -208,32 +208,10 @@ public class TasksResult extends BuildResult {
         return hudson.plugins.tasks.util.Messages.PackageDetail_header();
     }
 
-    // FIXME: Generalize and pull up?
-    /**
-     * Returns the results of the previous build.
-     *
-     * @return the result of the previous build, or <code>null</code> if no
-     *         such build exists
-     */
+    /** {@inheritDoc} */
     @Override
-    protected JavaProject getPreviousResult() {
-        TasksResultAction action = getOwner().getAction(TasksResultAction.class);
-        if (action.hasPreviousResultAction()) {
-            return action.getPreviousResultAction().getResult().getProject();
-        }
-        else {
-            return new JavaProject();
-        }
-    }
-
-    /**
-     * Returns whether a previous build result exists.
-     *
-     * @return <code>true</code> if a previous build result exists.
-     */
-    @Override
-    protected boolean hasPreviousResult() {
-        return getOwner().getAction(TasksResultAction.class).hasPreviousResultAction();
+    protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
+        return TasksResultAction.class;
     }
 
     /** {@inheritDoc} */
@@ -244,12 +222,16 @@ public class TasksResult extends BuildResult {
 
     // Backward compatibility. Do not remove.
     // CHECKSTYLE:OFF
+    @SuppressWarnings("unused")
     @Deprecated
     private transient int numberOfTasks;
+    @SuppressWarnings("unused")
     @Deprecated
     private transient int highPriorityTasks;
+    @SuppressWarnings("unused")
     @Deprecated
     private transient int lowPriorityTasks;
+    @SuppressWarnings("unused")
     @Deprecated
     private transient int normalPriorityTasks;
 }

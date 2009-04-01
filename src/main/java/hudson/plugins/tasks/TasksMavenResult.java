@@ -3,7 +3,7 @@ package hudson.plugins.tasks;
 import hudson.model.AbstractBuild;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.util.BuildResult;
-import hudson.plugins.tasks.util.model.JavaProject;
+import hudson.plugins.tasks.util.ResultAction;
 
 /**
  * Represents the aggregated results of the PMD analysis in m2 jobs.
@@ -59,31 +59,10 @@ public class TasksMavenResult extends TasksResult {
         super(build, defaultEncoding, result, previous, highTags, normalTags, lowTags);
     }
 
-    /**
-     * Returns the results of the previous build.
-     *
-     * @return the result of the previous build, or <code>null</code> if no
-     *         such build exists
-     */
+    /** {@inheritDoc} */
     @Override
-    public JavaProject getPreviousResult() {
-        MavenTasksResultAction action = getOwner().getAction(MavenTasksResultAction.class);
-        if (action.hasPreviousResultAction()) {
-            return action.getPreviousResultAction().getResult().getProject();
-        }
-        else {
-            return null;
-        }
-    }
-
-    /**
-     * Returns whether a previous build result exists.
-     *
-     * @return <code>true</code> if a previous build result exists.
-     */
-    @Override
-    public boolean hasPreviousResult() {
-        return getOwner().getAction(MavenTasksResultAction.class).hasPreviousResultAction();
+    protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
+        return MavenTasksResultAction.class;
     }
 }
 
