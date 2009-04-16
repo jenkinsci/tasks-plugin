@@ -2,6 +2,7 @@ package hudson.plugins.tasks.parser;
 
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
+import hudson.plugins.tasks.util.ContextHashCode;
 import hudson.plugins.tasks.util.CsharpNamespaceDetector;
 import hudson.plugins.tasks.util.EncodingValidator;
 import hudson.plugins.tasks.util.JavaPackageDetector;
@@ -42,7 +43,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     /** Tag identifiers indicating low priority. */
     private final String low;
     /** Tag identifiers indicating case sensitive parsing. */
-    private boolean ignoreCase;
+    private final boolean ignoreCase;
     /** Prefix of path. */
     private String prefix;
     /** The default encoding to be used when reading and parsing files. */
@@ -81,8 +82,6 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
      *
-     * @param moduleName
-     *            the maven module name
      * @param filePattern
      *            ant file-set pattern to scan for files
      * @param excludeFilePattern
@@ -95,13 +94,19 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            tag identifiers indicating normal priority
      * @param low
      *            tag identifiers indicating low priority
+     * @param caseSensitive
+     *            determines whether the scanner should work case sensitive
+     * @param moduleName
+     *            the maven module name
      */
+    // CHECKSTYLE:OFF
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
             final String high, final String normal, final String low, final boolean caseSensitive,
             final String moduleName) {
         this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive);
         this.moduleName = moduleName;
     }
+    // CHECKSTYLE:ON
 
     /**
      * Sets the prefix to the specified value.
@@ -146,6 +151,9 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                     task.setFileName(originalFile.getAbsolutePath());
                     task.setPackageName(packageName);
                     task.setModuleName(actualModule);
+
+                    ContextHashCode hashCode = new ContextHashCode();
+                    task.setContextHashCode(hashCode.create(fileName, task.getPrimaryLineNumber(), defaultEncoding));
                 }
 
                 javaProject.addAnnotations(tasks);
