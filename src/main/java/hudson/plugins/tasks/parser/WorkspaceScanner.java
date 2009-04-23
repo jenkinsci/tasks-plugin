@@ -153,7 +153,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                     task.setModuleName(actualModule);
 
                     ContextHashCode hashCode = new ContextHashCode();
-                    task.setContextHashCode(hashCode.create(fileName, task.getPrimaryLineNumber(), defaultEncoding));
+                    task.setContextHashCode(hashCode.create(originalFile.getAbsolutePath(), task.getPrimaryLineNumber(), defaultEncoding));
                 }
 
                 javaProject.addAnnotations(tasks);
