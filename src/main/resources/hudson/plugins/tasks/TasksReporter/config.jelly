@@ -4,7 +4,6 @@
   <c:tasks descriptor="TasksPublisher"/>
   <f:advanced>
     <u:thresholds id="tasks"/>
-    <u:trendHeight/>
   </f:advanced>
 
 </j:jelly>
