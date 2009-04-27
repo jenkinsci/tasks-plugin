@@ -66,8 +66,6 @@ public class TasksPublisher extends HealthAwarePublisher {
      * @param unHealthy
      *            Report health as 0% when the number of open tasks is greater
      *            than this value
-     * @param height
-     *            the height of the trend graph
      * @param thresholdLimit
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
@@ -88,11 +86,11 @@ public class TasksPublisher extends HealthAwarePublisher {
     public TasksPublisher(final String pattern, final String excludePattern,
             final String threshold, final String newThreshold,
             final String failureThreshold, final String newFailureThreshold,
-            final String healthy, final String unHealthy, final String height, final String thresholdLimit,
+            final String healthy, final String unHealthy, final String thresholdLimit,
             final String high, final String normal, final String low, final boolean ignoreCase,
             final String defaultEncoding) {
         super(threshold, newThreshold, failureThreshold, newFailureThreshold,
-                healthy, unHealthy, height, thresholdLimit, defaultEncoding, "TASKS");
+                healthy, unHealthy, thresholdLimit, defaultEncoding, "TASKS");
 
         this.pattern = pattern;
         this.excludePattern = excludePattern;
@@ -178,6 +176,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Descriptor<Publisher> getDescriptor() {
         return TASK_SCANNER_DESCRIPTOR;
     }

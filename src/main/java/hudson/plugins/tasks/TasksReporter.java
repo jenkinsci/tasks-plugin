@@ -74,8 +74,6 @@ public class TasksReporter extends HealthAwareMavenReporter {
      * @param unHealthy
      *            Report health as 0% when the number of open tasks is greater
      *            than this value
-     * @param height
-     *            the height of the trend graph
      * @param thresholdLimit
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
@@ -94,11 +92,11 @@ public class TasksReporter extends HealthAwareMavenReporter {
     public TasksReporter(final String pattern, final String excludePattern,
             final String threshold, final String newThreshold,
             final String failureThreshold, final String newFailureThreshold,
-            final String healthy, final String unHealthy,
-            final String height, final String thresholdLimit,
+            final String healthy, final String unHealthy, final String thresholdLimit,
             final String high, final String normal, final String low,
             final boolean ignoreCase) {
-        super(threshold, newThreshold, failureThreshold, newFailureThreshold, healthy, unHealthy, height, thresholdLimit, "TASKS");
+        super(threshold, newThreshold, failureThreshold, newFailureThreshold, healthy, unHealthy,
+                thresholdLimit, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -209,7 +207,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
         TasksResult result = new TasksResultBuilder().build(build, (TasksParserResult)project, getDefaultEncoding(),
                 high, normal, low);
 
-        build.getActions().add(new MavenTasksResultAction(build, this, getHeight(), getDefaultEncoding(), high, normal, low, result));
+        build.getActions().add(new MavenTasksResultAction(build, this, getDefaultEncoding(), high, normal, low, result));
         build.registerAsProjectAction(TasksReporter.this);
 
         return result;
