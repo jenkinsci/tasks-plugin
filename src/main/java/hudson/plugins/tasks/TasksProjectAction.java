@@ -18,11 +18,9 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
      *
      * @param project
      *            the project that owns this action
-     * @param height
-     *            the height of the trend graph
      */
-    public TasksProjectAction(final AbstractProject<?, ?> project, final int height) {
-        super(project, TasksResultAction.class, TasksPublisher.TASK_SCANNER_DESCRIPTOR, height);
+    public TasksProjectAction(final AbstractProject<?, ?> project) {
+        super(project, TasksResultAction.class, TasksPublisher.TASK_SCANNER_DESCRIPTOR);
     }
 
     /** {@inheritDoc} */

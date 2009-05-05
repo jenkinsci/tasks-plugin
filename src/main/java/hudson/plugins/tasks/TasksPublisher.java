@@ -158,7 +158,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     /** {@inheritDoc} */
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
-        return new TasksProjectAction(project, getTrendHeight());
+        return new TasksProjectAction(project);
     }
 
     /** {@inheritDoc} */

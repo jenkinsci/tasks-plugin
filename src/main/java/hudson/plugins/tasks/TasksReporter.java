@@ -216,7 +216,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     /** {@inheritDoc} */
     @Override
     public Action getProjectAction(final MavenModule module) {
-        return new TasksProjectAction(module, getTrendHeight());
+        return new TasksProjectAction(module);
     }
 
     /** {@inheritDoc} */

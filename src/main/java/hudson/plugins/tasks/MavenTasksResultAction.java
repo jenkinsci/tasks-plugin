@@ -11,7 +11,6 @@ import hudson.model.Action;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.util.HealthDescriptor;
 import hudson.plugins.tasks.util.ParserResult;
-import hudson.plugins.tasks.util.TrendReportHeightValidator;
 
 import java.util.List;
 import java.util.Map;
@@ -112,7 +111,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
 
     /** {@inheritDoc} */
     public Action getProjectAction(final MavenModuleSet moduleSet) {
-        return new TasksProjectAction(moduleSet, TrendReportHeightValidator.defaultHeight(height));
+        return new TasksProjectAction(moduleSet);
     }
 
     /** {@inheritDoc} */
