@@ -7,6 +7,7 @@ import hudson.maven.MavenModule;
 import hudson.maven.MavenReporterDescriptor;
 import hudson.maven.MojoInfo;
 import hudson.model.Action;
+import hudson.model.Result;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 import hudson.plugins.tasks.util.BuildResult;
@@ -48,6 +49,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
     private final String low;
     /** Tag identifiers indicating case sensitivity. */
     private final boolean ignoreCase;
+    /** Determines whether the plug-in should run for failed builds, too. */
+    private final boolean canRunOnFailed;
 
     /**
      * Creates a new instance of <code>TasksReporter</code>.
@@ -85,6 +88,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
      *            tag identifiers indicating low priority
      * @param ignoreCase
      *            if case should be ignored during matching
+     * @param canRunOnFailed
+     *            determines whether the plug-in can run for failed builds, too
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -94,9 +99,11 @@ public class TasksReporter extends HealthAwareMavenReporter {
             final String failureThreshold, final String newFailureThreshold,
             final String healthy, final String unHealthy, final String thresholdLimit,
             final String high, final String normal, final String low,
-            final boolean ignoreCase) {
+            final boolean ignoreCase, final boolean canRunOnFailed) {
         super(threshold, newThreshold, failureThreshold, newFailureThreshold, healthy, unHealthy,
                 thresholdLimit, "TASKS");
+
+        this.canRunOnFailed = canRunOnFailed;
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -105,6 +112,26 @@ public class TasksReporter extends HealthAwareMavenReporter {
         this.ignoreCase = ignoreCase;
     }
     // CHECKSTYLE:ON
+
+    /**
+     * Returns whether this plug-in can run for failed builds, too.
+     *
+     * @return the can run on failed
+     */
+    public boolean getCanRunOnFailed() {
+        return canRunOnFailed;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean canContinue(final Result result) {
+        if (canRunOnFailed) {
+            return true;
+        }
+        else {
+            return super.canContinue(result);
+        }
+    }
 
     /**
      * Returns the Ant file-set pattern to the workspace files.

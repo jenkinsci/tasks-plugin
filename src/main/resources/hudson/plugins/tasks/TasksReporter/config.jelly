@@ -3,6 +3,7 @@
 
   <c:tasks descriptor="TasksPublisher"/>
   <f:advanced>
+    <u:failed/>
     <u:thresholds id="tasks"/>
     <u:trend id="tasks"/>
   </f:advanced>
