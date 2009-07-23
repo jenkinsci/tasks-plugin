@@ -221,7 +221,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
                 logger.log(String.format("Found %d.", subProject.getNumberOfAnnotations()));
             }
             else {
-                logger.log(String.format("Scipping non-existent folder '%s'...", sourcePath));
+                logger.log(String.format("Skipping non-existent folder '%s'...", sourcePath));
             }
         }
 
