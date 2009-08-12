@@ -1,6 +1,7 @@
 package hudson.plugins.tasks.util;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Hudson;
 import hudson.plugins.tasks.util.model.AnnotationContainer;
 import hudson.plugins.tasks.util.model.DefaultAnnotationContainer;
 import hudson.plugins.tasks.util.model.FileAnnotation;
@@ -126,6 +127,8 @@ public class DetailBuilder {
             return new TabDetail(owner, container.getAnnotations(), "/tabview/" + StringUtils.substringAfter(link, "tab.") + ".jelly", defaultEncoding);
         }
         else if (link.startsWith("source.")) {
+            owner.checkPermission(Hudson.ADMINISTER);
+
             return new SourceDetail(owner, container.getAnnotation(StringUtils.substringAfter(link, "source.")), defaultEncoding);
         }
         else if (link.startsWith("category.")) {

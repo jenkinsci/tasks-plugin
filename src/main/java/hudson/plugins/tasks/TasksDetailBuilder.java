@@ -1,6 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Hudson;
 import hudson.plugins.tasks.util.PrioritiesDetail;
 import hudson.plugins.tasks.util.PriorityDetailFactory;
 import hudson.plugins.tasks.util.SourceDetail;
@@ -70,6 +71,8 @@ public class TasksDetailBuilder {
             return new TasksFileDetail(owner, container.getFile(Integer.valueOf(StringUtils.substringAfter(link, "file."))), defaultEncoding, displayName, high, normal, low);
         }
         else if (link.startsWith("source.")) {
+            owner.checkPermission(Hudson.ADMINISTER);
+
             return new SourceDetail(owner, container.getAnnotation(StringUtils.substringAfter(link, "source.")), defaultEncoding);
         }
         return null;
