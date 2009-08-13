@@ -96,7 +96,7 @@ public class TaskScanner {
             else {
                 flags = 0;
             }
-            return Pattern.compile("^.*(?:" + StringUtils.join(regexps.iterator(), "|") + ")(.*)$", flags);
+            return Pattern.compile("^.*(" + StringUtils.join(regexps.iterator(), "|") + ")(.*)$", flags);
         }
         catch (PatternSyntaxException exception) {
             throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n", exception);
@@ -121,9 +121,9 @@ public class TaskScanner {
             for (Priority priority : Priority.values()) {
                 if (patterns.containsKey(priority)) {
                     Matcher matcher = patterns.get(priority).matcher(line);
-                    if (matcher.matches() && matcher.groupCount() == 1) {
-                        String message = matcher.group(1).trim();
-                        tasks.add(new Task(priority, lineNumber, StringUtils.remove(message, ":").trim()));
+                    if (matcher.matches() && matcher.groupCount() == 2) {
+                        String message = matcher.group(2).trim();
+                        tasks.add(new Task(priority, lineNumber, matcher.group(1), StringUtils.remove(message, ":").trim()));
                     }
                 }
             }

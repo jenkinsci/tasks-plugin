@@ -13,7 +13,7 @@ public class TasksDifferencerTest extends AnnotationDifferencerTest {
     @Override
     public FileAnnotation createAnnotation(final String fileName, final Priority priority, final String message, final String category,
             final String type, final int start, final int end) {
-        Task task = new Task(priority, start, message);
+        Task task = new Task(priority, start, type, message);
         task.setFileName(fileName);
         return task;
     }

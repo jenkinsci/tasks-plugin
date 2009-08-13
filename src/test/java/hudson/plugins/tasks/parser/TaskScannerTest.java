@@ -9,6 +9,7 @@ import hudson.plugins.tasks.util.model.Priority;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -198,6 +199,26 @@ public class TaskScannerTest {
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.HIGH));
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.NORMAL));
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
+    }
+
+    /**
+     * Checks whether we set the type of the task to the actual tag.
+     *
+     * @throws IOException if we can't read the file
+     */
+    @Test
+    public void testTagsIdentification() throws IOException {
+        String text = "FIXME: this is a fixme";
+        Collection<Task> result = new TaskScanner("FIXME,TODO", null, null, false).scan(new StringReader(text));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+        Task task = result.iterator().next();
+        assertEquals("Type is not the found token", "FIXME", task.getType());
+
+        result = new TaskScanner(null, "XXX, HELP, FIXME, TODO", null, false).scan(new StringReader(text));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+
+        task = result.iterator().next();
+        assertEquals("Type is not the found token", "FIXME", task.getType());
     }
 
     /**

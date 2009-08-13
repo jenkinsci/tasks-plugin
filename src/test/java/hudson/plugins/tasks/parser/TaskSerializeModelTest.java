@@ -43,7 +43,7 @@ public class TaskSerializeModelTest extends AbstractSerializeModelTest {
     /** {@inheritDoc} */
     @Override
     protected AbstractAnnotation createAnnotation(final int line, final String message, final Priority priority, final String fileName, final String packageName, final String moduleName) {
-        Task annotation = new Task(priority, line, message);
+        Task annotation = new Task(priority, line, message, message);
         annotation.setFileName(fileName);
         annotation.setPackageName(packageName);
         annotation.setModuleName(moduleName);

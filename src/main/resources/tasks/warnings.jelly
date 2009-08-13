@@ -39,7 +39,7 @@
             <div tooltip="${warning.message}"> ${warning.priority.localizedString} </div>
           </td>
           <td class="pane">
-            <div tooltip="${warning.message}"> ${it.getTags(warning.priority)} </div>
+            <div tooltip="${warning.message}"> ${warning.type.size() == 0 ? it.getTags(warning.priority) : warning.type} </div>
           </td>
           <td class="pane">
             <div tooltip="${warning.message}"> ${warning.detailMessage} </div>

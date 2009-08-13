@@ -14,16 +14,21 @@ public class Task extends AbstractAnnotation {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 5171662552905752370L;
 
+
     /**
      * Creates a new instance of <code>Task</code>.
-     * @param priority the priority
+     *
+     * @param priority
+     *            the priority
      * @param lineNumber
      *            the line number of the task in the corresponding file
+     * @param taskTag
+     *            the found task tag
      * @param message
      *            the message of the task (the text after the task keyword)
      */
-    public Task(final Priority priority, final int lineNumber, final String message) {
-        super(priority, message, lineNumber, lineNumber, StringUtils.EMPTY, StringUtils.EMPTY);
+    public Task(final Priority priority, final int lineNumber, final String taskTag, final String message) {
+        super(priority, message, lineNumber, lineNumber, StringUtils.EMPTY, taskTag);
     }
 
     /**
