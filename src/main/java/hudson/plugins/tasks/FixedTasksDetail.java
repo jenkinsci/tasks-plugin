@@ -1,38 +1,35 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.util.TabDetail;
+import hudson.plugins.tasks.util.FixedWarningsDetail;
 import hudson.plugins.tasks.util.model.DefaultAnnotationContainer;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.Collection;
 
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
 /**
- * Result object representing a dynamic tab of the tasks plug-in.
+ * Result object to visualize the fixed tasks in a build.
  *
  * @author Ulli Hafner
  */
-public class TasksTabDetail extends TabDetail {
+public class FixedTasksDetail extends FixedWarningsDetail {
     /** Unique ID of this class. */
-    private static final long serialVersionUID = 8964198520312051468L;
+    private static final long serialVersionUID = -8592850365611555429L;
     /** Handles the task tags. */
     private final TaskTagsHandler taskTagsHandler;
 
     /**
-     * Creates a new instance of <code>ModuleDetail</code>.
+     * Creates a new instance of {@link FixedTasksDetail}.
      *
      * @param owner
-     *            current build as owner of this action.
-     * @param annotations
-     *            the container to show the details for
-     * @param url
-     *            URL to render the content of this tab
+     *            the current results object as owner of this action
+     * @param fixedTasks
+     *            all fixed tasks in this build
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
+     * @param header
+     *            header to be shown on detail page
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -40,21 +37,12 @@ public class TasksTabDetail extends TabDetail {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksTabDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding,
+    public FixedTasksDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> fixedTasks, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, annotations, url, defaultEncoding);
+        super(owner, fixedTasks, defaultEncoding, header);
 
-        taskTagsHandler = new TaskTagsHandler(high, normal, low, new DefaultAnnotationContainer(annotations));
+        taskTagsHandler = new TaskTagsHandler(high, normal, low, new DefaultAnnotationContainer(fixedTasks));
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
-                    getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
-    }
-
-    // CHECKSTYLE:OFF - generated delegate -
 
     /**
      * Returns all priorities that have a user defined tag.
@@ -89,6 +77,12 @@ public class TasksTabDetail extends TabDetail {
      */
     public final String getTags(final String priority) {
         return taskTagsHandler.getTags(priority);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDisplayName() {
+        return Messages.FixedTasksDetail_Name();
     }
 }
 

@@ -149,7 +149,8 @@ public class TasksResult extends BuildResult {
      */
     @Override
     public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getDefaultEncoding(), getDisplayName(),
+        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getFixedWarnings(),
+                getNewWarnings(), getErrors(), getDefaultEncoding(), getDisplayName(),
                 getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 

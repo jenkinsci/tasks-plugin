@@ -50,5 +50,19 @@ public class Task extends AbstractAnnotation {
     public String getToolTip() {
         return getPriority().getLongLocalizedString();
     }
+
+    /**
+     * Gets the matching text of a tasks including the tag.
+     *
+     * @return the match
+     */
+    public String getMatch() {
+        if (StringUtils.isEmpty(getType())) {
+            return getDetailMessage();
+        }
+        else {
+            return getType() + ": " + getDetailMessage();
+        }
+    }
 }
 

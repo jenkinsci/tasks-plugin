@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.util.TabDetail;
+import hudson.plugins.tasks.util.NewWarningsDetail;
 import hudson.plugins.tasks.util.model.DefaultAnnotationContainer;
 import hudson.plugins.tasks.util.model.FileAnnotation;
 import hudson.plugins.tasks.util.model.Priority;
@@ -12,27 +12,27 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 /**
- * Result object representing a dynamic tab of the tasks plug-in.
+ * Result object to visualize the new open tasks in a build.
  *
  * @author Ulli Hafner
  */
-public class TasksTabDetail extends TabDetail {
+public class NewTasksDetail extends NewWarningsDetail {
     /** Unique ID of this class. */
-    private static final long serialVersionUID = 8964198520312051468L;
+    private static final long serialVersionUID = 6767394367097463384L;
     /** Handles the task tags. */
     private final TaskTagsHandler taskTagsHandler;
 
     /**
-     * Creates a new instance of <code>ModuleDetail</code>.
+     * Creates a new instance of {@link NewTasksDetail}.
      *
      * @param owner
-     *            current build as owner of this action.
-     * @param annotations
-     *            the container to show the details for
-     * @param url
-     *            URL to render the content of this tab
+     *            the current build as owner of this result object
+     * @param newTasks
+     *            all new open tasks
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
+     * @param header
+     *            header to be shown on detail page
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -40,11 +40,11 @@ public class TasksTabDetail extends TabDetail {
      * @param low
      *            tag identifiers indicating low priority
      */
-    public TasksTabDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding,
+    public NewTasksDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> newTasks, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, annotations, url, defaultEncoding);
+        super(owner, newTasks, defaultEncoding, header);
 
-        taskTagsHandler = new TaskTagsHandler(high, normal, low, new DefaultAnnotationContainer(annotations));
+        taskTagsHandler = new TaskTagsHandler(high, normal, low, new DefaultAnnotationContainer(newTasks));
     }
 
     /** {@inheritDoc} */
@@ -89,6 +89,12 @@ public class TasksTabDetail extends TabDetail {
      */
     public final String getTags(final String priority) {
         return taskTagsHandler.getTags(priority);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDisplayName() {
+        return Messages.NewTasksDetail_Name();
     }
 }
 
