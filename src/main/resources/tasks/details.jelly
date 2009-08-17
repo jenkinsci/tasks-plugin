@@ -22,7 +22,7 @@
 									${%tasks.line(task.primaryLineNumber)}:
 								</j:otherwise>
 							</j:choose>
-							${task.type.size() == 0 ? "" : task.type + ": "}${task.detailMessage}
+							${task.match}
 						</p>
 		            </td>
 	            </tr>

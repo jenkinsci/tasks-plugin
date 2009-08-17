@@ -42,6 +42,22 @@
             active: false
         }), myTabs);
     </j:if>
+    <j:if test="${it.newWarnings.size() > 0}">
+        YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
+            label: '${%New}',
+            dataSrc: 'tab.tasks.new',
+            cacheData: true,
+            active: false
+        }), myTabs);
+    </j:if>
+    <j:if test="${it.fixedWarnings.size() > 0}">
+        YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
+            label: '${%Fixed}',
+            dataSrc: 'tab.fixed',
+            cacheData: true,
+            active: false
+        }), myTabs);
+    </j:if>
     <j:if test="${it.container.highAnnotations.size() > 0}">
         YAHOO.plugin.Dispatcher.delegate (new YAHOO.widget.Tab({
             label: '${%High}',
