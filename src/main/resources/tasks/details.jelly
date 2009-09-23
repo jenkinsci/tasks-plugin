@@ -15,7 +15,7 @@
 		            <td class="pane">
 						<p>
 							<j:choose>
-								<j:when test="${it.isCurrent() and task.canDisplayFile(it.owner)}">
+								<j:when test="${task.canDisplayFile(it.owner)}">
 									<a href="source.${task.key}/#${task.primaryLineNumber}">${%tasks.line(task.primaryLineNumber)}:</a>
 								</j:when>
 								<j:otherwise>
