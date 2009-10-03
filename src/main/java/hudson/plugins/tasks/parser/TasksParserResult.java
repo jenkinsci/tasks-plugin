@@ -1,7 +1,8 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.util.ParserResult;
-import hudson.plugins.tasks.util.model.JavaProject;
+import hudson.plugins.analysis.util.ParserResult;
+import hudson.plugins.analysis.util.model.JavaProject;
+
 
 /**
  * Remembers the number of scanned files in a {@link JavaProject}.

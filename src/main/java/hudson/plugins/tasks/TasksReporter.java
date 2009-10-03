@@ -8,12 +8,12 @@ import hudson.maven.MavenReporterDescriptor;
 import hudson.maven.MojoInfo;
 import hudson.model.Action;
 import hudson.model.Result;
+import hudson.plugins.analysis.util.BuildResult;
+import hudson.plugins.analysis.util.HealthAwareMavenReporter;
+import hudson.plugins.analysis.util.ParserResult;
+import hudson.plugins.analysis.util.PluginLogger;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
-import hudson.plugins.tasks.util.BuildResult;
-import hudson.plugins.tasks.util.HealthAwareMavenReporter;
-import hudson.plugins.tasks.util.ParserResult;
-import hudson.plugins.tasks.util.PluginLogger;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,10 +1,10 @@
 package hudson.plugins.tasks.parser;
 
 import static org.junit.Assert.*;
-import hudson.plugins.tasks.util.ParserResult;
-import hudson.plugins.tasks.util.model.AnnotationContainer;
-import hudson.plugins.tasks.util.model.JavaProject;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.analysis.util.ParserResult;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
+import hudson.plugins.analysis.util.model.JavaProject;
+import hudson.plugins.analysis.util.model.Priority;
 
 import java.io.IOException;
 import java.io.InputStream;

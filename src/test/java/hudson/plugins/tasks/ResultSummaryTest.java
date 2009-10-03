@@ -2,7 +2,7 @@ package hudson.plugins.tasks;
 
 import static org.easymock.EasyMock.*;
 import static org.easymock.classextension.EasyMock.*;
-import hudson.plugins.tasks.util.AbstractEnglishLocaleTest;
+import hudson.plugins.analysis.test.AbstractEnglishLocaleTest;
 import junit.framework.Assert;
 
 import org.junit.Test;

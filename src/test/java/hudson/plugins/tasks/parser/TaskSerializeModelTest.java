@@ -1,12 +1,12 @@
 package hudson.plugins.tasks.parser;
 
 import hudson.XmlFile;
-import hudson.plugins.tasks.util.model.AbstractAnnotation;
-import hudson.plugins.tasks.util.model.AbstractSerializeModelTest;
-import hudson.plugins.tasks.util.model.AnnotationStream;
-import hudson.plugins.tasks.util.model.FileAnnotation;
-import hudson.plugins.tasks.util.model.JavaProject;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.analysis.test.AbstractSerializeModelTest;
+import hudson.plugins.analysis.util.model.AbstractAnnotation;
+import hudson.plugins.analysis.util.model.AnnotationStream;
+import hudson.plugins.analysis.util.model.FileAnnotation;
+import hudson.plugins.analysis.util.model.JavaProject;
+import hudson.plugins.analysis.util.model.Priority;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,8 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.util.AbortException;
-import hudson.plugins.tasks.util.model.Priority;
+
+import hudson.plugins.analysis.util.AbortException;
+import hudson.plugins.analysis.util.model.Priority;
 
 import java.io.IOException;
 import java.io.Reader;

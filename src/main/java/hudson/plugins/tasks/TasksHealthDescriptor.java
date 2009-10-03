@@ -1,8 +1,9 @@
 package hudson.plugins.tasks;
 
-import hudson.plugins.tasks.util.AbstractHealthDescriptor;
-import hudson.plugins.tasks.util.HealthDescriptor;
-import hudson.plugins.tasks.util.model.AnnotationProvider;
+
+import hudson.plugins.analysis.util.AbstractHealthDescriptor;
+import hudson.plugins.analysis.util.HealthDescriptor;
+import hudson.plugins.analysis.util.model.AnnotationProvider;
 
 import org.jvnet.localizer.Localizable;
 

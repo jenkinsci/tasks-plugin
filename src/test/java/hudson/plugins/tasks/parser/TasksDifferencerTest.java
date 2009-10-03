@@ -1,9 +1,10 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.util.AnnotationDifferencer;
-import hudson.plugins.tasks.util.AnnotationDifferencerTest;
-import hudson.plugins.tasks.util.model.FileAnnotation;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.analysis.test.AnnotationDifferencerTest;
+import hudson.plugins.analysis.util.AnnotationDifferencer;
+import hudson.plugins.analysis.util.model.FileAnnotation;
+import hudson.plugins.analysis.util.model.Priority;
+
 
 /**
  * Tests the {@link AnnotationDifferencer} for tasks.

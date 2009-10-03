@@ -5,11 +5,11 @@ import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Descriptor;
 import hudson.model.Result;
+import hudson.plugins.analysis.util.BuildResult;
+import hudson.plugins.analysis.util.HealthAwarePublisher;
+import hudson.plugins.analysis.util.PluginLogger;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
-import hudson.plugins.tasks.util.BuildResult;
-import hudson.plugins.tasks.util.HealthAwarePublisher;
-import hudson.plugins.tasks.util.PluginLogger;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;

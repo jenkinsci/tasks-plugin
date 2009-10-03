@@ -1,7 +1,7 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.plugins.tasks.util.model.AbstractAnnotation;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.analysis.util.model.AbstractAnnotation;
+import hudson.plugins.analysis.util.model.Priority;
 
 import org.apache.commons.lang.StringUtils;
 

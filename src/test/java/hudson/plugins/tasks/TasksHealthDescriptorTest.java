@@ -2,11 +2,11 @@ package hudson.plugins.tasks;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import hudson.plugins.tasks.util.AbstractHealthDescriptor;
-import hudson.plugins.tasks.util.AbstractHealthDescriptorTest;
-import hudson.plugins.tasks.util.HealthDescriptor;
-import hudson.plugins.tasks.util.NullHealthDescriptor;
-import hudson.plugins.tasks.util.model.AnnotationProvider;
+import hudson.plugins.analysis.test.AbstractHealthDescriptorTest;
+import hudson.plugins.analysis.util.AbstractHealthDescriptor;
+import hudson.plugins.analysis.util.HealthDescriptor;
+import hudson.plugins.analysis.util.NullHealthDescriptor;
+import hudson.plugins.analysis.util.model.AnnotationProvider;
 
 import org.junit.Test;
 import org.jvnet.localizer.Localizable;

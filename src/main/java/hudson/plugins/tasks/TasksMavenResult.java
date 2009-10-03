@@ -1,9 +1,10 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
+import hudson.plugins.analysis.util.BuildResult;
+import hudson.plugins.analysis.util.ResultAction;
 import hudson.plugins.tasks.parser.TasksParserResult;
-import hudson.plugins.tasks.util.BuildResult;
-import hudson.plugins.tasks.util.ResultAction;
+
 
 /**
  * Represents the aggregated results of the PMD analysis in m2 jobs.

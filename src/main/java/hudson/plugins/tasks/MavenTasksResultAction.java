@@ -8,9 +8,9 @@ import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
+import hudson.plugins.analysis.util.HealthDescriptor;
+import hudson.plugins.analysis.util.ParserResult;
 import hudson.plugins.tasks.parser.TasksParserResult;
-import hudson.plugins.tasks.util.HealthDescriptor;
-import hudson.plugins.tasks.util.ParserResult;
 
 import java.util.List;
 import java.util.Map;

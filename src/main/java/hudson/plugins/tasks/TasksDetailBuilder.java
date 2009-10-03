@@ -2,12 +2,12 @@ package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
-import hudson.plugins.tasks.util.PrioritiesDetail;
-import hudson.plugins.tasks.util.PriorityDetailFactory;
-import hudson.plugins.tasks.util.SourceDetail;
-import hudson.plugins.tasks.util.model.AnnotationContainer;
-import hudson.plugins.tasks.util.model.FileAnnotation;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.analysis.util.PrioritiesDetail;
+import hudson.plugins.analysis.util.PriorityDetailFactory;
+import hudson.plugins.analysis.util.SourceDetail;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
+import hudson.plugins.analysis.util.model.FileAnnotation;
+import hudson.plugins.analysis.util.model.Priority;
 
 import java.util.Collection;
 import java.util.List;

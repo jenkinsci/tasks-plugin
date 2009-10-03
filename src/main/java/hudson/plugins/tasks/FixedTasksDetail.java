@@ -1,10 +1,10 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.util.FixedWarningsDetail;
-import hudson.plugins.tasks.util.model.DefaultAnnotationContainer;
-import hudson.plugins.tasks.util.model.FileAnnotation;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.analysis.util.FixedWarningsDetail;
+import hudson.plugins.analysis.util.model.DefaultAnnotationContainer;
+import hudson.plugins.analysis.util.model.FileAnnotation;
+import hudson.plugins.analysis.util.model.Priority;
 
 import java.util.Collection;
 

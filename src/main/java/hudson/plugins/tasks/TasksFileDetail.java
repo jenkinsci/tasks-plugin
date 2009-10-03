@@ -1,9 +1,9 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.tasks.util.FileDetail;
-import hudson.plugins.tasks.util.model.Priority;
-import hudson.plugins.tasks.util.model.WorkspaceFile;
+import hudson.plugins.analysis.util.FileDetail;
+import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.util.model.WorkspaceFile;
 
 import java.util.Collection;
 

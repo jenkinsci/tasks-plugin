@@ -1,11 +1,11 @@
 package hudson.plugins.tasks; // NOPMD
 
 import hudson.model.AbstractBuild;
+import hudson.plugins.analysis.util.BuildResult;
+import hudson.plugins.analysis.util.ResultAction;
+import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksParserResult;
-import hudson.plugins.tasks.util.BuildResult;
-import hudson.plugins.tasks.util.ResultAction;
-import hudson.plugins.tasks.util.model.Priority;
 
 import java.util.ArrayList;
 

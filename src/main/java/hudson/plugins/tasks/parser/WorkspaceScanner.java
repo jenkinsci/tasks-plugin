@@ -2,12 +2,12 @@ package hudson.plugins.tasks.parser;
 
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
-import hudson.plugins.tasks.util.ContextHashCode;
-import hudson.plugins.tasks.util.CsharpNamespaceDetector;
-import hudson.plugins.tasks.util.EncodingValidator;
-import hudson.plugins.tasks.util.JavaPackageDetector;
-import hudson.plugins.tasks.util.ModuleDetector;
-import hudson.plugins.tasks.util.PackageDetector;
+import hudson.plugins.analysis.util.ContextHashCode;
+import hudson.plugins.analysis.util.CsharpNamespaceDetector;
+import hudson.plugins.analysis.util.EncodingValidator;
+import hudson.plugins.analysis.util.JavaPackageDetector;
+import hudson.plugins.analysis.util.ModuleDetector;
+import hudson.plugins.analysis.util.PackageDetector;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;

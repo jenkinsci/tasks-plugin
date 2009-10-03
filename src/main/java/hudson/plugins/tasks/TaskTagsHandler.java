@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
-import hudson.plugins.tasks.util.model.AnnotationContainer;
-import hudson.plugins.tasks.util.model.Priority;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
+import hudson.plugins.analysis.util.model.Priority;
 
 import java.io.Serializable;
 import java.util.ArrayList;
