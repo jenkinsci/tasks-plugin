@@ -13,6 +13,8 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import com.thoughtworks.xstream.XStream;
+
 /**
  * Represents the results of the task scanner. One instance of this class is persisted for
  * each build via an XML file.
@@ -22,9 +24,6 @@ import org.kohsuke.stapler.StaplerResponse;
 public class TasksResult extends BuildResult {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -344808345805935004L;
-    static {
-        XSTREAM.alias("task", Task.class);
-    }
 
     /** Tag identifiers indicating high priority. */
     private final String highTags;
@@ -91,6 +90,12 @@ public class TasksResult extends BuildResult {
         this.lowTags = lowTags;
 
         numberOfFiles = result.getNumberOfScannedFiles();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected void configure(final XStream xstream) {
+        xstream.alias("task", Task.class);
     }
 
     /**
