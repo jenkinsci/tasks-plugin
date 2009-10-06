@@ -1,15 +1,16 @@
 package hudson.plugins.tasks;
 
+import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.model.Descriptor;
 import hudson.model.Result;
 import hudson.plugins.analysis.util.BuildResult;
 import hudson.plugins.analysis.util.HealthAwarePublisher;
 import hudson.plugins.analysis.util.PluginLogger;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
+import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 
 import java.io.IOException;
@@ -25,10 +26,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class TasksPublisher extends HealthAwarePublisher {
     /** Unique ID of this class. */
     private static final long serialVersionUID = 3787892530045641806L;
+
+    /** Descriptor of this publisher. */
+    @Extension
+    public static final TasksDescriptor TASK_SCANNER_DESCRIPTOR = new TasksDescriptor();
+
     /** Default files pattern. */
     private static final String DEFAULT_PATTERN = "**/*.java";
-    /** Descriptor of this publisher. */
-    public static final TasksDescriptor TASK_SCANNER_DESCRIPTOR = new TasksDescriptor();
     /** Tag identifiers indicating high priority. */
     private final String high;
     /** Tag identifiers indicating normal priority. */
@@ -203,7 +207,7 @@ public class TasksPublisher extends HealthAwarePublisher {
 
     /** {@inheritDoc} */
     @Override
-    public Descriptor<Publisher> getDescriptor() {
+    public BuildStepDescriptor<Publisher> getDescriptor() {
         return TASK_SCANNER_DESCRIPTOR;
     }
 }

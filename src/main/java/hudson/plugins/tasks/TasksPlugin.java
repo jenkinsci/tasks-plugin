@@ -1,8 +1,6 @@
 package hudson.plugins.tasks;
 
 import hudson.Plugin;
-import hudson.maven.MavenReporters;
-import hudson.tasks.BuildStep;
 
 /**
  * Registers the task scanner plug-in publisher.
@@ -14,8 +12,6 @@ public class TasksPlugin extends Plugin {
     @Override
     @SuppressWarnings("PMD")
     public void start() throws Exception {
-        BuildStep.PUBLISHERS.addRecorder(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
-
-        MavenReporters.LIST.add(TasksReporter.TASK_SCANNER_DESCRIPTOR);
+        // FIXME: check if we can register a new detail builder?
     }
 }
