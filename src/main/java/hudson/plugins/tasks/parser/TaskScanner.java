@@ -1,8 +1,9 @@
 package hudson.plugins.tasks.parser;
 
 
-import hudson.plugins.analysis.util.AbortException;
+import hudson.AbortException;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.tasks.Messages;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -27,6 +28,10 @@ import org.apache.commons.lang.StringUtils;
 public class TaskScanner {
     /** The regular expression patterns to be used to scan the files. One pattern per priority. */
     private final Map<Priority, Pattern> patterns = new HashMap<Priority, Pattern>();
+    /** Indicates that the pattern is invalid. */
+    private boolean isInvalidPattern;
+    /** Error message of the pattern compiler. */
+    private final StringBuilder errorMessage = new StringBuilder();
 
     /**
      * Creates a new instance of <code>TaskScanner</code>.
@@ -47,8 +52,7 @@ public class TaskScanner {
      * @param ignoreCase
      *            if case should be ignored during matching
      */
-    public TaskScanner(final String high, final String normal, final String low,
-            final boolean ignoreCase) {
+    public TaskScanner(final String high, final String normal, final String low, final boolean ignoreCase) {
         if (StringUtils.isNotBlank(high)) {
             patterns.put(Priority.HIGH, compile(high, ignoreCase));
         }
@@ -100,7 +104,11 @@ public class TaskScanner {
             return Pattern.compile("^.*(" + StringUtils.join(regexps.iterator(), "|") + ")(.*)$", flags);
         }
         catch (PatternSyntaxException exception) {
-            throw new AbortException("Invalid identifiers in a regular expression: " + tagIdentifiers + "\n", exception);
+            isInvalidPattern = true;
+            errorMessage.append(Messages.Tasks_PatternError(tagIdentifiers, exception.getMessage()));
+            errorMessage.append("\n");
+
+            return null;
         }
     }
 
@@ -114,6 +122,9 @@ public class TaskScanner {
      *             if we can't read the file
      */
     public Collection<Task> scan(final Reader reader) throws IOException {
+        if (isInvalidPattern) {
+            throw new AbortException(errorMessage.toString());
+        }
         LineIterator lineIterator = IOUtils.lineIterator(reader);
         List<Task> tasks = new ArrayList<Task>();
         for (int lineNumber = 1; lineIterator.hasNext(); lineNumber++) {
