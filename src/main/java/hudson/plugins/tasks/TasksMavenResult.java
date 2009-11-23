@@ -1,8 +1,8 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.analysis.util.BuildResult;
-import hudson.plugins.analysis.util.ResultAction;
+import hudson.plugins.analysis.core.BuildResult;
+import hudson.plugins.analysis.core.ResultAction;
 import hudson.plugins.tasks.parser.TasksParserResult;
 
 

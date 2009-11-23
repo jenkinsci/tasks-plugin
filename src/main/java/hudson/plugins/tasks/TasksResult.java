@@ -1,8 +1,8 @@
 package hudson.plugins.tasks; // NOPMD
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.analysis.util.BuildResult;
-import hudson.plugins.analysis.util.ResultAction;
+import hudson.plugins.analysis.core.BuildResult;
+import hudson.plugins.analysis.core.ResultAction;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksParserResult;

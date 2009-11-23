@@ -1,9 +1,9 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.analysis.util.PackageDetail;
 import hudson.plugins.analysis.util.model.JavaPackage;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.views.PackageDetail;
 
 import java.util.Collection;
 

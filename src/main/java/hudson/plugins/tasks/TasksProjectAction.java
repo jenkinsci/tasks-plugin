@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractProject;
-import hudson.plugins.analysis.util.AbstractProjectAction;
+import hudson.plugins.analysis.core.AbstractProjectAction;
 
 /**
  * Entry point to visualize the task scanner trend graph. Drawing of the graph is
