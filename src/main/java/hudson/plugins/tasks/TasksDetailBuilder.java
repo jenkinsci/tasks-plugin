@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.model.Hudson;
+import hudson.model.Item;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
@@ -75,7 +75,7 @@ public class TasksDetailBuilder {
             return new TasksFileDetail(owner, container.getFile(Integer.valueOf(StringUtils.substringAfter(link, "file."))), defaultEncoding, displayName, high, normal, low);
         }
         else if (link.startsWith("source.")) {
-            owner.checkPermission(Hudson.ADMINISTER);
+            owner.checkPermission(Item.WORKSPACE);
 
             return new SourceDetail(owner, container.getAnnotation(StringUtils.substringAfter(link, "source.")), defaultEncoding);
         }
