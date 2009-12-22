@@ -202,10 +202,17 @@ public class TasksReporter extends HealthAwareMavenReporter {
     @Override
     public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PluginLogger logger) throws InterruptedException, IOException {
         List<String> foldersToScan = new ArrayList<String>(pom.getCompileSourceRoots());
+        foldersToScan.addAll(pom.getTestCompileSourceRoots());
+
         List<Resource> resources = pom.getResources();
         for (Resource resource : resources) {
             foldersToScan.add(resource.getDirectory());
         }
+        resources = pom.getTestResources();
+        for (Resource resource : resources) {
+            foldersToScan.add(resource.getDirectory());
+        }
+
         FilePath basedir = new FilePath(pom.getBasedir());
         final TasksParserResult project = new TasksParserResult();
         for (String sourcePath : foldersToScan) {
