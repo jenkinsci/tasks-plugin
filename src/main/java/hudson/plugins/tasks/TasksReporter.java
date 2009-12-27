@@ -36,7 +36,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     private static final long serialVersionUID = -4159947472293502606L;
 
     /** Descriptor of this publisher. */
-    @Extension
+    @Extension(ordinal = 100)
     public static final TasksReporterDescriptor TASK_SCANNER_DESCRIPTOR = new TasksReporterDescriptor(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
 
     /** Default files pattern. */

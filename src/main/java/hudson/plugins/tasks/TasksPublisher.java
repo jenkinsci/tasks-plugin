@@ -28,7 +28,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     private static final long serialVersionUID = 3787892530045641806L;
 
     /** Descriptor of this publisher. */
-    @Extension
+    @Extension(ordinal = 100)
     public static final TasksDescriptor TASK_SCANNER_DESCRIPTOR = new TasksDescriptor();
 
     /** Default files pattern. */
