@@ -2,6 +2,7 @@ package hudson.plugins.tasks.parser;
 
 import hudson.plugins.analysis.util.model.AbstractAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.tasks.Messages;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -13,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 public class Task extends AbstractAnnotation {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = 5171662552905752370L;
-
 
     /**
      * Creates a new instance of <code>Task</code>.
@@ -29,6 +29,8 @@ public class Task extends AbstractAnnotation {
      */
     public Task(final Priority priority, final int lineNumber, final String taskTag, final String message) {
         super(priority, message, lineNumber, lineNumber, StringUtils.EMPTY, taskTag);
+
+        setOrigin(Messages.Tasks_Warning_Origin());
     }
 
     /**
