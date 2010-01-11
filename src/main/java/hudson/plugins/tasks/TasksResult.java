@@ -208,10 +208,10 @@ public class TasksResult extends BuildResult {
         if (hasAnnotations()) {
             String fileName = getAnnotations().iterator().next().getFileName();
             if (fileName.endsWith(".cs")) {
-                return hudson.plugins.tasks.util.Messages.NamespaceDetail_header();
+                return Messages.Tasks_NamespaceDetail();
             }
         }
-        return hudson.plugins.tasks.util.Messages.PackageDetail_header();
+        return Messages.Tasks_PackageDetail();
     }
 
     /** {@inheritDoc} */
