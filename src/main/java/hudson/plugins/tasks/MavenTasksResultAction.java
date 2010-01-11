@@ -147,7 +147,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
         return new TasksParserResult();
     }
 
-    /** Backward compatibility. */
+    /** Backward compatibility. @deprecated */
     @SuppressWarnings("unused")
     @Deprecated
     private transient String height;

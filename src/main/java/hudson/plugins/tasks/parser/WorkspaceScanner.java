@@ -3,20 +3,15 @@ package hudson.plugins.tasks.parser;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.plugins.analysis.util.ContextHashCode;
-import hudson.plugins.analysis.util.CsharpNamespaceDetector;
 import hudson.plugins.analysis.util.EncodingValidator;
-import hudson.plugins.analysis.util.JavaPackageDetector;
 import hudson.plugins.analysis.util.ModuleDetector;
-import hudson.plugins.analysis.util.PackageDetector;
+import hudson.plugins.analysis.util.PackageDetectors;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.FileSet;
@@ -48,7 +43,6 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     private String prefix;
     /** The default encoding to be used when reading and parsing files. */
     private final String defaultEncoding;
-
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -130,10 +124,6 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     public TasksParserResult invoke(final File workspace, final VirtualChannel channel) throws IOException {
         String[] files = findFiles(workspace);
 
-        List<PackageDetector> detectors = new ArrayList<PackageDetector>();
-        detectors.add(new JavaPackageDetector());
-        detectors.add(new CsharpNamespaceDetector());
-
         TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase);
         TasksParserResult javaProject = new TasksParserResult(files.length);
         ModuleDetector moduleDetector = new ModuleDetector(workspace);
@@ -143,7 +133,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                     EncodingValidator.defaultCharset(defaultEncoding)));
             if (!tasks.isEmpty()) {
                 String unixName = fileName.replace('\\', '/');
-                String packageName = detectPackageName(detectors, unixName, new FilePath(originalFile).read());
+                String packageName = PackageDetectors.detectPackage(unixName, new FilePath(originalFile).read());
                 String guessedModule = moduleDetector.guessModuleName(originalFile.getAbsolutePath());
                 String actualModule = StringUtils.defaultIfEmpty(moduleName, guessedModule);
 
@@ -161,28 +151,6 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         }
 
         return javaProject;
-    }
-
-    /**
-     * Detects the package name of the specified file based on several detector
-     * strategies.
-     *
-     * @param detectors
-     *            the detectors to use
-     * @param fileName
-     *            the filename of the file to scan
-     * @param content
-     *            the content of the file
-     * @return the package name or an empty string
-     * @throws IOException
-     */
-    private String detectPackageName(final List<PackageDetector> detectors, final String fileName, final InputStream content) throws IOException {
-        for (PackageDetector detector : detectors) {
-            if (detector.accepts(fileName)) {
-                return detector.detectPackageName(content);
-            }
-        }
-        return "undefined";
     }
 
     /**

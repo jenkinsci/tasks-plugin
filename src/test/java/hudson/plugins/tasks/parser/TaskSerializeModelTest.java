@@ -54,10 +54,10 @@ public class TaskSerializeModelTest extends AbstractSerializeModelTest {
     /**
      * Test whether a serialized project is the same object after deserialization of the file format of release 2.2.
      *
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws Exception Signals a test failure
      */
     @Test
-    public void ensureSameSerialization() throws IOException, ClassNotFoundException {
+    public void ensureSameSerialization() throws Exception {
         InputStream inputStream = TaskSerializeModelTest.class.getResourceAsStream("project.ser");
         ObjectInputStream objectStream = new ObjectInputStream(inputStream);
         Object deserialized = objectStream.readObject();
@@ -67,10 +67,13 @@ public class TaskSerializeModelTest extends AbstractSerializeModelTest {
     }
 
     /**
-     * Test whether a serialized project is the same object after deserialization of the file format of release 2.2.
+     * Test whether a serialized project is the same object after
+     * deserialization of the file format of release 2.2.
      *
-     * @throws IOException Signals that an I/O exception has occurred.
-     * @throws URISyntaxException if URI is wrong
+     * @throws IOException
+     *             Signals that an I/O exception has occurred.
+     * @throws URISyntaxException
+     *             if URI is wrong
      */
     @Test
     public void ensureSameXmlSerialization() throws IOException, URISyntaxException {
