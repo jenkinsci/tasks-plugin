@@ -10,7 +10,7 @@
 
   <artifactId>tasks</artifactId>
   <packaging>hpi</packaging>
-  <name>Hudson Task Scanner Plug-in</name>
+  <name>Task Scanner Plug-in</name>
   <version>4.2-SNAPSHOT</version>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Task+Scanner+Plugin</url>
   <description>This plug-in scans the workspace files for open tasks
