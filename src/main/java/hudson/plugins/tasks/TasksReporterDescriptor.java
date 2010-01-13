@@ -1,7 +1,7 @@
 package hudson.plugins.tasks;
 
+import hudson.Extension;
 import hudson.maven.MavenReporter;
-import hudson.plugins.analysis.core.PluginDescriptor;
 import hudson.plugins.analysis.core.ReporterDescriptor;
 import net.sf.json.JSONObject;
 
@@ -13,15 +13,13 @@ import org.kohsuke.stapler.StaplerRequest;
  *
  * @author Ulli Hafner
  */
+@Extension(ordinal = 100)
 public class TasksReporterDescriptor extends ReporterDescriptor {
     /**
      * Creates a new instance of <code>TasksReporterDescriptor</code>.
-     *
-     * @param pluginDescriptor
-     *            the plug-in descriptor of the publisher
      */
-    public TasksReporterDescriptor(final PluginDescriptor pluginDescriptor) {
-        super(TasksReporter.class, pluginDescriptor);
+    public TasksReporterDescriptor() {
+        super(TasksReporter.class, new TasksDescriptor());
     }
 
     /** {@inheritDoc} */

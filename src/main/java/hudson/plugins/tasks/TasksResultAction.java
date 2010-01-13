@@ -56,7 +56,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     /** {@inheritDoc} */
     @Override
     protected PluginDescriptor getDescriptor() {
-        return TasksPublisher.TASK_SCANNER_DESCRIPTOR;
+        return new TasksDescriptor();
     }
 
     /**

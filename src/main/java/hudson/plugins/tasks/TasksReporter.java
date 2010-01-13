@@ -1,11 +1,9 @@
 package hudson.plugins.tasks;
 
-import hudson.Extension;
 import hudson.FilePath;
 import hudson.maven.MavenBuild;
 import hudson.maven.MavenBuildProxy;
 import hudson.maven.MavenModule;
-import hudson.maven.MavenReporterDescriptor;
 import hudson.maven.MojoInfo;
 import hudson.model.Action;
 import hudson.model.Result;
@@ -34,10 +32,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class TasksReporter extends HealthAwareMavenReporter {
     /** Unique identifier of this class. */
     private static final long serialVersionUID = -4159947472293502606L;
-
-    /** Descriptor of this publisher. */
-    @Extension(ordinal = 100)
-    public static final TasksReporterDescriptor TASK_SCANNER_DESCRIPTOR = new TasksReporterDescriptor(TasksPublisher.TASK_SCANNER_DESCRIPTOR);
 
     /** Default files pattern. */
     private static final String DEFAULT_PATTERN = "**/*.java";
@@ -261,12 +255,6 @@ public class TasksReporter extends HealthAwareMavenReporter {
     @Override
     protected Class<? extends Action> getResultActionClass() {
         return MavenTasksResultAction.class;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public MavenReporterDescriptor getDescriptor() {
-        return TASK_SCANNER_DESCRIPTOR;
     }
 
     // Backward compatibility. Do not remove.

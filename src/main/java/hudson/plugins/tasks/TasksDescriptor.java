@@ -1,5 +1,6 @@
 package hudson.plugins.tasks;
 
+import hudson.Extension;
 import hudson.plugins.analysis.core.PluginDescriptor;
 
 /**
@@ -8,6 +9,7 @@ import hudson.plugins.analysis.core.PluginDescriptor;
  *
  * @author Ulli Hafner
  */
+@Extension(ordinal = 100)
 public final class TasksDescriptor extends PluginDescriptor {
     /** Plug-in name. */
     private static final String PLUGIN_NAME = "tasks";
@@ -17,7 +19,7 @@ public final class TasksDescriptor extends PluginDescriptor {
     /**
      * Instantiates a new find bugs descriptor.
      */
-    TasksDescriptor() {
+    public TasksDescriptor() {
         super(TasksPublisher.class);
     }
 

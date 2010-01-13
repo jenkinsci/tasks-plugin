@@ -20,7 +20,7 @@ public class TasksProjectAction extends AbstractProjectAction<TasksResultAction>
      *            the project that owns this action
      */
     public TasksProjectAction(final AbstractProject<?, ?> project) {
-        super(project, TasksResultAction.class, TasksPublisher.TASK_SCANNER_DESCRIPTOR);
+        super(project, TasksResultAction.class, new TasksDescriptor());
     }
 
     /** {@inheritDoc} */
