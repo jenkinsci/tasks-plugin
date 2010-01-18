@@ -1,7 +1,6 @@
 package hudson.plugins.tasks;
 
-import static org.easymock.EasyMock.*;
-import static org.easymock.classextension.EasyMock.*;
+import static org.mockito.Mockito.*;
 import hudson.plugins.analysis.test.AbstractEnglishLocaleTest;
 import junit.framework.Assert;
 
@@ -73,16 +72,12 @@ public class ResultSummaryTest extends AbstractEnglishLocaleTest {
      *            the expected message
      */
     private void checkSummaryText(final int numberOfWarnings, final int numberOfFiles, final int delta, final String expectedMessage) {
-        TasksResult result = createMock(TasksResult.class);
-        expect(result.getNumberOfAnnotations()).andReturn(numberOfWarnings).anyTimes();
-        expect(result.getNumberOfFiles()).andReturn(numberOfFiles).anyTimes();
-        expect(result.getDelta()).andReturn(delta).anyTimes();
-
-        replay(result);
+        TasksResult result = mock(TasksResult.class);
+        when(result.getNumberOfAnnotations()).thenReturn(numberOfWarnings);
+        when(result.getNumberOfFiles()).thenReturn(numberOfFiles);
+        when(result.getDelta()).thenReturn(delta);
 
         Assert.assertEquals("Wrong summary message created.", expectedMessage, ResultSummary.createSummary(result));
-
-        verify(result);
     }
 }
 
