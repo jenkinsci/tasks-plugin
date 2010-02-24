@@ -5,8 +5,6 @@ import hudson.plugins.analysis.core.AbstractResultAction;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.PluginDescriptor;
 
-import java.util.NoSuchElementException;
-
 /**
  * Controls the live cycle of the task scanner results. This action persists the
  * results of the task scanner of a build and displays the results on the
@@ -57,21 +55,6 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     @Override
     protected PluginDescriptor getDescriptor() {
         return new TasksDescriptor();
-    }
-
-    /**
-     * Gets the tasks result of the previous build.
-     *
-     * @return the tasks result of the previous build.
-     * @throws NoSuchElementException
-     *             if there is no previous build for this action
-     */
-    public TasksResultAction getPreviousResultAction() {
-        AbstractResultAction<TasksResult> previousBuild = getPreviousBuild();
-        if (previousBuild instanceof TasksResultAction) {
-            return (TasksResultAction)previousBuild;
-        }
-        throw new NoSuchElementException("There is no previous build for action " + this);
     }
 
     /** {@inheritDoc} */
