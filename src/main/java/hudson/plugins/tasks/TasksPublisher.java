@@ -192,7 +192,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         project = build.getWorkspace().act(
                 new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), getDefaultEncoding(), high, normal, low, ignoreCase));
 
-        TasksResult result = new TasksResultBuilder().build(build, project, getDefaultEncoding(), high, normal, low);
+        TasksResult result = new TasksResult(build, getDefaultEncoding(), project, high, normal, low);
         build.getActions().add(new TasksResultAction(build, this, result));
 
         return result;

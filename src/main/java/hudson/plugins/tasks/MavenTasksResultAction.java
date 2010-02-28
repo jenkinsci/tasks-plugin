@@ -135,7 +135,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
         ParserResult result = createAggregatedResult(moduleBuilds);
 
         if (result instanceof TasksParserResult) {
-            TasksMavenResult mavenResult = new TasksResultBuilder().buildMaven(getOwner(), (TasksParserResult)result, defaultEncoding, high, normal, low);
+            TasksMavenResult mavenResult = new TasksMavenResult(getOwner(), defaultEncoding, (TasksParserResult)result, high, normal, low);
             setResult(mavenResult);
             updateBuildHealth(newBuild, mavenResult);
         }

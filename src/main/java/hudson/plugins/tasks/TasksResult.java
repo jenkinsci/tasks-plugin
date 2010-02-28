@@ -62,36 +62,6 @@ public class TasksResult extends BuildResult {
         numberOfFiles = result.getNumberOfScannedFiles();
     }
 
-    /**
-     * Creates a new instance of {@link TasksResult}.
-     *
-     * @param build
-     *            the current build as owner of this action
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
-     * @param result
-     *            the parsed FindBugs result
-     * @param previous
-     *            the previous result of open tasks
-     * @param highTags
-     *            tag identifiers indicating high priority
-     * @param normalTags
-     *            tag identifiers indicating normal priority
-     * @param lowTags
-     *            tag identifiers indicating low priority
-     */
-    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
-            final TasksParserResult result, final BuildResult previous,
-            final String highTags, final String normalTags, final String lowTags) {
-        super(build, defaultEncoding, result, previous);
-
-        this.highTags = highTags;
-        this.normalTags = normalTags;
-        this.lowTags = lowTags;
-
-        numberOfFiles = result.getNumberOfScannedFiles();
-    }
-
     /** {@inheritDoc} */
     @Override
     protected void configure(final XStream xstream) {
