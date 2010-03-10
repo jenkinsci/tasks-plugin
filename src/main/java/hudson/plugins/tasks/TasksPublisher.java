@@ -81,6 +81,10 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            the default encoding to be used when reading and parsing files
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
+     * @param useDeltaValues
+     *            determines whether the absolute annotations delta or the
+     *            actual annotations set difference should be used to evaluate
+     *            the build stability
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -90,9 +94,9 @@ public class TasksPublisher extends HealthAwarePublisher {
             final String failureThreshold, final String newFailureThreshold,
             final String healthy, final String unHealthy, final String thresholdLimit,
             final String high, final String normal, final String low, final boolean ignoreCase,
-            final String defaultEncoding, final boolean canRunOnFailed) {
+            final String defaultEncoding, final boolean canRunOnFailed, final boolean useDeltaValues) {
         super(threshold, newThreshold, failureThreshold, newFailureThreshold,
-                healthy, unHealthy, thresholdLimit, defaultEncoding, "TASKS");
+                healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues, "TASKS");
 
         this.canRunOnFailed = canRunOnFailed;
         this.pattern = pattern;
