@@ -19,6 +19,10 @@ import org.junit.Test;
  * Tests the class {@link TaskScanner}.
  */
 public class TaskScannerTest {
+    /** Fixme tags. */
+    private static final String FIXME = "FIXME";
+    /** Filename for tests. */
+    private static final String TEST_FILE = "tasks-case-test.txt";
     /** High priority. */
     private static final String PRIORITY_HIGH = "here another task with priority HIGH";
     /** Normal priority. */
@@ -58,7 +62,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseSensitive() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-case-test.txt");
+        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
 
         Collection<Task> result = new TaskScanner(null, "todo", null, false).scan(new InputStreamReader(file));
         assignProperties(result);
@@ -72,7 +76,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseSensitive2() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-case-test.txt");
+        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
 
         Collection<Task> result = new TaskScanner(null, "ToDo", null, false).scan(new InputStreamReader(file));
         assignProperties(result);
@@ -86,7 +90,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseInsensitive() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-case-test.txt");
+        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
 
         Collection<Task> result = new TaskScanner(null, "todo", null, true).scan(new InputStreamReader(file));
         assignProperties(result);
@@ -100,7 +104,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseInsensitive2() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-case-test.txt");
+        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
 
         Collection<Task> result = new TaskScanner(null, "Todo, TodoS", null, true).scan(new InputStreamReader(file));
         assignProperties(result);
@@ -153,7 +157,7 @@ public class TaskScannerTest {
     public void testHighPriority() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner("FIXME", null, null, false).scan(new InputStreamReader(file));
+        Collection<Task> result = new TaskScanner(FIXME, null, null, false).scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
 
@@ -212,13 +216,13 @@ public class TaskScannerTest {
         Collection<Task> result = new TaskScanner("FIXME,TODO", null, null, false).scan(new StringReader(text));
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
         Task task = result.iterator().next();
-        assertEquals("Type is not the found token", "FIXME", task.getType());
+        assertEquals("Type is not the found token", FIXME, task.getType());
 
         result = new TaskScanner(null, "XXX, HELP, FIXME, TODO", null, false).scan(new StringReader(text));
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
 
         task = result.iterator().next();
-        assertEquals("Type is not the found token", "FIXME", task.getType());
+        assertEquals("Type is not the found token", FIXME, task.getType());
     }
 
     /**
@@ -230,7 +234,7 @@ public class TaskScannerTest {
     public void testAllPriorities() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
 
-        Collection<Task> result = new TaskScanner("FIXME", "FIXME,TODO", "TODO", false).scan(new InputStreamReader(file));
+        Collection<Task> result = new TaskScanner(FIXME, "FIXME,TODO", "TODO", false).scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 4, result.size());
 
