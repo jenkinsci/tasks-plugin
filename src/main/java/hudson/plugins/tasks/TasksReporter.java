@@ -1,10 +1,10 @@
 package hudson.plugins.tasks;
 
 import hudson.FilePath;
-import hudson.maven.MavenBuild;
 import hudson.maven.MavenBuildProxy;
-import hudson.maven.MavenModule;
 import hudson.maven.MojoInfo;
+import hudson.maven.MavenBuild;
+import hudson.maven.MavenModule;
 import hudson.model.Action;
 import hudson.model.Result;
 import hudson.plugins.analysis.core.BuildResult;
@@ -234,6 +234,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     }
 
     /** {@inheritDoc} */
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("BC")
     @Override
     protected BuildResult persistResult(final ParserResult project, final MavenBuild build) {
         TasksResult result = new TasksResult(build, getDefaultEncoding(), (TasksParserResult)project,

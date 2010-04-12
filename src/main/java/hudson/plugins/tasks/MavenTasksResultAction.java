@@ -6,8 +6,8 @@ import hudson.maven.MavenBuild;
 import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
-import hudson.model.AbstractBuild;
 import hudson.model.Action;
+import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.ParserResult;
 import hudson.plugins.tasks.parser.TasksParserResult;
@@ -23,8 +23,6 @@ import java.util.Map;
  * @author Ulli Hafner
  */
 public class MavenTasksResultAction extends TasksResultAction implements AggregatableAction, MavenAggregatedReport {
-    /** Unique identifier of this class. */
-    private static final long serialVersionUID = 1273798369273225973L;
     /** Tag identifiers indicating high priority. */
     private String high;
     /** Tag identifiers indicating normal priority. */

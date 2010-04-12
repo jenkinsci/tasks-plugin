@@ -17,9 +17,6 @@ import hudson.plugins.analysis.core.PluginDescriptor;
  * @author Ulli Hafner
  */
 public class TasksResultAction extends AbstractResultAction<TasksResult>  {
-    /** Unique identifier of this class. */
-    private static final long serialVersionUID = -3936658973355672416L;
-
     /**
      * Creates a new instance of <code>TasksResultAction</code>.
      *
