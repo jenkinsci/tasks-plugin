@@ -2,7 +2,11 @@ package hudson.plugins.tasks.dashboard;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
+import hudson.plugins.analysis.core.AbstractProjectAction;
+import hudson.plugins.analysis.dashboard.AbstractWarningsGraphPortlet;
+import hudson.plugins.analysis.graph.BuildResultGraph;
 import hudson.plugins.tasks.Messages;
+import hudson.plugins.tasks.TasksProjectAction;
 import hudson.plugins.view.dashboard.DashboardPortlet;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -12,7 +16,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  *
  * @author Ulli Hafner
  */
-public class WarningsGraphPortlet extends TasksPortlet {
+public class WarningsGraphPortlet extends AbstractWarningsGraphPortlet {
     /**
      * Creates a new instance of {@link WarningsGraphPortlet}.
      *
@@ -20,8 +24,20 @@ public class WarningsGraphPortlet extends TasksPortlet {
      *            the name of the portlet
      */
     @DataBoundConstructor
-    public WarningsGraphPortlet(final String name) {
-        super(name);
+    public WarningsGraphPortlet(final String name, final String width, final String height, final String dayCount, final BuildResultGraph graphType) {
+        super(name, width, height, dayCount, graphType);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected Class<? extends AbstractProjectAction<?>> getAction() {
+        return TasksProjectAction.class;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected String getPluginName() {
+        return "tasks";
     }
 
     /**
