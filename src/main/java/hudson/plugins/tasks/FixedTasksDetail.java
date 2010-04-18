@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.DefaultAnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.FixedWarningsDetail;
 
 import java.util.Collection;
@@ -39,7 +40,7 @@ public class FixedTasksDetail extends FixedWarningsDetail {
      */
     public FixedTasksDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> fixedTasks, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, fixedTasks, defaultEncoding, header);
+        super(owner, new DetailFactory(), fixedTasks, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, new DefaultAnnotationContainer(fixedTasks));
     }

@@ -3,6 +3,7 @@ package hudson.plugins.tasks;
 import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.MavenModule;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.ModuleDetail;
 
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class TasksModuleDetail extends ModuleDetail {
      */
     public TasksModuleDetail(final AbstractBuild<?, ?> owner, final MavenModule module, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, module, defaultEncoding, header);
+        super(owner, new DetailFactory(), module, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, module);
     }

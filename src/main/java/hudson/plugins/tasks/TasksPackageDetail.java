@@ -3,6 +3,7 @@ package hudson.plugins.tasks;
 import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.JavaPackage;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.PackageDetail;
 
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class TasksPackageDetail extends PackageDetail {
      */
     public TasksPackageDetail(final AbstractBuild<?, ?> owner, final JavaPackage javaPackage, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, javaPackage, defaultEncoding, header);
+        super(owner, new DetailFactory(), javaPackage, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, javaPackage);
     }

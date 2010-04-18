@@ -3,6 +3,7 @@ package hudson.plugins.tasks;
 import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.analysis.util.model.WorkspaceFile;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.FileDetail;
 
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class TasksFileDetail extends FileDetail {
      */
     public TasksFileDetail(final AbstractBuild<?, ?> owner, final WorkspaceFile file, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, file, defaultEncoding, header);
+        super(owner, new DetailFactory(), file, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, file);
     }

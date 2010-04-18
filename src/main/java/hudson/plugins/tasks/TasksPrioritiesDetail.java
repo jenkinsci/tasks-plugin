@@ -3,6 +3,7 @@ package hudson.plugins.tasks;
 import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.PrioritiesDetail;
 
 import java.util.Collection;
@@ -44,7 +45,7 @@ public class TasksPrioritiesDetail extends PrioritiesDetail {
     // CHECKSTYLE:OFF
     public TasksPrioritiesDetail(final AbstractBuild<?, ?> owner, final AnnotationContainer container,
             final Priority priority, final String defaultEncoding, final String header, final String high, final String normal, final String low) {
-        super(owner, container.getAnnotations(priority), priority, defaultEncoding, header);
+        super(owner, new DetailFactory(), container.getAnnotations(priority), priority, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, container);
     }

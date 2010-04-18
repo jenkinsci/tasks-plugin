@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.DefaultAnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.NewWarningsDetail;
 
 import java.util.Collection;
@@ -42,7 +43,7 @@ public class NewTasksDetail extends NewWarningsDetail {
      */
     public NewTasksDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> newTasks, final String defaultEncoding, final String header,
             final String high, final String normal, final String low) {
-        super(owner, newTasks, defaultEncoding, header);
+        super(owner, new DetailFactory(), newTasks, defaultEncoding, header);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, new DefaultAnnotationContainer(newTasks));
     }

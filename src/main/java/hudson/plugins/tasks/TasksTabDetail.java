@@ -4,6 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.DefaultAnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.TabDetail;
 
 import java.util.Collection;
@@ -42,7 +43,7 @@ public class TasksTabDetail extends TabDetail {
      */
     public TasksTabDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding,
             final String high, final String normal, final String low) {
-        super(owner, annotations, url, defaultEncoding);
+        super(owner, new DetailFactory(), annotations, url, defaultEncoding);
 
         taskTagsHandler = new TaskTagsHandler(high, normal, low, new DefaultAnnotationContainer(annotations));
     }

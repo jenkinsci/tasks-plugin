@@ -1,12 +1,13 @@
 package hudson.plugins.tasks;
 
-import hudson.model.AbstractBuild;
 import hudson.model.Item;
+import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
-import hudson.plugins.analysis.views.PrioritiesDetail;
+import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.PriorityDetailFactory;
+import hudson.plugins.analysis.views.PrioritiesDetail;
 import hudson.plugins.analysis.views.SourceDetail;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ public class TasksDetailBuilder {
             final AnnotationContainer container, final String defaultEncoding, final String displayName,
             final String high, final String normal, final String low) {
     // CHECKSTYLE:ON
-        PriorityDetailFactory factory = new PriorityDetailFactory() {
+        PriorityDetailFactory factory = new PriorityDetailFactory(new DetailFactory()) {
             /** {@inheritDoc} */
             @Override
             protected PrioritiesDetail createPrioritiesDetail(final Priority priority, final AbstractBuild<?, ?> build, final AnnotationContainer annotationContainer, @SuppressWarnings("hiding") final String defaultEncoding, final String header) {
