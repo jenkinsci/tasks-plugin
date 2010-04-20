@@ -6,14 +6,6 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-  <f:entry title="${%Files to scan}" description="${%description.files}">
-    <f:textbox name="pattern" value="${instance.pattern}"
-      checkUrl="'descriptorByName/${descriptor}/checkPattern?value='+escape(this.value)"/>
-  </f:entry>
-  <f:entry title="${%Files to exclude}" description="${%description.exclude.files}">
-    <f:textbox name="excludePattern" value="${instance.excludePattern}"
-      checkUrl="'descriptorByName/${descriptor}/checkPattern?value='+escape(this.value)"/>
-  </f:entry>
   <f:entry title="${%Tasks tags}" description="${%description.tags}">
     <table>
       <thead>
@@ -40,7 +32,6 @@
           </td>
         </tr>
       </tbody>
-
     </table>
   </f:entry>
 
