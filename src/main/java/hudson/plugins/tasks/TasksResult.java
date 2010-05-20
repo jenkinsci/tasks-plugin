@@ -77,6 +77,12 @@ public class TasksResult extends BuildResult {
         return ResultSummary.createSummary(this);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected String createDeltaMessage() {
+        return ResultSummary.createDeltaMessage(this);
+    }
+
     /**
      * Returns the number of scanned files in this project.
      *
@@ -188,12 +194,6 @@ public class TasksResult extends BuildResult {
     @Override
     protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
         return TasksResultAction.class;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getDetails() {
-        return StringUtils.EMPTY; // no details yet
     }
 
     // Backward compatibility. Do not remove.

@@ -4,5 +4,13 @@
 	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
 	<t:summary icon="/plugin/tasks/icons/tasks-48x48.gif">
 	    ${it.result.summary}
+        <ul>
+        ${it.result.details}
+          <j:if test="${it.result.hasError()}">
+            <li>
+              ${%error.message}
+            </li>
+          </j:if>
+        </ul>
 	</t:summary>
 </j:jelly>
