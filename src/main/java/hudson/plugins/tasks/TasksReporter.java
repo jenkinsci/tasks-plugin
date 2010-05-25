@@ -15,6 +15,7 @@ import hudson.plugins.tasks.parser.WorkspaceScanner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -223,8 +224,8 @@ public class TasksReporter extends HealthAwareMavenReporter {
 
     /** {@inheritDoc} */
     @Override
-    public Action getProjectAction(final MavenModule module) {
-        return new TasksProjectAction(module);
+    public List<TasksProjectAction> getProjectActions(final MavenModule module) {
+        return Collections.singletonList(new TasksProjectAction(module));
     }
 
     /** {@inheritDoc} */
