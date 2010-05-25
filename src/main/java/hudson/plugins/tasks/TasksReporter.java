@@ -235,28 +235,28 @@ public class TasksReporter extends HealthAwareMavenReporter {
 
     // Backward compatibility. Do not remove.
     // CHECKSTYLE:OFF
-    @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient boolean isThresholdEnabled;
-    @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient boolean isHealthyReportEnabled;
-    @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int healthyTasks;
-    @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int unHealthyTasks;
-    @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int minimumTasks;
-    @SuppressWarnings("all")
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient String height;
 }
