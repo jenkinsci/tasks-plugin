@@ -14,6 +14,7 @@ public final class ResultSummary {
      *            the result
      * @return the message
      */
+    // CHECKSTYLE:CONSTANTS-OFF
     public static String createSummary(final TasksResult result) {
         StringBuilder summary = new StringBuilder();
         int tasks = result.getNumberOfAnnotations();
@@ -42,6 +43,7 @@ public final class ResultSummary {
         summary.append(".");
         return summary.toString();
     }
+    // CHECKSTYLE:CONSTANTS-ON
 
     /**
      * Returns the message to show as the result summary.
@@ -50,6 +52,7 @@ public final class ResultSummary {
      *            the result
      * @return the message
      */
+    // CHECKSTYLE:CONSTANTS-OFF
     public static String createDeltaMessage(final TasksResult result) {
         StringBuilder summary = new StringBuilder();
         if (result.getNumberOfNewWarnings() > 0) {
@@ -75,6 +78,7 @@ public final class ResultSummary {
 
         return summary.toString();
     }
+    // CHECKSTYLE:CONSTANTS-ON
 
     /**
      * Instantiates a new result summary.

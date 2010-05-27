@@ -26,22 +26,23 @@ import org.apache.commons.lang.StringUtils;
  * @author Ulli Hafner
  */
 public class TaskScanner {
+    private static final String WORD_BOUNDARY = "\\b";
+
     /** The regular expression patterns to be used to scan the files. One pattern per priority. */
     private final Map<Priority, Pattern> patterns = new HashMap<Priority, Pattern>();
-    /** Indicates that the pattern is invalid. */
+
     private boolean isInvalidPattern;
-    /** Error message of the pattern compiler. */
     private final StringBuilder errorMessage = new StringBuilder();
 
     /**
-     * Creates a new instance of <code>TaskScanner</code>.
+     * Creates a new instance of {@link TaskScanner}.
      */
     public TaskScanner() {
         this("FIXME", "TODO", "@deprecated", false);
     }
 
     /**
-     * Creates a new instance of <code>TaskScanner</code>.
+     * Creates a new instance of {@link TaskScanner}.
      *
      * @param high
      *            tag identifiers indicating high priority
@@ -87,10 +88,10 @@ public class TaskScanner {
                 String tag = tags[i].trim();
                 if (StringUtils.isNotBlank(tag)) {
                     if (Character.isLetterOrDigit(tag.charAt(0))) {
-                        regexps.add("\\b" + tag + "\\b");
+                        regexps.add(WORD_BOUNDARY + tag + WORD_BOUNDARY);
                     }
                     else {
-                        regexps.add(tag + "\\b");
+                        regexps.add(tag + WORD_BOUNDARY);
                     }
                 }
             }
@@ -122,27 +123,31 @@ public class TaskScanner {
      *             if we can't read the file
      */
     public Collection<Task> scan(final Reader reader) throws IOException {
-        if (isInvalidPattern) {
-            throw new AbortException(errorMessage.toString());
-        }
-        LineIterator lineIterator = IOUtils.lineIterator(reader);
-        List<Task> tasks = new ArrayList<Task>();
-        for (int lineNumber = 1; lineIterator.hasNext(); lineNumber++) {
-            String line = (String)lineIterator.next();
+        try {
+            if (isInvalidPattern) {
+                throw new AbortException(errorMessage.toString());
+            }
+            LineIterator lineIterator = IOUtils.lineIterator(reader);
+            List<Task> tasks = new ArrayList<Task>();
+            for (int lineNumber = 1; lineIterator.hasNext(); lineNumber++) {
+                String line = (String)lineIterator.next();
 
-            for (Priority priority : Priority.values()) {
-                if (patterns.containsKey(priority)) {
-                    Matcher matcher = patterns.get(priority).matcher(line);
-                    if (matcher.matches() && matcher.groupCount() == 2) {
-                        String message = matcher.group(2).trim();
-                        tasks.add(new Task(priority, lineNumber, matcher.group(1), StringUtils.remove(message, ":").trim()));
+                for (Priority priority : Priority.values()) {
+                    if (patterns.containsKey(priority)) {
+                        Matcher matcher = patterns.get(priority).matcher(line);
+                        if (matcher.matches() && matcher.groupCount() == 2) {
+                            String message = matcher.group(2).trim();
+                            tasks.add(new Task(priority, lineNumber, matcher.group(1), StringUtils.remove(message, ":").trim()));
+                        }
                     }
                 }
             }
-        }
-        reader.close();
 
-        return tasks;
+            return tasks;
+        }
+        finally {
+            reader.close();
+        }
     }
 }
 
