@@ -4,14 +4,14 @@
   <parent>
     <groupId>org.jvnet.hudson.plugins</groupId>
     <artifactId>analysis-pom</artifactId>
-    <version>1.12</version>
+    <version>1.2</version>
     <relativePath>../analysis-pom/pom.xml</relativePath>
   </parent>
 
   <artifactId>tasks</artifactId>
   <packaging>hpi</packaging>
   <name>Task Scanner Plug-in</name>
-  <version>4.8-SNAPSHOT</version>
+  <version>4.5-SNAPSHOT</version>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Task+Scanner+Plugin</url>
   <description>This plug-in scans the workspace files for open tasks
     and generates a trend report.</description>
@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.jvnet.hudson.plugins</groupId>
       <artifactId>analysis-core</artifactId>
-    <version>1.9</version>
+      <version>1.6</version>
     </dependency>
     <dependency>
       <groupId>org.jvnet.hudson.plugins</groupId>
@@ -51,19 +51,5 @@
     <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/trunk/hudson/plugins/tasks</developerConnection>
     <url>https://hudson.dev.java.net/source/browse/hudson/trunk/hudson/plugins/tasks</url>
   </scm>
-
-  <repositories>
-    <repository>
-      <id>java.net2</id>
-      <url>http://download.java.net/maven/2/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
 
 </project>
