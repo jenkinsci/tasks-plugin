@@ -7,6 +7,7 @@ import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.PriorityDetailFactory;
+import hudson.plugins.analysis.views.ErrorDetail;
 import hudson.plugins.analysis.views.PrioritiesDetail;
 import hudson.plugins.analysis.views.SourceDetail;
 
@@ -122,6 +123,9 @@ public class TasksDetailBuilder {
         }
         else if ("new".equals(link)) {
             return new NewTasksDetail(owner, newAnnotations, defaultEncoding, displayName, high, normal, low);
+        }
+        else if ("error".equals(link)) {
+            return new ErrorDetail(owner, errors);
         }
         else if (link.startsWith("tab.tasks.new")) {
             return new TasksTabDetail(owner, newAnnotations, "/tasks/new.jelly", defaultEncoding, high, normal, low);
