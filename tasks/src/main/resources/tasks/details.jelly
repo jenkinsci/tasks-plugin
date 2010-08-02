@@ -1,0 +1,34 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+  xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+  xmlns:i="jelly:fmt" xmlns:local="local">
+  <st:header name="Content-Type" value="text/html;charset=UTF-8" />
+	<j:forEach var="file" items="${it.files}">
+	  <j:if test="${file.hasAnnotations(priority)}">
+		<table class="pane">
+			<tr class="pane">
+				<td class="pane-header">
+					<p>${%File}: ${file.shortName}</p>
+	            </td>
+            </tr>
+			<j:forEach var="task" items="${file.getAnnotations(priority)}">
+	            <tr>
+		            <td class="pane">
+						<p>
+							<j:choose>
+								<j:when test="${it.isCurrent() and task.canDisplayFile(it.owner)}">
+									<a href="source.${task.key}/#${task.primaryLineNumber}">${%tasks.line(task.primaryLineNumber)}:</a>
+								</j:when>
+								<j:otherwise>
+									${%tasks.line(task.primaryLineNumber)}:
+								</j:otherwise>
+							</j:choose>
+							${task.match}
+						</p>
+		            </td>
+	            </tr>
+			</j:forEach>
+		</table>
+		<p/>
+ 		  </j:if>
+	</j:forEach>
+</j:jelly>
