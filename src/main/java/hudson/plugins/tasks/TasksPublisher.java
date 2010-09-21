@@ -45,18 +45,6 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            Ant file-set pattern of files to scan for open tasks in
      * @param excludePattern
      *            Ant file-set pattern of files to exclude from scan
-     * @param threshold
-     *            Annotation threshold to be reached if a build should be considered as
-     *            unstable.
-     * @param newThreshold
-     *            New annotations threshold to be reached if a build should be
-     *            considered as unstable.
-     * @param failureThreshold
-     *            Annotation threshold to be reached if a build should be considered as
-     *            failure.
-     * @param newFailureThreshold
-     *            New annotations threshold to be reached if a build should be
-     *            considered as failure.
      * @param healthy
      *            Report health as 100% when the number of open tasks is less
      *            than this value
@@ -66,6 +54,42 @@ public class TasksPublisher extends HealthAwarePublisher {
      * @param thresholdLimit
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
+     * @param useDeltaValues
+     *            determines whether the absolute annotations delta or the
+     *            actual annotations set difference should be used to evaluate
+     *            the build stability
+     * @param unstableTotalAll
+     *            annotation threshold
+     * @param unstableTotalHigh
+     *            annotation threshold
+     * @param unstableTotalNormal
+     *            annotation threshold
+     * @param unstableTotalLow
+     *            annotation threshold
+     * @param unstableNewAll
+     *            annotation threshold
+     * @param unstableNewHigh
+     *            annotation threshold
+     * @param unstableNewNormal
+     *            annotation threshold
+     * @param unstableNewLow
+     *            annotation threshold
+     * @param failedTotalAll
+     *            annotation threshold
+     * @param failedTotalHigh
+     *            annotation threshold
+     * @param failedTotalNormal
+     *            annotation threshold
+     * @param failedTotalLow
+     *            annotation threshold
+     * @param failedNewAll
+     *            annotation threshold
+     * @param failedNewHigh
+     *            annotation threshold
+     * @param failedNewNormal
+     *            annotation threshold
+     * @param failedNewLow
+     *            annotation threshold
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -76,24 +100,27 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            if case should be ignored during matching
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
-     * @param useDeltaValues
-     *            determines whether the absolute annotations delta or the
-     *            actual annotations set difference should be used to evaluate
-     *            the build stability
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
     @DataBoundConstructor
-    public TasksPublisher(final String pattern, final String excludePattern,
-            final String threshold, final String newThreshold,
-            final String failureThreshold, final String newFailureThreshold,
-            final String healthy, final String unHealthy, final String thresholdLimit,
+    public TasksPublisher(final String healthy, final String unHealthy, final String thresholdLimit,
+            final String defaultEncoding, final boolean useDeltaValues,
+            final String unstableTotalAll, final String unstableTotalHigh, final String unstableTotalNormal, final String unstableTotalLow,
+            final String unstableNewAll, final String unstableNewHigh, final String unstableNewNormal, final String unstableNewLow,
+            final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
+            final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
+            final boolean canRunOnFailed,
             final String high, final String normal, final String low, final boolean ignoreCase,
-            final String defaultEncoding, final boolean useDeltaValues, final boolean canRunOnFailed) {
-        super(threshold, newThreshold, failureThreshold, newFailureThreshold,
-                healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues, canRunOnFailed, "TASKS");
+            final String pattern, final String excludePattern) {
+        super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
+                unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
+                unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
+                failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
+                failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
+                canRunOnFailed, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
