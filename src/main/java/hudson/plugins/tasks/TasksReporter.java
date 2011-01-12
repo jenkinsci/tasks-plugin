@@ -168,7 +168,7 @@ public class TasksReporter extends HealthAwareMavenReporter {
     }
 
     /** {@inheritDoc} */
-    @SuppressWarnings({"unchecked", "PMD.AvoidFinalLocalVariable"})
+    @SuppressWarnings("PMD.AvoidFinalLocalVariable")
     @Override
     public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PluginLogger logger) throws InterruptedException, IOException {
         List<String> foldersToScan = new ArrayList<String>(pom.getCompileSourceRoots());
