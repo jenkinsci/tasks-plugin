@@ -43,5 +43,11 @@ public class TasksTabDetail extends TabDetail {
     public String getWarnings() {
         return "tasks-warnings.jelly";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getFixed() {
+        return "tasks-fixed.jelly";
+    }
 }
 

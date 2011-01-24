@@ -1,16 +1,16 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
-	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:tab="/tab" xmlns:tasks="/tasks">
 	<l:layout norefresh="true">
 		<st:include it="${it.owner}" page="sidepanel.jelly" />
 		<l:main-panel>
 			<h1>${it.header}</h1>
 
-	        <st:include page="/summaryTable.jelly" />
+            <tab:priorities-summary />
 
 			<h2>${%Fixed Tasks}</h2>
-            <j:set var="annotations" value="${it.annotations}" />
-            <st:include page="/tasks/fixed.jelly" />
+      
+            <tasks:fixed />
 
 		</l:main-panel>
 	</l:layout>
