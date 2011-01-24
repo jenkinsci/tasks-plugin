@@ -1,6 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.Plugin;
+import hudson.plugins.analysis.views.DetailFactory;
 
 /**
  * Registers the task scanner plug-in publisher.
@@ -10,8 +11,7 @@ import hudson.Plugin;
 public class TasksPlugin extends Plugin {
     /** {@inheritDoc} */
     @Override
-    @SuppressWarnings("PMD")
     public void start() throws Exception {
-        // FIXME: check if we can register a new detail builder?
+        DetailFactory.addDetailBuilder(TasksResultAction.class, new TasksDetailBuilder());
     }
 }

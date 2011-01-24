@@ -10,8 +10,6 @@ import hudson.plugins.tasks.parser.TasksParserResult;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -105,34 +103,6 @@ public class TasksResult extends BuildResult {
     @Override
     protected String getSerializationFileName() {
         return "open-tasks.xml";
-    }
-
-    /**
-     * Returns the dynamic result of this tasks detail view. Depending on the
-     * number of modules and packages, one of the following detail objects is
-     * returned:
-     * <ul>
-     * <li>A task detail object for a single workspace file (if the project
-     * contains only one package and one module).</li>
-     * <li>A package detail object for a specified package (if the project
-     * contains only one module).</li>
-     * <li>A module detail object for a specified module (in any other case).</li>
-     * </ul>
-     *
-     * @param link
-     *            the link to the source code
-     * @param request
-     *            Stapler request
-     * @param response
-     *            Stapler response
-     * @return the dynamic result of the FindBugs analysis (detail page for a
-     *         package).
-     */
-    @Override
-    public Object getDynamic(final String link, final StaplerRequest request, final StaplerResponse response) {
-        return new TasksDetailBuilder().getDynamic(link, getOwner(), getContainer(), getFixedWarnings(),
-                getNewWarnings(), getErrors(), getDefaultEncoding(), getDisplayName(),
-                getTags(Priority.HIGH), getTags(Priority.NORMAL), getTags(Priority.LOW));
     }
 
     /**
