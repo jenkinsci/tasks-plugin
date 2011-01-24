@@ -17,7 +17,7 @@
         <tr>
           <td class="pane">${warning.shortFileName}</td>
           <td class="pane">${warning.type}</td>
-          <td class="pane">${warning.match}</td>
+          <td class="pane">${warning.detailMessage}</td>
         </tr>
       </j:forEach>
     </tbody>
