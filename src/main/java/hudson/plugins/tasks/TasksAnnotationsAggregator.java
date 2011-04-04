@@ -59,12 +59,15 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
     @Override
     public boolean endRun(final MatrixRun run) throws InterruptedException, IOException {
         if (totals.hasNoAnnotations()) {
-            TasksResult result = run.getAction(TasksResultAction.class).getResult();
-            totals.addAnnotations(result.getAnnotations());
-            totals.addScannedFiles(result.getNumberOfFiles());
-            highTags = result.getTags(Priority.HIGH);
-            normalTags = result.getTags(Priority.NORMAL);
-            lowTags = result.getTags(Priority.LOW);
+            TasksResultAction action = run.getAction(TasksResultAction.class);
+            if (action != null) {
+                TasksResult result = action.getResult();
+                totals.addAnnotations(result.getAnnotations());
+                totals.addScannedFiles(result.getNumberOfFiles());
+                highTags = result.getTags(Priority.HIGH);
+                normalTags = result.getTags(Priority.NORMAL);
+                lowTags = result.getTags(Priority.LOW);
+            }
         }
         return true;
     }
