@@ -10,10 +10,9 @@
     <f:textbox />
   </f:entry>
   <c:tasks descriptor="TasksPublisher"/>
+
   <f:advanced>
-    <u:failed/>
-    <u:health id="tasks"/>
-    <u:trend id="tasks"/>
+    <u:advancedMaven id="tasks"/>
   </f:advanced>
 
 </j:jelly>
