@@ -5,6 +5,7 @@ import hudson.FilePath.FileCallable;
 import hudson.plugins.analysis.util.ContextHashCode;
 import hudson.plugins.analysis.util.EncodingValidator;
 import hudson.plugins.analysis.util.ModuleDetector;
+import hudson.plugins.analysis.util.NullModuleDetector;
 import hudson.plugins.analysis.util.PackageDetectors;
 import hudson.remoting.VirtualChannel;
 
@@ -43,6 +44,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     private String prefix;
     /** The default encoding to be used when reading and parsing files. */
     private final String defaultEncoding;
+    /** Determines whether module names should be derived from Maven or Ant. */
+    private final boolean shouldDetectModules;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -61,9 +64,12 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            tag identifiers indicating low priority
      * @param ignoreCase
      *            if case should be ignored during matching
+     * @param shouldDetectModules
+     *            determines whether module names should be derived from Maven POM or Ant build files
      */
+    // CHECKSTYLE:OFF
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
-            final String high, final String normal, final String low, final boolean ignoreCase) {
+            final String high, final String normal, final String low, final boolean ignoreCase, final boolean shouldDetectModules) {
         this.filePattern = filePattern;
         this.excludeFilePattern = excludeFilePattern;
         this.defaultEncoding = defaultEncoding;
@@ -71,7 +77,9 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         this.normal = normal;
         this.low = low;
         this.ignoreCase = ignoreCase;
+        this.shouldDetectModules = shouldDetectModules;
     }
+    // CHECKSTYLE:ON
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -97,7 +105,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
             final String high, final String normal, final String low, final boolean caseSensitive,
             final String moduleName) {
-        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive);
+        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive, false);
         this.moduleName = moduleName;
     }
     // CHECKSTYLE:ON
@@ -126,7 +134,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
 
         TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase);
         TasksParserResult javaProject = new TasksParserResult(files.length);
-        ModuleDetector moduleDetector = new ModuleDetector(workspace);
+        ModuleDetector moduleDetector = createModuleDetector(workspace);
         for (String fileName : files) {
             File originalFile = new File(workspace, fileName);
             Collection<Task> tasks = taskScanner.scan(new InputStreamReader(new FilePath(originalFile).read(),
@@ -152,6 +160,15 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         }
 
         return javaProject;
+    }
+
+    private ModuleDetector createModuleDetector(final File workspace) {
+        if (shouldDetectModules) {
+            return new ModuleDetector(workspace);
+        }
+        else {
+            return new NullModuleDetector();
+        }
     }
 
     /**

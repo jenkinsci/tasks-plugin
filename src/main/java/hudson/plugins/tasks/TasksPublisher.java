@@ -94,6 +94,10 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            annotation threshold
      * @param failedNewLow
      *            annotation threshold
+     * @param canRunOnFailed
+     *            determines whether the plug-in can run for failed builds, too
+     * @param shouldDetectModules
+     *            determines whether module names should be derived from Maven POM or Ant build files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -104,8 +108,6 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            if case should be ignored during matching
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
-     * @param canRunOnFailed
-     *            determines whether the plug-in can run for failed builds, too
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -116,7 +118,7 @@ public class TasksPublisher extends HealthAwarePublisher {
             final String unstableNewAll, final String unstableNewHigh, final String unstableNewNormal, final String unstableNewLow,
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
-            final boolean canRunOnFailed,
+            final boolean canRunOnFailed, final boolean shouldDetectModules,
             final String high, final String normal, final String low, final boolean ignoreCase,
             final String pattern, final String excludePattern) {
         super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
@@ -124,7 +126,7 @@ public class TasksPublisher extends HealthAwarePublisher {
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, "TASKS");
+                canRunOnFailed, shouldDetectModules, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -199,8 +201,9 @@ public class TasksPublisher extends HealthAwarePublisher {
     protected BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         TasksParserResult project;
         logger.log("Scanning workspace files for tasks...");
-        project = build.getWorkspace().act(
-                new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN), getExcludePattern(), getDefaultEncoding(), high, normal, low, ignoreCase));
+        WorkspaceScanner scanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(),
+                DEFAULT_PATTERN), getExcludePattern(), getDefaultEncoding(), high, normal, low, ignoreCase, shouldDetectModules());
+        project = build.getWorkspace().act(scanner);
 
         TasksResult result = new TasksResult(build, getDefaultEncoding(), project, high, normal, low);
         build.getActions().add(new TasksResultAction(build, this, result));
