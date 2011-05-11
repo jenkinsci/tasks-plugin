@@ -10,6 +10,7 @@ import hudson.plugins.tasks.parser.TasksParserResult;
  * Represents the aggregated results of the PMD analysis in m2 jobs.
  *
  * @author Ulli Hafner
+ * @deprecated not used anymore
  */
 @Deprecated
 public class TasksMavenResult extends TasksResult {
