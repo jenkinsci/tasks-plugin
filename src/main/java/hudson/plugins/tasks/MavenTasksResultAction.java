@@ -8,8 +8,11 @@ import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
+import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.ParserResult;
+import hudson.plugins.analysis.util.PluginLogger;
+import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.TasksParserResult;
 
 import java.util.List;
@@ -119,7 +122,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
 
     /**
      * Called whenever a new module build is completed, to update the aggregated
-     * report. When multiple builds complete simultaneously, Hudson serializes
+     * report. When multiple builds complete simultaneously, Jenkins serializes
      * the execution of this method, so this method needs not be
      * concurrency-safe.
      *
@@ -130,15 +133,47 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      *            Newly completed build.
      */
     public void update(final Map<MavenModule, List<MavenBuild>> moduleBuilds, final MavenBuild newBuild) {
-        ParserResult result = createAggregatedResult(moduleBuilds);
+        MavenTasksResultAction additionalAction = newBuild.getAction(MavenTasksResultAction.class);
+        if (additionalAction != null) {
+            TasksResult existingResult = getResult();
+            TasksResult additionalResult = additionalAction.getResult();
 
-        if (result instanceof TasksParserResult) {
-            TasksMavenResult mavenResult = new TasksMavenResult(getOwner(), defaultEncoding, (TasksParserResult)result, high, normal, low);
-            setResult(mavenResult);
-            updateBuildHealth(newBuild, mavenResult);
+            log("Aggregating results of " + newBuild.getProject().getDisplayName());
+
+            if (existingResult == null) {
+                setResult(additionalResult);
+                getOwner().setResult(additionalResult.getPluginResult());
+            }
+            else {
+                setResult(aggregate(existingResult, additionalResult, getLogger()));
+            }
         }
     }
 
+    /**
+     * Creates a new instance of {@link BuildResult} that contains the aggregated
+     * results of this result and the provided additional result.
+     *
+     * @param existingResult
+     *            the existing result
+     * @param additionalResult
+     *            the result that will be added to the existing result
+     * @param logger
+     *            the plug-in logger
+     * @return the aggregated result
+     */
+    public TasksResult aggregate(final TasksResult existingResult, final TasksResult additionalResult, final PluginLogger logger) {
+        TasksParserResult aggregatedAnnotations = new TasksParserResult();
+        aggregatedAnnotations.addAnnotations(existingResult.getAnnotations());
+        aggregatedAnnotations.addScannedFiles(existingResult.getNumberOfFiles());
+        aggregatedAnnotations.addAnnotations(additionalResult.getAnnotations());
+        aggregatedAnnotations.addScannedFiles(additionalResult.getNumberOfFiles());
+
+        TasksResult createdResult = new TasksResult(getOwner(), existingResult.getDefaultEncoding(), aggregatedAnnotations,
+                existingResult.getTags(Priority.HIGH), existingResult.getTags(Priority.NORMAL), existingResult.getTags(Priority.LOW));
+        createdResult.evaluateStatus(existingResult.getThresholds(), existingResult.canUseDeltaValues(), logger);
+        return createdResult;
+    }
     /** {@inheritDoc} */
     @Override
     protected ParserResult createResult() {
