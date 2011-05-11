@@ -1,14 +1,13 @@
 package hudson.plugins.tasks;
 
-import hudson.maven.AggregatableAction;
 import hudson.maven.MavenAggregatedReport;
 import hudson.maven.MavenBuild;
 import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Action;
-import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.core.HealthDescriptor;
+import hudson.plugins.analysis.core.MavenResultAction;
 import hudson.plugins.analysis.core.ParserResult;
 import hudson.plugins.tasks.parser.TasksParserResult;
 
@@ -16,25 +15,47 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A {@link TasksResultAction} for native maven jobs. This action
+ * A {@link TasksResultAction} for native Maven jobs. This action
  * additionally provides result aggregation for sub-modules and for the main
  * project.
  *
  * @author Ulli Hafner
  */
-@Deprecated
-public class MavenTasksResultAction extends TasksResultAction implements AggregatableAction, MavenAggregatedReport {
+public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     /** Tag identifiers indicating high priority. */
     private String high;
     /** Tag identifiers indicating normal priority. */
     private String normal;
     /** Tag identifiers indicating low priority. */
     private String low;
-    /** The default encoding to be used when reading and parsing files. */
-    private String defaultEncoding;
 
     /**
-     * Creates a new instance of {@link MavenTasksResultAction}.
+     * Creates a new instance of {@link TasksMavenResultAction}. This instance
+     * will have no result set in the beginning. The result will be set
+     * successively after each of the modules are build.
+     *
+     * @param owner
+     *            the associated build of this action
+     * @param healthDescriptor
+     *            health descriptor to use
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     */
+    public TasksMavenResultAction(final MavenModuleSetBuild owner, final HealthDescriptor healthDescriptor,
+            final String defaultEncoding, final String high, final String normal, final String low) {
+        super(new TasksResultAction(owner, healthDescriptor), defaultEncoding);
+
+        initializeFields(high, normal, low);
+    }
+
+    /**
+     * Creates a new instance of {@link TasksMavenResultAction}.
      *
      * @param owner
      *            the associated build of this action
@@ -51,41 +72,15 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      * @param result
      *            the result in this build
      */
-    // CHECKSTYLE:OFF
-    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String defaultEncoding,
-            final String high, final String normal, final String low, final TasksResult result) {
-        super(owner, healthDescriptor, result);
-        initializeFields(defaultEncoding, high, normal, low);
-    }
-    // CHECKSTYLE:ON
+    public TasksMavenResultAction(final MavenBuild owner, final HealthDescriptor healthDescriptor,
+            final String defaultEncoding, final String high, final String normal, final String low, final TasksResult result) {
+        super(new TasksResultAction(owner, healthDescriptor, result), defaultEncoding);
 
-    /**
-     * Creates a new instance of {@link MavenTasksResultAction}.
-     *
-     * @param owner
-     *            the associated build of this action
-     * @param healthDescriptor
-     *            health descriptor to use
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
-     * @param high
-     *            tag identifiers indicating high priority
-     * @param normal
-     *            tag identifiers indicating normal priority
-     * @param low
-     *            tag identifiers indicating low priority
-     */
-    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String defaultEncoding,
-            final String high, final String normal, final String low) {
-        super(owner, healthDescriptor);
-        initializeFields(defaultEncoding, high, normal, low);
+        initializeFields(high, normal, low);
     }
 
     /**
      * Initializes the fields of this action.
-     *
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
      * @param high
      *            tag identifiers indicating high priority
      * @param normal
@@ -95,17 +90,16 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("hiding")
-    private void initializeFields(final String defaultEncoding, final String high, final String normal, final String low) {
+    private void initializeFields(final String high, final String normal, final String low) {
         this.high = high;
         this.normal = normal;
         this.low = low;
-        this.defaultEncoding = defaultEncoding;
     }
     // CHECKSTYLE:ON
 
     /** {@inheritDoc} */
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
-        return new MavenTasksResultAction(build, getHealthDescriptor(), defaultEncoding, high, normal, low);
+        return new TasksMavenResultAction(build, getHealthDescriptor(), getDisplayName(), high, normal, low);
     }
 
     /** {@inheritDoc} */
@@ -113,36 +107,14 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
         return new TasksProjectAction(moduleSet);
     }
 
-    /** {@inheritDoc} */
-    public Class<? extends AggregatableAction> getIndividualActionType() {
-        return getClass();
-    }
-
-    /**
-     * Called whenever a new module build is completed, to update the aggregated
-     * report. When multiple builds complete simultaneously, Jenkins serializes
-     * the execution of this method, so this method needs not be
-     * concurrency-safe.
-     *
-     * @param moduleBuilds
-     *            Same as <tt>MavenModuleSet.getModuleBuilds()</tt> but provided
-     *            for convenience and efficiency.
-     * @param newBuild
-     *            Newly completed build.
-     */
-    public void update(final Map<MavenModule, List<MavenBuild>> moduleBuilds, final MavenBuild newBuild) {
-        // not used anymore
-    }
-
-    /** {@inheritDoc} */
     @Override
-    protected ParserResult createResult() {
-        return new TasksParserResult();
+    public Class<? extends MavenResultAction<TasksResult>> getIndividualActionType() {
+        return TasksMavenResultAction.class;
     }
 
-    /** Backward compatibility. @deprecated */
-    @SuppressWarnings("unused")
-    @Deprecated
-    private transient String height;
+    @Override
+    protected TasksResult createResult(final TasksResult existingResult, final ParserResult aggregatedAnnotations) {
+        return new TasksResult(getOwner(), existingResult.getDefaultEncoding(), (TasksParserResult) aggregatedAnnotations, high, normal, low);
+    }
 }
 

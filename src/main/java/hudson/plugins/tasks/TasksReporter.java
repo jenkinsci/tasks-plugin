@@ -243,7 +243,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
 
     @Override
     protected MavenAggregatedReport createMavenAggregatedReport(final MavenBuild build, final TasksResult result) {
-        return new MavenTasksResultAction(build, this, getDefaultEncoding(), high, normal, low, result);
+        return new TasksMavenResultAction(build, this, getDefaultEncoding(), high, normal, low, result);
     }
 
     @Override
@@ -252,8 +252,8 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     }
 
     @Override
-    protected Class<MavenTasksResultAction> getResultActionClass() {
-        return MavenTasksResultAction.class;
+    protected Class<TasksMavenResultAction> getResultActionClass() {
+        return TasksMavenResultAction.class;
     }
 
     // Backward compatibility. Do not remove.
