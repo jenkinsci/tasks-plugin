@@ -49,7 +49,7 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
      */
     public TasksMavenResultAction(final MavenModuleSetBuild owner, final HealthDescriptor healthDescriptor,
             final String defaultEncoding, final String high, final String normal, final String low) {
-        super(new TasksResultAction(owner, healthDescriptor), defaultEncoding);
+        super(new TasksResultAction(owner, healthDescriptor), defaultEncoding, "TASKS");
 
         initializeFields(high, normal, low);
     }
@@ -74,7 +74,7 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
      */
     public TasksMavenResultAction(final MavenBuild owner, final HealthDescriptor healthDescriptor,
             final String defaultEncoding, final String high, final String normal, final String low, final TasksResult result) {
-        super(new TasksResultAction(owner, healthDescriptor, result), defaultEncoding);
+        super(new TasksResultAction(owner, healthDescriptor, result), defaultEncoding, "TASKS");
 
         initializeFields(high, normal, low);
     }
