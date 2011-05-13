@@ -123,8 +123,13 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
         TasksParserResult aggregatedAnnotations = new TasksParserResult();
 
         aggregatedAnnotations.addAnnotations(existingResult.getAnnotations());
+        aggregatedAnnotations.addModules(existingResult.getModules());
+        aggregatedAnnotations.addErrors(existingResult.getErrors());
         aggregatedAnnotations.addScannedFiles(existingResult.getNumberOfFiles());
+
         aggregatedAnnotations.addAnnotations(additionalResult.getAnnotations());
+        aggregatedAnnotations.addModules(additionalResult.getModules());
+        aggregatedAnnotations.addErrors(additionalResult.getErrors());
         aggregatedAnnotations.addScannedFiles(additionalResult.getNumberOfFiles());
 
         return aggregatedAnnotations;
