@@ -8,7 +8,6 @@ import hudson.maven.MavenModuleSetBuild;
 import hudson.model.Action;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.MavenResultAction;
-import hudson.plugins.analysis.core.ParserResult;
 import hudson.plugins.tasks.parser.TasksParserResult;
 
 import java.util.List;
@@ -112,9 +111,23 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
         return TasksMavenResultAction.class;
     }
 
+    /** {@inheritDoc} */
     @Override
-    protected TasksResult createResult(final TasksResult existingResult, final ParserResult aggregatedAnnotations) {
-        return new TasksResult(getOwner(), existingResult.getDefaultEncoding(), (TasksParserResult) aggregatedAnnotations, high, normal, low);
+    protected TasksResult createResult(final TasksResult existingResult, final TasksResult additionalResult) {
+        return new TasksResult(getOwner(), existingResult.getDefaultEncoding(), aggregate(existingResult, additionalResult), high, normal, low);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected TasksParserResult aggregate(final TasksResult existingResult, final TasksResult additionalResult) {
+        TasksParserResult aggregatedAnnotations = new TasksParserResult();
+
+        aggregatedAnnotations.addAnnotations(existingResult.getAnnotations());
+        aggregatedAnnotations.addScannedFiles(existingResult.getNumberOfFiles());
+        aggregatedAnnotations.addAnnotations(additionalResult.getAnnotations());
+        aggregatedAnnotations.addScannedFiles(additionalResult.getNumberOfFiles());
+
+        return aggregatedAnnotations;
     }
 }
 
