@@ -98,7 +98,7 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
 
     /** {@inheritDoc} */
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
-        return new TasksMavenResultAction(build, getHealthDescriptor(), getDisplayName(), high, normal, low);
+        return new TasksMavenResultAction(build, getHealthDescriptor(), getDefaultEncoding(), high, normal, low);
     }
 
     /** {@inheritDoc} */
@@ -113,24 +113,21 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
 
     /** {@inheritDoc} */
     @Override
-    protected TasksResult createResult(final TasksResult existingResult, final TasksResult additionalResult) {
-        return new TasksResult(getOwner(), existingResult.getDefaultEncoding(), aggregate(existingResult, additionalResult), high, normal, low);
+    protected TasksResult createResult(final TasksResult... results) {
+        return new TasksResult(getOwner(), results[0].getDefaultEncoding(), aggregate(results), high, normal, low);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected TasksParserResult aggregate(final TasksResult existingResult, final TasksResult additionalResult) {
+    protected TasksParserResult aggregate(final TasksResult... results) {
         TasksParserResult aggregatedAnnotations = new TasksParserResult();
 
-        aggregatedAnnotations.addAnnotations(existingResult.getAnnotations());
-        aggregatedAnnotations.addModules(existingResult.getModules());
-        aggregatedAnnotations.addErrors(existingResult.getErrors());
-        aggregatedAnnotations.addScannedFiles(existingResult.getNumberOfFiles());
-
-        aggregatedAnnotations.addAnnotations(additionalResult.getAnnotations());
-        aggregatedAnnotations.addModules(additionalResult.getModules());
-        aggregatedAnnotations.addErrors(additionalResult.getErrors());
-        aggregatedAnnotations.addScannedFiles(additionalResult.getNumberOfFiles());
+        for (TasksResult result : results) {
+            aggregatedAnnotations.addAnnotations(result.getAnnotations());
+            aggregatedAnnotations.addModules(result.getModules());
+            aggregatedAnnotations.addErrors(result.getErrors());
+            aggregatedAnnotations.addScannedFiles(result.getNumberOfFiles());
+        }
 
         return aggregatedAnnotations;
     }

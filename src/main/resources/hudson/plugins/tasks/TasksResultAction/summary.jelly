@@ -2,4 +2,4 @@
 	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
 	xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:u="/util">
 	<u:summary icon="/plugin/tasks/icons/tasks-48x48.gif"/>
-</j:jelly>
+</j:jelly>  
