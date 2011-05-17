@@ -13,6 +13,8 @@ import hudson.plugins.tasks.parser.TasksParserResult;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
+
 /**
  * A {@link TasksResultAction} for native Maven jobs. This action
  * additionally provides result aggregation for sub-modules and for the main
@@ -113,14 +115,21 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
 
     /** {@inheritDoc} */
     @Override
-    protected TasksResult createResult(final TasksResult... results) {
-        return new TasksResult(getOwner(), results[0].getDefaultEncoding(), aggregate(results), high, normal, low);
+    protected TasksResult createResult(final TasksResult existingResult, final TasksResult additionalResult) {
+        return new TasksResult(getOwner(), additionalResult.getDefaultEncoding(),
+                aggregate(existingResult, additionalResult), high, normal, low);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected TasksParserResult aggregate(final TasksResult... results) {
+    protected TasksParserResult aggregate(final TasksResult existingResult, final TasksResult additionalResult) {
         TasksParserResult aggregatedAnnotations = new TasksParserResult();
+
+        List<TasksResult> results = Lists.newArrayList();
+        if (existingResult != null) {
+            results.add(existingResult);
+        }
+        results.add(additionalResult);
 
         for (TasksResult result : results) {
             aggregatedAnnotations.addAnnotations(result.getAnnotations());
