@@ -142,6 +142,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     }
 
     /** Backward compatibility. @deprecated */
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings("UUF")
     @SuppressWarnings("unused")
     @Deprecated
     private transient String height;
