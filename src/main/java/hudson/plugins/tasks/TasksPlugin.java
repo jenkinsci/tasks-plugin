@@ -11,7 +11,7 @@ import hudson.plugins.analysis.views.DetailFactory;
 public class TasksPlugin extends Plugin {
     /** {@inheritDoc} */
     @Override
-    public void start() throws Exception {
+    public void start() {
         DetailFactory.addDetailBuilder(TasksResultAction.class, new TasksDetailBuilder());
     }
 }
