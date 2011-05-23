@@ -116,7 +116,7 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     /** {@inheritDoc} */
     @Override
     protected TasksResult createResult(final TasksResult existingResult, final TasksResult additionalResult) {
-        return new TasksResult(getOwner(), additionalResult.getDefaultEncoding(),
+        return new TasksReporterResult(getOwner(), additionalResult.getDefaultEncoding(),
                 aggregate(existingResult, additionalResult), high, normal, low);
     }
 

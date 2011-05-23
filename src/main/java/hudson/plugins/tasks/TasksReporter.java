@@ -239,7 +239,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     @Override
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("BC")
     protected TasksResult createResult(final MavenBuild build, final ParserResult project) {
-        return new TasksResult(build, getDefaultEncoding(), (TasksParserResult)project, high, normal, low);
+        return new TasksReporterResult(build, getDefaultEncoding(), (TasksParserResult)project, high, normal, low);
     }
 
     @Override
