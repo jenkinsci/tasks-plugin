@@ -105,7 +105,7 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
 
     /** {@inheritDoc} */
     public Action getProjectAction(final MavenModuleSet moduleSet) {
-        return new TasksProjectAction(moduleSet);
+        return new TasksProjectAction(moduleSet, TasksMavenResultAction.class);
     }
 
     @Override

@@ -249,7 +249,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
 
     @Override
     public List<TasksProjectAction> getProjectActions(final MavenModule module) {
-        return Collections.singletonList(new TasksProjectAction(module));
+        return Collections.singletonList(new TasksProjectAction(module, getResultActionClass()));
     }
 
     @Override

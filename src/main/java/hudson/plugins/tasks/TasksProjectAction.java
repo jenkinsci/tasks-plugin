@@ -1,6 +1,7 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractProject;
+import hudson.plugins.analysis.core.ResultAction;
 import hudson.plugins.analysis.core.AbstractProjectAction;
 
 /**
@@ -9,15 +10,28 @@ import hudson.plugins.analysis.core.AbstractProjectAction;
  *
  * @author Ulli Hafner
  */
-public class TasksProjectAction extends AbstractProjectAction<TasksResultAction> {
+public class TasksProjectAction extends AbstractProjectAction<ResultAction<TasksResult>> {
     /**
-     * Instantiates a new tasks project action.
+     * Instantiates a new {@link TasksProjectAction}.
      *
      * @param project
      *            the project that owns this action
      */
     public TasksProjectAction(final AbstractProject<?, ?> project) {
-        super(project, TasksResultAction.class, new TasksDescriptor());
+        this(project, TasksResultAction.class);
+    }
+
+    /**
+     * Instantiates a new {@link TasksProjectAction}.
+     *
+     * @param project
+     *            the project that owns this action
+     * @param type
+     *            the result action type
+     */
+    public TasksProjectAction(final AbstractProject<?, ?> project,
+            final Class<? extends ResultAction<TasksResult>> type) {
+        super(project, type, new TasksDescriptor());
     }
 
     /** {@inheritDoc} */
