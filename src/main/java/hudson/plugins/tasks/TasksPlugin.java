@@ -12,6 +12,8 @@ public class TasksPlugin extends Plugin {
     /** {@inheritDoc} */
     @Override
     public void start() {
-        DetailFactory.addDetailBuilder(TasksResultAction.class, new TasksDetailBuilder());
+        TasksDetailBuilder detailBuilder = new TasksDetailBuilder();
+        DetailFactory.addDetailBuilder(TasksResultAction.class, detailBuilder);
+        DetailFactory.addDetailBuilder(TasksMavenResultAction.class, detailBuilder);
     }
 }
