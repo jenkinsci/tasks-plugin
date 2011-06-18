@@ -5,13 +5,14 @@ import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ResultAction;
 import hudson.plugins.tasks.parser.TasksParserResult;
 
-
 /**
  * Represents the aggregated results of the PMD analysis in m2 jobs.
  *
  * @author Ulli Hafner
  */
 public class TasksReporterResult extends TasksResult {
+    private static final long serialVersionUID = 3803699268659365514L;
+
     /**
      * Creates a new instance of {@link TasksReporterResult}.
      *
