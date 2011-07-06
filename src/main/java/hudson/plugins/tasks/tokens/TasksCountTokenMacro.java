@@ -1,7 +1,8 @@
 package hudson.plugins.tasks.tokens;
 
 import hudson.Extension;
-import hudson.plugins.analysis.tokens.AbstractResultTokenMacro;
+import hudson.plugins.analysis.tokens.AbstractAnnotationsCountTokenMacro;
+import hudson.plugins.tasks.TasksMavenResultAction;
 import hudson.plugins.tasks.TasksResultAction;
 
 /**
@@ -10,12 +11,13 @@ import hudson.plugins.tasks.TasksResultAction;
  * @author Ulli Hafner
  */
 @Extension(optional = true)
-public class TasksCountTokenMacro extends AbstractResultTokenMacro {
+public class TasksCountTokenMacro extends AbstractAnnotationsCountTokenMacro {
     /**
      * Creates a new instance of {@link TasksCountTokenMacro}.
      */
+    @SuppressWarnings("unchecked")
     public TasksCountTokenMacro() {
-        super(TasksResultAction.class, "TASKS_COUNT");
+        super("TASKS_COUNT", TasksResultAction.class, TasksMavenResultAction.class);
     }
 }
 
