@@ -2,6 +2,7 @@ package hudson.plugins.tasks.tokens;
 
 import hudson.Extension;
 import hudson.plugins.analysis.tokens.AbstractResultTokenMacro;
+import hudson.plugins.tasks.TasksMavenResultAction;
 import hudson.plugins.tasks.TasksResultAction;
 
 /**
@@ -14,8 +15,9 @@ public class TasksResultTokenMacro extends AbstractResultTokenMacro {
     /**
      * Creates a new instance of {@link TasksResultTokenMacro}.
      */
+    @SuppressWarnings("unchecked")
     public TasksResultTokenMacro() {
-        super(TasksResultAction.class, "TASKS_RESULT");
+        super("TASKS_RESULT", TasksResultAction.class, TasksMavenResultAction.class);
     }
 }
 
