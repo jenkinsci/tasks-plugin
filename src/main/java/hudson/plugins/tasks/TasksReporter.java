@@ -13,12 +13,10 @@ import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -198,40 +196,12 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     @SuppressWarnings("PMD.AvoidFinalLocalVariable")
     @Override
     public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PluginLogger logger) throws InterruptedException, IOException {
-        List<String> foldersToScan = new ArrayList<String>(pom.getCompileSourceRoots());
-        foldersToScan.addAll(pom.getTestCompileSourceRoots());
-
-        List<Resource> resources = pom.getResources();
-        for (Resource resource : resources) {
-            foldersToScan.add(resource.getDirectory());
-        }
-        resources = pom.getTestResources();
-        for (Resource resource : resources) {
-            foldersToScan.add(resource.getDirectory());
-        }
-
         FilePath basedir = new FilePath(pom.getBasedir());
-        final TasksParserResult project = new TasksParserResult();
-        for (String sourcePath : foldersToScan) {
-            if (StringUtils.isEmpty(sourcePath)) {
-                continue;
-            }
-            FilePath filePath = new FilePath(basedir, sourcePath);
-            if (filePath.exists()) {
-                logger.log(String.format("Scanning folder '%s' for tasks ... ", sourcePath));
-                WorkspaceScanner workspaceScanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
-                        excludePattern, getDefaultEncoding(), high, normal, low, ignoreCase, pom.getName());
-                workspaceScanner.setPrefix(sourcePath);
-                TasksParserResult subProject = filePath.act(workspaceScanner);
-                project.addAnnotations(subProject.getAnnotations());
-                project.addModule(pom.getName());
-                project.addScannedFiles(subProject.getNumberOfScannedFiles());
-                logger.log(String.format("Found %d.", subProject.getNumberOfAnnotations()));
-            }
-            else {
-                logger.log(String.format("Skipping non-existent folder '%s'...", sourcePath));
-            }
-        }
+        logger.log(String.format("Scanning folder '%s' for tasks ... ", basedir));
+        WorkspaceScanner workspaceScanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
+                excludePattern, getDefaultEncoding(), high, normal, low, ignoreCase, pom.getName());
+        TasksParserResult project = basedir.act(workspaceScanner);
+        logger.log(String.format("Found %d open tasks.", project.getNumberOfAnnotations()));
 
         return project;
     }
