@@ -136,34 +136,42 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         TasksParserResult javaProject = new TasksParserResult(files.length);
         ModuleDetector moduleDetector = createModuleDetector(workspace);
         for (String fileName : files) {
-            File originalFile = new File(workspace, fileName);
-            Collection<Task> tasks = taskScanner.scan(new InputStreamReader(new FilePath(originalFile).read(),
-                    EncodingValidator.defaultCharset(defaultEncoding)));
-            if (!tasks.isEmpty()) {
-                String unixName = fileName.replace('\\', '/');
-                String packageName = PackageDetectors.detectPackage(unixName, new FilePath(originalFile).read());
-                String guessedModule = moduleDetector.guessModuleName(originalFile.getAbsolutePath());
-                String actualModule = StringUtils.defaultIfEmpty(moduleName, guessedModule);
+            try {
+                File originalFile = new File(workspace, fileName);
+                Collection<Task> tasks = taskScanner.scan(readFile(originalFile));
+                if (!tasks.isEmpty()) {
+                    String unixName = fileName.replace('\\', '/');
+                    String packageName = PackageDetectors.detectPackage(unixName, new FilePath(originalFile).read());
+                    String guessedModule = moduleDetector.guessModuleName(originalFile.getAbsolutePath());
+                    String actualModule = StringUtils.defaultIfEmpty(moduleName, guessedModule);
 
-                for (Task task : tasks) {
-                    task.setFileName(originalFile.getAbsolutePath());
-                    task.setPackageName(packageName);
-                    task.setModuleName(actualModule);
-                    task.setPathName(workspace.getPath());
+                    for (Task task : tasks) {
+                        task.setFileName(originalFile.getAbsolutePath());
+                        task.setPackageName(packageName);
+                        task.setModuleName(actualModule);
+                        task.setPathName(workspace.getPath());
 
-                    ContextHashCode hashCode = new ContextHashCode();
-                    task.setContextHashCode(hashCode.create(originalFile.getAbsolutePath(), task.getPrimaryLineNumber(), defaultEncoding));
+                        ContextHashCode hashCode = new ContextHashCode();
+                        task.setContextHashCode(hashCode.create(originalFile.getAbsolutePath(), task.getPrimaryLineNumber(), defaultEncoding));
+                    }
+
+                    javaProject.addAnnotations(tasks);
                 }
-
-                javaProject.addAnnotations(tasks);
             }
-
+            catch (IOException exception) {
+                // ignore files that could not be read
+            }
             if (Thread.interrupted()) {
                 throw new InterruptedException("Canceling scanning since build has been aborted.");
             }
         }
 
         return javaProject;
+    }
+
+    private InputStreamReader readFile(final File originalFile) throws IOException {
+        return new InputStreamReader(new FilePath(originalFile).read(),
+                    EncodingValidator.defaultCharset(defaultEncoding));
     }
 
     private ModuleDetector createModuleDetector(final File workspace) {
