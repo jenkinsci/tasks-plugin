@@ -129,7 +129,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     }
 
     /** {@inheritDoc} */
-    public TasksParserResult invoke(final File workspace, final VirtualChannel channel) throws IOException {
+    public TasksParserResult invoke(final File workspace, final VirtualChannel channel) throws IOException, InterruptedException {
         String[] files = findFiles(workspace);
 
         TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase);
@@ -156,6 +156,10 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                 }
 
                 javaProject.addAnnotations(tasks);
+            }
+
+            if (Thread.interrupted()) {
+                throw new InterruptedException("Canceling scanning since build has been aborted.");
             }
         }
 
