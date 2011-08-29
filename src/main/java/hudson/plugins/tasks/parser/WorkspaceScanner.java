@@ -140,19 +140,19 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                 File originalFile = new File(workspace, fileName);
                 Collection<Task> tasks = taskScanner.scan(readFile(originalFile));
                 if (!tasks.isEmpty()) {
-                    String unixName = fileName.replace('\\', '/');
-                    String packageName = PackageDetectors.detectPackageName(unixName);
-                    String guessedModule = moduleDetector.guessModuleName(originalFile.getAbsolutePath());
+                    String absolutePath = originalFile.getAbsolutePath();
+                    String packageName = PackageDetectors.detectPackageName(absolutePath);
+                    String guessedModule = moduleDetector.guessModuleName(absolutePath);
                     String actualModule = StringUtils.defaultIfEmpty(moduleName, guessedModule);
 
                     for (Task task : tasks) {
-                        task.setFileName(originalFile.getAbsolutePath());
+                        task.setFileName(absolutePath);
                         task.setPackageName(packageName);
                         task.setModuleName(actualModule);
                         task.setPathName(workspace.getPath());
 
                         ContextHashCode hashCode = new ContextHashCode();
-                        task.setContextHashCode(hashCode.create(originalFile.getAbsolutePath(), task.getPrimaryLineNumber(), defaultEncoding));
+                        task.setContextHashCode(hashCode.create(absolutePath, task.getPrimaryLineNumber(), defaultEncoding));
                     }
 
                     javaProject.addAnnotations(tasks);
