@@ -141,7 +141,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                 Collection<Task> tasks = taskScanner.scan(readFile(originalFile));
                 if (!tasks.isEmpty()) {
                     String unixName = fileName.replace('\\', '/');
-                    String packageName = PackageDetectors.detectPackage(unixName, new FilePath(originalFile).read());
+                    String packageName = PackageDetectors.detectPackageName(unixName);
                     String guessedModule = moduleDetector.guessModuleName(originalFile.getAbsolutePath());
                     String actualModule = StringUtils.defaultIfEmpty(moduleName, guessedModule);
 
