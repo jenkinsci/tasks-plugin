@@ -11,7 +11,7 @@
   <artifactId>tasks</artifactId>
   <packaging>hpi</packaging>
   <name>Task Scanner Plug-in</name>
-  <version>4.22</version>
+  <version>4.23-SNAPSHOT</version>
   <url>http://wiki.jenkins-ci.org/x/XoAs</url>
   <description>This plug-in scans the workspace files for open tasks
     and generates a trend report.</description>
