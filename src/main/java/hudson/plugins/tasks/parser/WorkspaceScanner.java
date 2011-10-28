@@ -133,7 +133,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         String[] files = findFiles(workspace);
 
         TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase);
-        TasksParserResult javaProject = new TasksParserResult(files.length);
+        TasksParserResult result = new TasksParserResult(files.length);
         ModuleDetector moduleDetector = createModuleDetector(workspace);
         for (String fileName : files) {
             try {
@@ -155,7 +155,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                         task.setContextHashCode(hashCode.create(absolutePath, task.getPrimaryLineNumber(), defaultEncoding));
                     }
 
-                    javaProject.addAnnotations(tasks);
+                    result.addAnnotations(tasks);
                 }
             }
             catch (IOException exception) {
@@ -165,8 +165,9 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
                 throw new InterruptedException("Canceling scanning since build has been aborted.");
             }
         }
+        result.addModule(moduleName);
 
-        return javaProject;
+        return result;
     }
 
     private InputStreamReader readFile(final File originalFile) throws IOException {
