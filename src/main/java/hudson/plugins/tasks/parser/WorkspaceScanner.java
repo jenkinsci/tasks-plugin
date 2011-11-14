@@ -7,12 +7,14 @@ import hudson.plugins.analysis.util.EncodingValidator;
 import hudson.plugins.analysis.util.ModuleDetector;
 import hudson.plugins.analysis.util.NullModuleDetector;
 import hudson.plugins.analysis.util.PackageDetectors;
+import hudson.plugins.analysis.util.StringPluginLogger;
 import hudson.remoting.VirtualChannel;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.FileSet;
@@ -29,7 +31,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     /** Ant file-set pattern to define the files to scan. */
     private final String filePattern;
     /** Ant file-set pattern to define the files to exclude from scan. */
-    private final String excludeFilePattern;
+    private String excludeFilePattern;
     /** The maven module. If <code>null</code>, then the scanner tries to guess it (freestyle project). */
     private String moduleName;
     /** Tag identifiers indicating high priority. */
@@ -46,6 +48,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     private final String defaultEncoding;
     /** Determines whether module names should be derived from Maven or Ant. */
     private final boolean shouldDetectModules;
+
+    private transient StringPluginLogger stringLogger;
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
@@ -82,6 +86,19 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     // CHECKSTYLE:ON
 
     /**
+     * Logs the specified message.
+     *
+     * @param message the message
+     */
+    protected void log(final String message) {
+        if (stringLogger == null) {
+            stringLogger = new StringPluginLogger("TASKS");
+        }
+        stringLogger.log(message);
+    }
+
+
+    /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
      *
      * @param filePattern
@@ -106,9 +123,47 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
             final String high, final String normal, final String low, final boolean caseSensitive,
             final String moduleName) {
         this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive, false);
+
         this.moduleName = moduleName;
     }
     // CHECKSTYLE:ON
+
+    /**
+     * Creates a new instance of <code>WorkspaceScanner</code>.
+     * @param logger
+     *
+     * @param filePattern
+     *            ant file-set pattern to scan for files
+     * @param excludeFilePattern
+     *            ant file-set pattern to exclude from scan
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     * @param caseSensitive
+     *            determines whether the scanner should work case sensitive
+     * @param moduleName
+     *            the maven module name
+     */
+    // CHECKSTYLE:OFF
+    public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
+            final String high, final String normal, final String low, final boolean caseSensitive,
+            final String moduleName, final List<String> modules) {
+        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive, moduleName);
+
+        StringBuilder excludes = new StringBuilder(excludeFilePattern);
+        for (String folder : modules) {
+            if (StringUtils.isNotBlank(excludes.toString())) {
+                excludes.append(", ");
+            }
+            excludes.append("**/" + folder);
+        }
+        this.excludeFilePattern = excludes.toString();
+    }
 
     /**
      * Sets the prefix to the specified value.
@@ -135,6 +190,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase);
         TasksParserResult result = new TasksParserResult(files.length);
         ModuleDetector moduleDetector = createModuleDetector(workspace);
+        log("Found " + files.length + " files to scan for tasks");
         for (String fileName : files) {
             try {
                 File originalFile = new File(workspace, fileName);
@@ -166,6 +222,10 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
             }
         }
         result.addModule(moduleName);
+
+        if (stringLogger != null) {
+            result.setLog(stringLogger.toString());
+        }
 
         return result;
     }
@@ -202,6 +262,9 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         if (StringUtils.isNotBlank(excludeFilePattern)) {
             fileSet.setExcludes(excludeFilePattern);
         }
+
+        log("Scanning folder '" + workspaceRoot + "' for files matching the pattern '" + filePattern
+                + "' - excludes: " + excludeFilePattern);
 
         return fileSet.getDirectoryScanner(project).getIncludedFiles();
     }
