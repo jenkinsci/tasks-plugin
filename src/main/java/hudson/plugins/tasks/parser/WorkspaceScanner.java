@@ -160,7 +160,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
             if (StringUtils.isNotBlank(excludes.toString())) {
                 excludes.append(", ");
             }
-            excludes.append("**/" + folder);
+            excludes.append(folder + "/**/*");
         }
         this.excludeFilePattern = excludes.toString();
     }
