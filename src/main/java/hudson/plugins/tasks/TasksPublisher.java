@@ -10,7 +10,6 @@ import hudson.model.AbstractProject;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.HealthAwarePublisher;
 import hudson.plugins.analysis.util.PluginLogger;
-import hudson.plugins.analysis.util.StringPluginLogger;
 import hudson.plugins.tasks.parser.TasksParserResult;
 import hudson.plugins.tasks.parser.WorkspaceScanner;
 
@@ -201,8 +200,6 @@ public class TasksPublisher extends HealthAwarePublisher {
     @Override
     protected BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         TasksParserResult project;
-        logger.log("Scanning workspace files for tasks...");
-        new StringPluginLogger("");
         WorkspaceScanner scanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
                 getExcludePattern(), getDefaultEncoding(), high, normal, low, ignoreCase, shouldDetectModules());
         project = build.getWorkspace().act(scanner);

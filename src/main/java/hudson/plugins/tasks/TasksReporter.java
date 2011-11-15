@@ -197,15 +197,15 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     @Override
     public TasksParserResult perform(final MavenBuildProxy build, final MavenProject pom, final MojoInfo mojo, final PluginLogger logger) throws InterruptedException, IOException {
         FilePath basedir = new FilePath(pom.getBasedir());
-        logger.log(String.format("Scanning folder '%s' for tasks ... ", basedir));
 
         WorkspaceScanner workspaceScanner = new WorkspaceScanner(
                 StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
                 excludePattern, getDefaultEncoding(), high, normal, low, ignoreCase, pom.getName(),
                 pom.getModules());
         TasksParserResult project = basedir.act(workspaceScanner);
-        logger.logLines(project.getLogMessages());
-        logger.log(String.format("Found %d open tasks.", project.getNumberOfAnnotations()));
+
+        project.setLog(project.getLogMessages()
+                + String.format("Found %d open tasks.\n", project.getNumberOfAnnotations()));
 
         return project;
     }
