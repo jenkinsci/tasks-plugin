@@ -118,13 +118,13 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
             final String high, final String normal, final String low,
-            final boolean ignoreCase, final boolean canRunOnFailed) {
+            final boolean ignoreCase, final boolean canRunOnFailed, final boolean canComputeNew) {
         super(healthy, unHealthy, thresholdLimit, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, "TASKS");
+                canRunOnFailed, canComputeNew, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
