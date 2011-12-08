@@ -130,7 +130,6 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
 
     /**
      * Creates a new instance of <code>WorkspaceScanner</code>.
-     * @param logger
      *
      * @param filePattern
      *            ant file-set pattern to scan for files
