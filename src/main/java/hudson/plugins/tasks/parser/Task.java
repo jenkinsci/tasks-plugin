@@ -67,5 +67,11 @@ public class Task extends AbstractAnnotation {
             return getType() + ": " + getDetailMessage();
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return super.toString() + getDetailMessage();
+    }
 }
 

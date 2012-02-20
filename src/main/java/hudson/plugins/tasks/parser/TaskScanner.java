@@ -87,12 +87,15 @@ public class TaskScanner {
             for (int i = 0; i < tags.length; i++) {
                 String tag = tags[i].trim();
                 if (StringUtils.isNotBlank(tag)) {
+                    StringBuilder actual = new StringBuilder();
                     if (Character.isLetterOrDigit(tag.charAt(0))) {
-                        regexps.add(WORD_BOUNDARY + tag + WORD_BOUNDARY);
+                        actual.append(WORD_BOUNDARY);
                     }
-                    else {
-                        regexps.add(tag + WORD_BOUNDARY);
+                    actual.append(tag);
+                    if (Character.isLetterOrDigit(tag.charAt(tag.length() - 1))) {
+                        actual.append(WORD_BOUNDARY);
                     }
+                    regexps.add(actual.toString());
                 }
             }
             int flags;

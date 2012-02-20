@@ -35,6 +35,21 @@ public class TaskScannerTest {
     private static final String WRONG_NUMBER_OF_TASKS_ERROR = "Wrong number of tasks found.";
 
     /**
+     * Parses a warning log with !!! and !!!! warnings.
+     *
+     * @throws IOException
+     *      if the file could not be read
+     * @see <a href="http://issues.jenkins-ci.org/browse/JENKINS-12782">Issue 12782</a>
+     */
+    @Test
+    public void issue12782() throws IOException {
+        InputStream file = TaskScannerTest.class.getResourceAsStream("issue12782.txt");
+
+        Collection<Task> result = new TaskScanner("!!!!!", "!!!", "", false).scan(new InputStreamReader(file));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 3, result.size());
+    }
+
+    /**
      * Checks whether we find tasks at word boundaries.
      *
      * @throws IOException if we can't read the file
