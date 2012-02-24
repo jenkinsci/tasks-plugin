@@ -205,7 +205,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
         TasksParserResult project = basedir.act(workspaceScanner);
 
         project.setLog(project.getLogMessages()
-                + String.format("Found %d open tasks.\n", project.getNumberOfAnnotations()));
+                + String.format("Found %d open tasks.%n", project.getNumberOfAnnotations()));
 
         return project;
     }
