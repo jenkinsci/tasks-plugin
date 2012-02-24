@@ -252,6 +252,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *      root directory of the workspace
      * @return the filenames of the FindBugs files
      */
+    @SuppressWarnings("PMD.AvoidThreadGroup")
     private String[] findFiles(final File workspaceRoot) {
         FileSet fileSet = new FileSet();
         org.apache.tools.ant.Project project = new org.apache.tools.ant.Project();
