@@ -25,6 +25,7 @@ import org.apache.tools.ant.types.FileSet;
  *
  * @author Ulli Hafner
  */
+// CHECKSTYLE:COUPLING-OFF
 public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     /** Generated ID. */
     private static final long serialVersionUID = -4355362392102020724L;
