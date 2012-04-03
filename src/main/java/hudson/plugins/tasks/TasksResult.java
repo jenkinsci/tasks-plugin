@@ -1,8 +1,9 @@
 package hudson.plugins.tasks; // NOPMD
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.analysis.core.BuildResult;
+import hudson.plugins.analysis.core.BuildHistory;
 import hudson.plugins.analysis.core.ResultAction;
+import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksParserResult;
@@ -20,17 +21,12 @@ import com.thoughtworks.xstream.XStream;
  * @author Ulli Hafner
  */
 public class TasksResult extends BuildResult {
-    /** Unique identifier of this class. */
     private static final long serialVersionUID = -344808345805935004L;
 
-    /** Tag identifiers indicating high priority. */
     private final String highTags;
-    /** Tag identifiers indicating normal priority. */
     private final String normalTags;
-    /** Tag identifiers indicating low priority. */
     private final String lowTags;
 
-    /** The number of scanned files in the project. */
     private final int numberOfFiles;
 
     /**
@@ -51,31 +47,27 @@ public class TasksResult extends BuildResult {
      */
     public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
             final TasksParserResult result, final String highTags, final String normalTags, final String lowTags) {
-        super(build, defaultEncoding, result);
+        super(build, new BuildHistory(build, TasksResultAction.class), result, defaultEncoding);
 
         this.highTags = highTags;
         this.normalTags = normalTags;
         this.lowTags = lowTags;
 
         numberOfFiles = result.getNumberOfScannedFiles();
+
+        serializeAnnotations(result.getAnnotations());
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void configure(final XStream xstream) {
         xstream.alias("task", Task.class);
     }
 
-    /**
-     * Returns a summary message for the summary.jelly file.
-     *
-     * @return the summary message
-     */
+    @Override
     public String getSummary() {
         return ResultSummary.createSummary(this);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected String createDeltaMessage() {
         return ResultSummary.createDeltaMessage(this);
@@ -99,17 +91,11 @@ public class TasksResult extends BuildResult {
         return Messages.Tasks_ProjectAction_Name();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected String getSerializationFileName() {
         return "open-tasks.xml";
     }
 
-    /**
-     * Returns the actually used priorities.
-     *
-     * @return the actually used priorities.
-     */
     @Override
     public Priority[] getPriorities() {
         ArrayList<Priority> priorities = new ArrayList<Priority>();
@@ -160,7 +146,6 @@ public class TasksResult extends BuildResult {
         return Messages.Tasks_PackageDetail();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
         return TasksResultAction.class;

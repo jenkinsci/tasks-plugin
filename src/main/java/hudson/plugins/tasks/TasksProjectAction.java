@@ -31,18 +31,8 @@ public class TasksProjectAction extends AbstractProjectAction<ResultAction<Tasks
      */
     public TasksProjectAction(final AbstractProject<?, ?> project,
             final Class<? extends ResultAction<TasksResult>> type) {
-        super(project, type, new TasksDescriptor());
-    }
-
-    /** {@inheritDoc} */
-    public String getDisplayName() {
-        return Messages.Tasks_ProjectAction_Name();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getTrendName() {
-        return Messages.Tasks_Trend_Name();
+        super(project, type, Messages._Tasks_ProjectAction_Name(), Messages._Tasks_Trend_Name(),
+                TasksDescriptor.PLUGIN_ID, TasksDescriptor.ICON_URL, TasksDescriptor.RESULT_URL);
     }
 }
 

@@ -75,8 +75,7 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
     /** {@inheritDoc} */
     @Override
     public boolean endBuild() throws InterruptedException, IOException {
-        TasksResult result = new TasksResult(build, defaultEncoding, totals,
-                highTags, normalTags, lowTags);
+        TasksResult result = new TasksResult(build, defaultEncoding, totals, highTags, normalTags, lowTags);
 
         build.addAction(new TasksResultAction(build, healthDescriptor, result));
 
