@@ -33,12 +33,6 @@ public class WarningsTablePortlet extends AbstractWarningsTablePortlet {
         return TasksProjectAction.class;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    protected String getPluginName() {
-        return "tasks";
-    }
-
     /**
      * Extension point registration.
      *
