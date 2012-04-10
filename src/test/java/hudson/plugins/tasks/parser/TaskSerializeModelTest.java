@@ -28,14 +28,12 @@ public class TaskSerializeModelTest extends AbstractSerializeModelTest {
         XSTREAM.alias("task", Task.class);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void verifyFirstAnnotation(final AbstractAnnotation annotation) {
         Task task = (Task)annotation;
         Assert.assertEquals("Wrong detail message." , TEST_TASK1, task.getDetailMessage());
     }
 
-    /** {@inheritDoc} */
     @Override
     protected AbstractAnnotation createAnnotation(final int line, final String message, final Priority priority, final String fileName, final String packageName, final String moduleName) {
         Task annotation = new Task(priority, line, message, message);
@@ -66,7 +64,6 @@ public class TaskSerializeModelTest extends AbstractSerializeModelTest {
         ensureSerialization("project.ser.xml");
     }
 
-    /** {@inheritDoc} */
     @Override
     protected XmlFile createXmlFile(final File file) {
         return new XmlFile(XSTREAM, file);

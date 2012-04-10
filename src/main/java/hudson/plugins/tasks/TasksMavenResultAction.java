@@ -113,14 +113,12 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
         return TasksMavenResultAction.class;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected TasksResult createResult(final TasksResult existingResult, final TasksResult additionalResult) {
         return new TasksReporterResult(getOwner(), additionalResult.getDefaultEncoding(),
                 aggregate(existingResult, additionalResult), high, normal, low);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected TasksParserResult aggregate(final TasksResult existingResult, final TasksResult additionalResult) {
         TasksParserResult aggregatedAnnotations = new TasksParserResult();

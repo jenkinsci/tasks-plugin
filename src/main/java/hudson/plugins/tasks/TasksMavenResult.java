@@ -38,7 +38,6 @@ public class TasksMavenResult extends TasksResult {
         super(build, defaultEncoding, result, highTags, normalTags, lowTags);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
         return MavenTasksResultAction.class;

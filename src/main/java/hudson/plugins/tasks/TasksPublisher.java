@@ -190,13 +190,11 @@ public class TasksPublisher extends HealthAwarePublisher {
         return ignoreCase;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
         return new TasksProjectAction(project);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         TasksParserResult project;
@@ -213,7 +211,6 @@ public class TasksPublisher extends HealthAwarePublisher {
         return result;
     }
 
-    /** {@inheritDoc} */
     @Override
     public TasksDescriptor getDescriptor() {
         return (TasksDescriptor)super.getDescriptor();

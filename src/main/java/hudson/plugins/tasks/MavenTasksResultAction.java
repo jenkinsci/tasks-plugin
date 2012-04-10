@@ -135,7 +135,6 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
         // not used anymore
     }
 
-    /** {@inheritDoc} */
     @Override
     protected ParserResult createResult() {
         return new TasksParserResult();

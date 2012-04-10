@@ -32,7 +32,6 @@ public class FixedTasksDetail extends FixedWarningsDetail {
         super(owner, new DetailFactory(), fixedTasks, defaultEncoding, header);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
         return Messages.FixedTasksDetail_Name();

@@ -43,7 +43,6 @@ public class Task extends AbstractAnnotation {
         return super.getMessage();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getMessage() {
         return StringUtils.EMPTY;
@@ -68,7 +67,6 @@ public class Task extends AbstractAnnotation {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return super.toString() + getDetailMessage();

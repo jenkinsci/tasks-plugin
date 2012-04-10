@@ -48,19 +48,16 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
         return Messages.Tasks_ProjectAction_Name();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected PluginDescriptor getDescriptor() {
         return new TasksDescriptor();
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getMultipleItemsTooltip(final int numberOfItems) {
         return Messages.Tasks_ResultAction_MultipleWarnings(numberOfItems);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getSingleItemTooltip() {
         return Messages.Tasks_ResultAction_OneWarning();

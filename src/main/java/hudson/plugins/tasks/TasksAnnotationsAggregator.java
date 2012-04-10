@@ -55,7 +55,6 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
         this.defaultEncoding = defaultEncoding;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean endRun(final MatrixRun run) throws InterruptedException, IOException {
         if (totals.hasNoAnnotations()) {
@@ -72,7 +71,6 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
         return true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean endBuild() throws InterruptedException, IOException {
         TasksResult result = new TasksResult(build, defaultEncoding, totals, highTags, normalTags, lowTags);

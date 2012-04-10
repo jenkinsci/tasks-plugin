@@ -14,14 +14,12 @@ import java.util.Collection;
  * @author Ulli Hafner
  */
 public class TasksDetailBuilder extends DetailFactory {
-    /** {@inheritDoc} */
     @Override
     protected TabDetail createTabDetail(final AbstractBuild<?, ?> owner,
             final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding) {
         return new TasksTabDetail(owner, annotations, url, defaultEncoding);
     }
 
-    /** {@inheritDoc} */
     @Override
     protected FixedWarningsDetail createFixedWarningsDetail(final AbstractBuild<?, ?> owner,
             final Collection<FileAnnotation> fixedAnnotations, final String defaultEncoding, final String displayName) {

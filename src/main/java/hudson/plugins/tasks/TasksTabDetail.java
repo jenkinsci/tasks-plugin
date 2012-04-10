@@ -32,19 +32,16 @@ public class TasksTabDetail extends TabDetail {
         super(owner, new DetailFactory(), annotations, url, defaultEncoding);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getDetails() {
         return "tasks-details.jelly";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getWarnings() {
         return "tasks-warnings.jelly";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getFixed() {
         return "tasks-fixed.jelly";
