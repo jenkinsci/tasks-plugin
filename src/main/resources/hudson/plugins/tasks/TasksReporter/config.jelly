@@ -1,14 +1,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
     xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:u="/util" xmlns:c="/hudson/plugins/tasks/config">
 
-  <f:entry title="${%Files to scan}" field="pattern"
-     description="${%description.files('http://ant.apache.org/manual/Types/fileset.html')}">
-    <f:textbox />
-  </f:entry>
-  <f:entry title="${%Files to exclude}" field="excludePattern"
-     description="${%description.exclude.files('http://ant.apache.org/manual/Types/fileset.html')}">
-    <f:textbox />
-  </f:entry>
+  <c:patterns />
   <c:tasks descriptor="TasksPublisher"/>
 
   <f:advanced>

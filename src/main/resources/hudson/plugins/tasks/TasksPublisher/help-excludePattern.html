@@ -1,0 +1,158 @@
+<div>
+  <p>Patterns look very much like the patterns used in DOS and
+    UNIX:</p>
+  <p>'*' matches zero or more characters, '?' matches one character.</p>
+
+  <p>
+    In general, patterns are considered relative paths, relative to the
+    Jenkins workspace. Only files found below that base directory are
+    considered. So while a pattern like
+    <code>../foo.java</code>
+    is possible, it will not match anything when applied since the base
+    directory's parent is never scanned for files.
+  </p>
+
+  <p>
+    <b>Examples:</b>
+  </p>
+  <p>
+    <code>*.java</code>
+    &nbsp;&nbsp;matches&nbsp;&nbsp;
+    <code>.java</code>
+    ,
+    <code>x.java</code>
+    and
+    <code>FooBar.java</code>
+    , but not
+    <code>FooBar.xml</code>
+    (does not end with
+    <code>.java</code>
+    ).
+  </p>
+  <p>
+    <code>?.java</code>
+    &nbsp;&nbsp;matches&nbsp;&nbsp;
+    <code>x.java</code>
+    ,
+    <code>A.java</code>
+    , but not
+    <code>.java</code>
+    or
+    <code>xyz.java</code>
+    (both don't have one character before
+    <code>.java</code>
+    ).
+  </p>
+  <p>
+    Combinations of
+    <code>*</code>
+    's and
+    <code>?</code>
+    's are allowed.
+  </p>
+  <p>
+    Matching is done per-directory. This means that first the first
+    directory in the pattern is matched against the first directory in
+    the path to match. Then the second directory is matched, and so on.
+    For example, when we have the pattern
+    <code>/?abc/*/*.java</code>
+    and the path
+    <code>/xabc/foobar/test.java</code>
+    , the first
+    <code>?abc</code>
+    is matched with
+    <code>xabc</code>
+    , then
+    <code>*</code>
+    is matched with
+    <code>foobar</code>
+    , and finally
+    <code>*.java</code>
+    is matched with
+    <code>test.java</code>
+    . They all match, so the path matches the pattern.
+  </p>
+  <p>
+    To make things a bit more flexible, we add one extra feature, which
+    makes it possible to match multiple directory levels. This can be
+    used to match a complete directory tree, or a file anywhere in the
+    directory tree. To do this,
+    <code>**</code>
+    must be used as the name of a directory. When
+    <code>**</code>
+    is used as the name of a directory in the pattern, it matches zero
+    or more directories. For example:
+    <code>/test/**</code>
+    matches all files/directories under
+    <code>/test/</code>
+    , such as
+    <code>/test/x.java</code>
+    , or
+    <code>/test/foo/bar/xyz.html</code>
+    , but not
+    <code>/xyz.xml</code>
+    .
+  </p>
+  <p>
+    There is one &quot;shorthand&quot;: if a pattern ends with
+    <code>/</code>
+    or
+    <code>\</code>
+    , then
+    <code>**</code>
+    is appended. For example,
+    <code>mypackage/test/</code>
+    is interpreted as if it were
+    <code>mypackage/test/**</code>
+    .
+  </p>
+  <p>
+    <b>Example patterns:</b>
+  </p>
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><code>**/CVS/*</code></td>
+      <td valign="top">Matches all files in <code>CVS</code>
+        directories that can be located anywhere in the directory tree.<br>
+        Matches: <pre>
+      CVS/Repository
+      org/apache/CVS/Entries
+      org/apache/jakarta/tools/ant/CVS/Entries
+      </pre> But not: <pre>
+      org/apache/CVS/foo/bar/Entries (<code>foo/bar/</code>
+      part does not match)
+      </pre>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><code>org/apache/jakarta/**</code></td>
+      <td valign="top">Matches all files in the <code>org/apache/jakarta</code>
+        directory tree.<br> Matches: <pre>
+      org/apache/jakarta/tools/ant/docs/index.html
+      org/apache/jakarta/test.xml
+      </pre> But not: <pre>
+      org/apache/xyz.java
+      </pre> (<code>jakarta/</code> part is missing).
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><code>org/apache/**/CVS/*</code></td>
+      <td valign="top">Matches all files in <code>CVS</code>
+        directories that are located anywhere in the directory tree
+        under <code>org/apache</code>.<br> Matches: <pre>
+      org/apache/CVS/Entries
+      org/apache/jakarta/tools/ant/CVS/Entries
+      </pre> But not: <pre>
+      org/apache/CVS/foo/bar/Entries
+      </pre> (<code>foo/bar/</code> part does not match)
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><code>**/test/**</code></td>
+      <td valign="top">Matches all files that have a <code>test</code>
+        element in their path, including <code>test</code> as a
+        filename.
+      </td>
+    </tr>
+  </table>
+</div>
