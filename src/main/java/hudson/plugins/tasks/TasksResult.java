@@ -47,7 +47,29 @@ public class TasksResult extends BuildResult {
      */
     public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
             final TasksParserResult result, final String highTags, final String normalTags, final String lowTags) {
-        super(build, new BuildHistory(build, TasksResultAction.class), result, defaultEncoding);
+        this(build, defaultEncoding, result, highTags, normalTags, lowTags, TasksResultAction.class);
+    }
+
+    /**
+     * Creates a new instance of {@link TasksResult}.
+     *
+     * @param build
+     *            the current build as owner of this action
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param result
+     *            the parsed annotations
+     * @param highTags
+     *            tag identifiers indicating high priority
+     * @param normalTags
+     *            tag identifiers indicating normal priority
+     * @param lowTags
+     *            tag identifiers indicating low priority
+     */
+    protected TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
+            final TasksParserResult result, final String highTags, final String normalTags, final String lowTags,
+            final Class<? extends ResultAction<TasksResult>> actionType) {
+        super(build, new BuildHistory(build, actionType), result, defaultEncoding);
 
         this.highTags = highTags;
         this.normalTags = normalTags;
