@@ -65,6 +65,8 @@ public class TasksResult extends BuildResult {
      *            tag identifiers indicating normal priority
      * @param lowTags
      *            tag identifiers indicating low priority
+     * @param actionType
+     *            the type of the result action
      */
     protected TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
             final TasksParserResult result, final String highTags, final String normalTags, final String lowTags,
