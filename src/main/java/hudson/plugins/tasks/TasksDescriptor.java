@@ -17,8 +17,7 @@ public final class TasksDescriptor extends PluginDescriptor {
     /** The URL of the result action. */
     static final String RESULT_URL = PluginDescriptor.createResultUrlName(PLUGIN_ID);
     /** Icon to use for the result and project action. */
-    static final String ICON_URL = ICONS_PREFIX +
-    		"tasks-24x24.png";
+    static final String ICON_URL = ICONS_PREFIX + "tasks-24x24.png";
 
     /**
      * Creates a new instance of {@link TasksDescriptor}.
