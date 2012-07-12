@@ -148,6 +148,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            determines whether the scanner should work case sensitive
      * @param moduleName
      *            the maven module name
+     * @param modules
+     *            the modules defined in the POM
      */
     // CHECKSTYLE:OFF
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,

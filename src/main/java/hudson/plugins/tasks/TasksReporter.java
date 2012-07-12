@@ -107,6 +107,9 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
      *            if case should be ignored during matching
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
+     * @param canComputeNew
+     *            determines whether new warnings should be computed (with
+     *            respect to baseline)
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
