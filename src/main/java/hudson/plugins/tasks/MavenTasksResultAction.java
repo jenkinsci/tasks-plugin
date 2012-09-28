@@ -61,28 +61,6 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     // CHECKSTYLE:ON
 
     /**
-     * Creates a new instance of {@link MavenTasksResultAction}.
-     *
-     * @param owner
-     *            the associated build of this action
-     * @param healthDescriptor
-     *            health descriptor to use
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
-     * @param high
-     *            tag identifiers indicating high priority
-     * @param normal
-     *            tag identifiers indicating normal priority
-     * @param low
-     *            tag identifiers indicating low priority
-     */
-    public MavenTasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final String defaultEncoding,
-            final String high, final String normal, final String low) {
-        super(owner, healthDescriptor);
-        initializeFields(defaultEncoding, high, normal, low);
-    }
-
-    /**
      * Initializes the fields of this action.
      *
      * @param defaultEncoding
@@ -106,7 +84,8 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
 
     /** {@inheritDoc} */
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
-        return new MavenTasksResultAction(build, getHealthDescriptor(), defaultEncoding, high, normal, low);
+        return new MavenTasksResultAction(build, getHealthDescriptor(), defaultEncoding, high, normal, low,
+                new TasksResult(build, defaultEncoding, new TasksParserResult(), false, high, normal, low));
     }
 
     /** {@inheritDoc} */

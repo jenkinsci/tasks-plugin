@@ -96,6 +96,8 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            annotation threshold
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as reference builds or not
      * @param canComputeNew
      *            determines whether new warnings should be computed (with
      *            respect to baseline)
@@ -121,7 +123,7 @@ public class TasksPublisher extends HealthAwarePublisher {
             final String unstableNewAll, final String unstableNewHigh, final String unstableNewNormal, final String unstableNewLow,
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
-            final boolean canRunOnFailed, final boolean shouldDetectModules, final boolean canComputeNew,
+            final boolean canRunOnFailed, final boolean useStableBuildAsReference, final boolean shouldDetectModules, final boolean canComputeNew,
             final String high, final String normal, final String low, final boolean ignoreCase,
             final String pattern, final String excludePattern) {
         super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
@@ -129,7 +131,7 @@ public class TasksPublisher extends HealthAwarePublisher {
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, shouldDetectModules, canComputeNew, "TASKS");
+                canRunOnFailed, useStableBuildAsReference, shouldDetectModules, canComputeNew, true, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -208,7 +210,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         logger.logLines(project.getLogMessages());
         logger.log(String.format("Found %d open tasks.", project.getNumberOfAnnotations()));
 
-        TasksResult result = new TasksResult(build, getDefaultEncoding(), project, high, normal, low);
+        TasksResult result = new TasksResult(build, getDefaultEncoding(), project, useOnlyStableBuildsAsReference(), high, normal, low);
         build.getActions().add(new TasksResultAction(build, this, result));
 
         return result;
@@ -222,6 +224,6 @@ public class TasksPublisher extends HealthAwarePublisher {
     /** {@inheritDoc} */
     public MatrixAggregator createAggregator(final MatrixBuild build, final Launcher launcher,
             final BuildListener listener) {
-        return new TasksAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding());
+        return new TasksAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding(), useOnlyStableBuildsAsReference());
     }
 }

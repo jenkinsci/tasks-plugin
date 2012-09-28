@@ -32,6 +32,7 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
     private String normalTags = StringUtils.EMPTY;
     /** Tag identifiers indicating low priority. */
     private String lowTags = StringUtils.EMPTY;
+    private final boolean useStableBuildAsReference;
 
     /**
      * Creates a new instance of {@link AnnotationsAggregator}.
@@ -46,13 +47,18 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
      *            health descriptor
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as
+     *            reference builds or not
      */
     public TasksAnnotationsAggregator(final MatrixBuild build, final Launcher launcher, final BuildListener listener,
-            final HealthDescriptor healthDescriptor, final String defaultEncoding) {
+            final HealthDescriptor healthDescriptor, final String defaultEncoding,
+            final boolean useStableBuildAsReference) {
         super(build, launcher, listener);
 
         this.healthDescriptor = healthDescriptor;
         this.defaultEncoding = defaultEncoding;
+        this.useStableBuildAsReference = useStableBuildAsReference;
     }
 
     @Override
@@ -73,7 +79,7 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
 
     @Override
     public boolean endBuild() throws InterruptedException, IOException {
-        TasksResult result = new TasksResult(build, defaultEncoding, totals, highTags, normalTags, lowTags);
+        TasksResult result = new TasksResult(build, defaultEncoding, totals, useStableBuildAsReference, highTags, normalTags, lowTags);
 
         build.addAction(new TasksResultAction(build, healthDescriptor, result));
 

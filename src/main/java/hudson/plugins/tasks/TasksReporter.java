@@ -107,6 +107,8 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
      *            if case should be ignored during matching
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as reference builds or not
      * @param canComputeNew
      *            determines whether new warnings should be computed (with
      *            respect to baseline)
@@ -121,13 +123,13 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
             final String high, final String normal, final String low,
-            final boolean ignoreCase, final boolean canRunOnFailed, final boolean canComputeNew) {
+            final boolean ignoreCase, final boolean canRunOnFailed, final boolean useStableBuildAsReference, final boolean canComputeNew) {
         super(healthy, unHealthy, thresholdLimit, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, canComputeNew, "TASKS");
+                canRunOnFailed, useStableBuildAsReference, canComputeNew, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -216,7 +218,8 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     @Override
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("BC")
     protected TasksResult createResult(final MavenBuild build, final ParserResult project) {
-        return new TasksReporterResult(build, getDefaultEncoding(), (TasksParserResult)project, high, normal, low);
+        return new TasksReporterResult(build, getDefaultEncoding(), (TasksParserResult)project,
+                useOnlyStableBuildsAsReference(), high, normal, low);
     }
 
     @Override

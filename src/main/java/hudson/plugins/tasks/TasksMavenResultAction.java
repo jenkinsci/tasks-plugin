@@ -77,7 +77,7 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     /** {@inheritDoc} */
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
         return new TasksMavenResultAction(build, getHealthDescriptor(), getDefaultEncoding(), high, normal, low,
-                new TasksResult(build, high, new TasksParserResult(), high, normal, low));
+                new TasksResult(build, high, new TasksParserResult(), false, high, normal, low));
     }
 
     /** {@inheritDoc} */
@@ -93,7 +93,8 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     @Override
     protected TasksResult createResult(final TasksResult existingResult, final TasksResult additionalResult) {
         return new TasksReporterResult(getOwner(), additionalResult.getDefaultEncoding(),
-                aggregate(existingResult, additionalResult), high, normal, low);
+                aggregate(existingResult, additionalResult), existingResult.useOnlyStableBuildsAsReference(),
+                high, normal, low);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.analysis.core.AbstractResultAction;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.PluginDescriptor;
+import hudson.plugins.analysis.core.AbstractResultAction;
 
 /**
  * Controls the live cycle of the task scanner results. This action persists the
@@ -29,18 +29,6 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
      */
     public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final TasksResult result) {
         super(owner, new TasksHealthDescriptor(healthDescriptor), result);
-    }
-
-    /**
-     * Creates a new instance of <code>TasksResultAction</code>.
-     *
-     * @param owner
-     *            the associated build of this action
-     * @param healthDescriptor
-     *            health descriptor to use
-     */
-    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor) {
-        super(owner, new TasksHealthDescriptor(healthDescriptor));
     }
 
     /** {@inheritDoc} */

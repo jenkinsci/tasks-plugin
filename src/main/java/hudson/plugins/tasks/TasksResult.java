@@ -38,6 +38,9 @@ public class TasksResult extends BuildResult {
      *            the default encoding to be used when reading and parsing files
      * @param result
      *            the parsed annotations
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as
+     *            reference builds or not
      * @param highTags
      *            tag identifiers indicating high priority
      * @param normalTags
@@ -46,8 +49,9 @@ public class TasksResult extends BuildResult {
      *            tag identifiers indicating low priority
      */
     public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
-            final TasksParserResult result, final String highTags, final String normalTags, final String lowTags) {
-        this(build, defaultEncoding, result, highTags, normalTags, lowTags, TasksResultAction.class);
+            final TasksParserResult result, final boolean useStableBuildAsReference,
+            final String highTags, final String normalTags, final String lowTags) {
+        this(build, defaultEncoding, result, useStableBuildAsReference, highTags, normalTags, lowTags, TasksResultAction.class);
     }
 
     /**
@@ -59,6 +63,9 @@ public class TasksResult extends BuildResult {
      *            the default encoding to be used when reading and parsing files
      * @param result
      *            the parsed annotations
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as
+     *            reference builds or not
      * @param highTags
      *            tag identifiers indicating high priority
      * @param normalTags
@@ -68,10 +75,13 @@ public class TasksResult extends BuildResult {
      * @param actionType
      *            the type of the result action
      */
+    // CHECKSTYLE:OFF
     protected TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
-            final TasksParserResult result, final String highTags, final String normalTags, final String lowTags,
+            final TasksParserResult result, final boolean useStableBuildAsReference,
+            final String highTags, final String normalTags, final String lowTags,
             final Class<? extends ResultAction<TasksResult>> actionType) {
-        super(build, new BuildHistory(build, actionType), result, defaultEncoding);
+        // CHECKSTYLE:ON
+        super(build, new BuildHistory(build, actionType, useStableBuildAsReference), result, defaultEncoding);
 
         this.highTags = highTags;
         this.normalTags = normalTags;
