@@ -2,7 +2,7 @@ package hudson.plugins.tasks;
 
 import static org.mockito.Mockito.*;
 import hudson.plugins.analysis.test.AbstractEnglishLocaleTest;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 
