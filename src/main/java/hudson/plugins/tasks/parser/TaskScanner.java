@@ -1,10 +1,6 @@
 package hudson.plugins.tasks.parser;
 
 
-import hudson.AbortException;
-import hudson.plugins.analysis.util.model.Priority;
-import hudson.plugins.tasks.Messages;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -19,6 +15,11 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
+
+import hudson.AbortException;
+
+import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.tasks.Messages;
 
 /**
  * Scans a given input stream for open tasks.
@@ -110,7 +111,7 @@ public class TaskScanner {
         catch (PatternSyntaxException exception) {
             isInvalidPattern = true;
             errorMessage.append(Messages.Tasks_PatternError(tagIdentifiers, exception.getMessage()));
-            errorMessage.append("\n");
+            errorMessage.append('\n');
 
             return null;
         }

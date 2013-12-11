@@ -16,11 +16,11 @@ public final class ResultSummary {
      */
     // CHECKSTYLE:CONSTANTS-OFF
     public static String createSummary(final TasksResult result) {
-        StringBuilder summary = new StringBuilder();
+        StringBuilder summary = createBuilder();
         int tasks = result.getNumberOfAnnotations();
 
         summary.append(Messages.Tasks_ResultAction_Summary());
-        summary.append(" ");
+        summary.append(' ');
         if (tasks > 0) {
             summary.append("<a href=\"tasksResult\">");
         }
@@ -33,17 +33,21 @@ public final class ResultSummary {
         if (tasks > 0) {
             summary.append("</a>");
         }
-        summary.append(" ");
+        summary.append(' ');
         if (result.getNumberOfFiles() > 1) {
             summary.append(Messages.Tasks_ResultAction_MultipleFiles(result.getNumberOfFiles()));
         }
         else {
             summary.append(Messages.Tasks_ResultAction_OneFile());
         }
-        summary.append(".");
+        summary.append('.');
         return summary.toString();
     }
     // CHECKSTYLE:CONSTANTS-ON
+
+    private static StringBuilder createBuilder() {
+        return new StringBuilder(512);
+    }
 
     /**
      * Returns the message to show as the result summary.
@@ -54,7 +58,7 @@ public final class ResultSummary {
      */
     // CHECKSTYLE:CONSTANTS-OFF
     public static String createDeltaMessage(final TasksResult result) {
-        StringBuilder summary = new StringBuilder();
+        StringBuilder summary = createBuilder();
         if (result.getNumberOfNewWarnings() > 0) {
             summary.append("<li><a href=\"tasksResult/new\">");
             if (result.getNumberOfNewWarnings() == 1) {

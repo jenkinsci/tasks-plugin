@@ -1,15 +1,5 @@
 package hudson.plugins.tasks.parser;
 
-import hudson.FilePath;
-import hudson.FilePath.FileCallable;
-import hudson.plugins.analysis.util.ContextHashCode;
-import hudson.plugins.analysis.util.EncodingValidator;
-import hudson.plugins.analysis.util.ModuleDetector;
-import hudson.plugins.analysis.util.NullModuleDetector;
-import hudson.plugins.analysis.util.PackageDetectors;
-import hudson.plugins.analysis.util.StringPluginLogger;
-import hudson.remoting.VirtualChannel;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +8,18 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.FileSet;
+
+import hudson.FilePath;
+import hudson.FilePath.FileCallable;
+
+import hudson.plugins.analysis.util.ContextHashCode;
+import hudson.plugins.analysis.util.EncodingValidator;
+import hudson.plugins.analysis.util.ModuleDetector;
+import hudson.plugins.analysis.util.NullModuleDetector;
+import hudson.plugins.analysis.util.PackageDetectors;
+import hudson.plugins.analysis.util.StringPluginLogger;
+
+import hudson.remoting.VirtualChannel;
 
 /**
  * Scans the workspace and records the found tasks. Each file is then
@@ -162,7 +164,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
             if (StringUtils.isNotBlank(excludes.toString())) {
                 excludes.append(", ");
             }
-            excludes.append(folder + "/**/*");
+            excludes.append(folder);
+            excludes.append("/**/*");
         }
         this.excludeFilePattern = excludes.toString();
     }
