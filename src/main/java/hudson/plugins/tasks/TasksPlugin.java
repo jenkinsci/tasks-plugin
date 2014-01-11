@@ -1,6 +1,8 @@
 package hudson.plugins.tasks;
 
 import hudson.Plugin;
+
+import hudson.plugins.analysis.core.PluginDescriptor;
 import hudson.plugins.analysis.views.DetailFactory;
 
 /**
@@ -13,6 +15,8 @@ public class TasksPlugin extends Plugin {
     public void start() {
         TasksDetailBuilder detailBuilder = new TasksDetailBuilder();
         DetailFactory.addDetailBuilder(TasksResultAction.class, detailBuilder);
-        DetailFactory.addDetailBuilder(TasksMavenResultAction.class, detailBuilder);
+        if (PluginDescriptor.isMavenPluginInstalled()) {
+            MavenInitialization.run(detailBuilder);
+        }
     }
 }
