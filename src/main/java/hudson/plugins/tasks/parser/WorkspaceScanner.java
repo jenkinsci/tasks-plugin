@@ -188,7 +188,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         return StringUtils.defaultIfEmpty(prefix, StringUtils.EMPTY);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public TasksParserResult invoke(final File workspace, final VirtualChannel channel) throws IOException, InterruptedException {
         String[] files = findFiles(workspace);
 

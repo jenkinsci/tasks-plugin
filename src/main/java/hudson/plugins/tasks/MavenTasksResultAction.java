@@ -82,18 +82,18 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     }
     // CHECKSTYLE:ON
 
-    /** {@inheritDoc} */
+    @Override
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
         return new MavenTasksResultAction(build, getHealthDescriptor(), defaultEncoding, high, normal, low,
                 new TasksResult(build, defaultEncoding, new TasksParserResult(), false, high, normal, low));
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Action getProjectAction(final MavenModuleSet moduleSet) {
         return new TasksProjectAction(moduleSet);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Class<? extends AggregatableAction> getIndividualActionType() {
         return getClass();
     }
@@ -110,6 +110,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
      * @param newBuild
      *            Newly completed build.
      */
+    @Override
     public void update(final Map<MavenModule, List<MavenBuild>> moduleBuilds, final MavenBuild newBuild) {
         // not used anymore
     }

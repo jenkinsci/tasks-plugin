@@ -48,7 +48,7 @@ public class Task extends AbstractAnnotation {
         return StringUtils.EMPTY;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getToolTip() {
         return getPriority().getLongLocalizedString();
     }

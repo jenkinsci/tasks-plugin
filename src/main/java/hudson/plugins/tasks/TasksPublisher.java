@@ -221,7 +221,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         return (TasksDescriptor)super.getDescriptor();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public MatrixAggregator createAggregator(final MatrixBuild build, final Launcher launcher,
             final BuildListener listener) {
         return new TasksAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding(), useOnlyStableBuildsAsReference());

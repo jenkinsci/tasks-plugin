@@ -31,7 +31,7 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
         super(owner, new TasksHealthDescriptor(healthDescriptor), result);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String getDisplayName() {
         return Messages.Tasks_ProjectAction_Name();
     }

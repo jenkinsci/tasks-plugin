@@ -74,13 +74,13 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     }
     // CHECKSTYLE:ON
 
-    /** {@inheritDoc} */
+    @Override
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
         return new TasksMavenResultAction(build, getHealthDescriptor(), getDefaultEncoding(), high, normal, low,
                 new TasksResult(build, high, new TasksParserResult(), false, high, normal, low));
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Action getProjectAction(final MavenModuleSet moduleSet) {
         return new TasksProjectAction(moduleSet, TasksMavenResultAction.class);
     }

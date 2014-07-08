@@ -121,6 +121,7 @@ public class TasksResult extends BuildResult {
      *
      * @return the display name of this result.
      */
+    @Override
     public String getDisplayName() {
         return Messages.Tasks_ProjectAction_Name();
     }
