@@ -1,11 +1,5 @@
 package hudson.plugins.tasks.parser;
 
-import static org.junit.Assert.*;
-import hudson.plugins.analysis.core.ParserResult;
-import hudson.plugins.analysis.util.model.AnnotationContainer;
-import hudson.plugins.analysis.util.model.JavaProject;
-import hudson.plugins.analysis.util.model.Priority;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +8,13 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import hudson.plugins.analysis.core.ParserResult;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
+import hudson.plugins.analysis.util.model.JavaProject;
+import hudson.plugins.analysis.util.model.Priority;
 
 /**
  * Tests the class {@link TaskScanner}.
@@ -33,6 +34,34 @@ public class TaskScannerTest {
     private static final String WRONG_MESSAGE_ERROR = "Wrong message returned.";
     /** Error message. */
     private static final String WRONG_NUMBER_OF_TASKS_ERROR = "Wrong number of tasks found.";
+
+    /**
+     * Parses a warning log with characters in different locale.
+     *
+     * @throws IOException
+     *      if the file could not be read
+     * @see <a href="http://issues.jenkins-ci.org/browse/JENKINS-22744">Issue 22744</a>
+     */
+    @Test
+    public void issue22744() throws IOException {
+        InputStream file = TaskScannerTest.class.getResourceAsStream("issue22744.java");
+
+        Collection<Task> result = new TaskScanner("FIXME", "TODO", "", false).scan(new InputStreamReader(file, "windows-1251"));
+        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
+
+        Iterator<Task> warnings = result.iterator();
+        Task task = warnings.next();
+        verifyTask(task, Priority.HIGH, "FIXME", 4, "\u0442\u0435\u0441\u0442\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435 Jenkins");
+        task = warnings.next();
+        verifyTask(task, Priority.NORMAL, "TODO", 5, "\u043f\u0440\u0438\u043c\u0435\u0440 \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f \u043d\u0430 \u0440\u0443\u0441\u0441\u043a\u043e\u043c");
+    }
+
+    private void verifyTask(final Task task, final Priority priority, final String tag, final int line, final String message) {
+        assertEquals("Wrong priority detected: ", priority, task.getPriority());
+        assertEquals("Wrong tag detected: ", tag, task.getType());
+        assertEquals("Wrong line detected: ", line, task.getPrimaryLineNumber());
+        assertEquals("Wrong message detected: ", message, task.getDetailMessage());
+    }
 
     /**
      * Parses a warning log with !!! and !!!! warnings.
