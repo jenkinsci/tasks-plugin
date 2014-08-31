@@ -49,8 +49,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream("issue22744.java");
         InputStreamReader reader = new InputStreamReader(file, "windows-1251");
 
-        Collection<Task> result = scan(reader, "FIXME", "TODO", "", false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
+        Collection<Task> result = scan(reader, 2, "FIXME", "TODO", "", false);
 
         Iterator<Task> warnings = result.iterator();
         Task task = warnings.next();
@@ -73,46 +72,7 @@ public class TaskScannerTest {
      */
     @Test
     public void issue12782() {
-        Collection<Task> result = scan("issue12782.txt", "!!!!!", "!!!", "", false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 3, result.size());
-    }
-
-    private Collection<Task> scan(final String fileName,
-                                  final String high, final String normal, final String low, final boolean ignoreCase) {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(fileName);
-        InputStreamReader reader = new InputStreamReader(file);
-
-        return scan(reader, high, normal, low, ignoreCase);
-    }
-
-    private Collection<Task> scan(final Reader reader,
-                                  final String high, final String normal, final String low, final boolean ignoreCase) {
-        try {
-            Collection<Task> tasks = new TaskScanner(high, normal, low, ignoreCase).scan(reader);
-            assignProperties(tasks);
-            return tasks;
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Collection<Task> scan(final String fileName) {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(fileName);
-        InputStreamReader reader = new InputStreamReader(file);
-
-        return scan(reader);
-    }
-
-    private Collection<Task> scan(final Reader reader) {
-        try {
-            Collection<Task> tasks = new TaskScanner().scan(reader);
-            assignProperties(tasks);
-            return tasks;
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        scan("issue12782.txt", 3, "!!!!!", "!!!", "", false);
     }
 
     /**
@@ -120,8 +80,7 @@ public class TaskScannerTest {
      */
     @Test
     public void scanFileWithWords() {
-        Collection<Task> result = scan("tasks-words-test.txt", "WARNING", "TODO", "@todo", false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 12, result.size());
+        Collection<Task> result = scan("tasks-words-test.txt", 12, "WARNING", "TODO", "@todo", false);
 
         ParserResult parserResult = new ParserResult();
         parserResult.addAnnotations(result);
@@ -141,8 +100,7 @@ public class TaskScannerTest {
     }
 
     private void verifyOneTaskWhenCheckingCase(final String tag, final int lineNumber) {
-        Collection<Task> result = scan(TEST_FILE, null, tag, null, false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+        Collection<Task> result = scan(TEST_FILE, 1, null, tag, null, false);
         Task task = result.iterator().next();
         verifyTask(task, Priority.NORMAL, tag, lineNumber, "");
     }
@@ -152,8 +110,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseInsensitive() {
-        Collection<Task> result = scan(TEST_FILE, null, "todo", null, true);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 9, result.size());
+        Collection<Task> result = scan(TEST_FILE, 9, null, "todo", null, true);
         for (Task task : result) {
             assertEquals("Tag name should be case insensitive", "TODO", task.getType());
         }
@@ -164,8 +121,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseInsensitive2() {
-        Collection<Task> result = scan(TEST_FILE, null, "Todo, TodoS", null, true);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 12, result.size());
+        Collection<Task> result = scan(TEST_FILE, 12, null, "Todo, TodoS", null, true);
     }
 
     /**
@@ -173,8 +129,7 @@ public class TaskScannerTest {
      */
     @Test
     public void scanFileWithTasksAndDefaults() {
-        Collection<Task> result = scan(FILE_WITH_TASKS);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
+        Collection<Task> result = scan(FILE_WITH_TASKS, 2);
 
         Iterator<Task> iterator = result.iterator();
         assertEquals(WRONG_MESSAGE_ERROR, PRIORITY_NORMAL, iterator.next().getDetailMessage());
@@ -191,8 +146,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testHighPriority() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, FIXME, null, null, false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+        Collection<Task> result = scan(FILE_WITH_TASKS, 1, FIXME, null, null, false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
@@ -205,8 +159,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testTwoItemsWithWhiteSpaceAndHighPriority() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, " FIXME , TODO ", null, null, false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
+        Collection<Task> result = scan(FILE_WITH_TASKS, 2, " FIXME , TODO ", null, null, false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.HIGH));
@@ -219,8 +172,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testTwoItemsWithHighPriority() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, "FIXME,TODO", null, null, false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
+        Collection<Task> result = scan(FILE_WITH_TASKS, 2, "FIXME,TODO", null, null, false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.HIGH));
@@ -234,13 +186,11 @@ public class TaskScannerTest {
     @Test
     public void testTagsIdentification() {
         String text = "FIXME: this is a fixme";
-        Collection<Task> result = scan(new StringReader(text), "FIXME,TODO", null, null, false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+        Collection<Task> result = scan(new StringReader(text), 1, "FIXME,TODO", null, null, false);
         Task task = result.iterator().next();
         assertEquals("Type is not the found token", FIXME, task.getType());
 
-        result = scan(new StringReader(text), null, "XXX, HELP, FIXME, TODO", null, false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+        result = scan(new StringReader(text), 1, null, "XXX, HELP, FIXME, TODO", null, false);
 
         task = result.iterator().next();
         assertEquals("Type is not the found token", FIXME, task.getType());
@@ -251,8 +201,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testAllPriorities() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, FIXME, "FIXME,TODO", "TODO", false);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 4, result.size());
+        Collection<Task> result = scan(FILE_WITH_TASKS, 4, FIXME, "FIXME,TODO", "TODO", false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
@@ -265,14 +214,54 @@ public class TaskScannerTest {
      */
     @Test
     public void scanFileWithoutTasks() {
-        Collection<Task> result = scan("file-without-tasks.txt");
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, result.size());
+        Collection<Task> result = scan("file-without-tasks.txt", 0);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations());
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.HIGH));
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.NORMAL));
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
+    }
+
+    private Collection<Task> scan(final String fileName,
+                                  final int expectedNumberOfTasks, final String high, final String normal, final String low, final boolean ignoreCase) {
+        InputStream file = TaskScannerTest.class.getResourceAsStream(fileName);
+        InputStreamReader reader = new InputStreamReader(file);
+
+        return scan(reader, expectedNumberOfTasks, high, normal, low, ignoreCase);
+    }
+
+    private Collection<Task> scan(final Reader reader,
+                                  final int expectedNumberOfTasks, final String high, final String normal, final String low, final boolean ignoreCase) {
+        try {
+            Collection<Task> tasks = new TaskScanner(high, normal, low, ignoreCase).scan(reader);
+            assignProperties(tasks);
+            assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, expectedNumberOfTasks, tasks.size());
+
+            return tasks;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Collection<Task> scan(final String fileName, final int expectedNumberOfTasks) {
+        InputStream file = TaskScannerTest.class.getResourceAsStream(fileName);
+        InputStreamReader reader = new InputStreamReader(file);
+
+        return scan(reader, expectedNumberOfTasks);
+    }
+
+    private Collection<Task> scan(final Reader reader, final int expectedNumberOfTasks) {
+        try {
+            Collection<Task> tasks = new TaskScanner().scan(reader);
+            assignProperties(tasks);
+            assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, expectedNumberOfTasks, tasks.size());
+            return tasks;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
