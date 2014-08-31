@@ -3,6 +3,7 @@ package hudson.plugins.tasks.parser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.Iterator;
@@ -35,6 +36,7 @@ public class TaskScannerTest {
     /** Error message. */
     private static final String WRONG_NUMBER_OF_TASKS_ERROR = "Wrong number of tasks found.";
 
+
     /**
      * Parses a warning log with characters in different locale.
      *
@@ -45,8 +47,9 @@ public class TaskScannerTest {
     @Test
     public void issue22744() throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream("issue22744.java");
+        InputStreamReader reader = new InputStreamReader(file, "windows-1251");
 
-        Collection<Task> result = new TaskScanner("FIXME", "TODO", "", false).scan(new InputStreamReader(file, "windows-1251"));
+        Collection<Task> result = scan(reader, "FIXME", "TODO", "", false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         Iterator<Task> warnings = result.iterator();
@@ -66,29 +69,58 @@ public class TaskScannerTest {
     /**
      * Parses a warning log with !!! and !!!! warnings.
      *
-     * @throws IOException
-     *      if the file could not be read
      * @see <a href="http://issues.jenkins-ci.org/browse/JENKINS-12782">Issue 12782</a>
      */
     @Test
-    public void issue12782() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream("issue12782.txt");
-
-        Collection<Task> result = new TaskScanner("!!!!!", "!!!", "", false).scan(new InputStreamReader(file));
+    public void issue12782() {
+        Collection<Task> result = scan("issue12782.txt", "!!!!!", "!!!", "", false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 3, result.size());
+    }
+
+    private Collection<Task> scan(final String fileName,
+                                  final String high, final String normal, final String low, final boolean ignoreCase) {
+        InputStream file = TaskScannerTest.class.getResourceAsStream(fileName);
+        InputStreamReader reader = new InputStreamReader(file);
+
+        return scan(reader, high, normal, low, ignoreCase);
+    }
+
+    private Collection<Task> scan(final Reader reader,
+                                  final String high, final String normal, final String low, final boolean ignoreCase) {
+        try {
+            Collection<Task> tasks = new TaskScanner(high, normal, low, ignoreCase).scan(reader);
+            assignProperties(tasks);
+            return tasks;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Collection<Task> scan(final String fileName) {
+        InputStream file = TaskScannerTest.class.getResourceAsStream(fileName);
+        InputStreamReader reader = new InputStreamReader(file);
+
+        return scan(reader);
+    }
+
+    private Collection<Task> scan(final Reader reader) {
+        try {
+            Collection<Task> tasks = new TaskScanner().scan(reader);
+            assignProperties(tasks);
+            return tasks;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Checks whether we find tasks at word boundaries.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void scanFileWithWords() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream("tasks-words-test.txt");
-
-        Collection<Task> result = new TaskScanner("WARNING", "TODO", "@todo", false).scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void scanFileWithWords() {
+        Collection<Task> result = scan("tasks-words-test.txt", "WARNING", "TODO", "@todo", false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 12, result.size());
 
         ParserResult parserResult = new ParserResult();
@@ -101,19 +133,15 @@ public class TaskScannerTest {
 
     /**
      * Checks case sensitivity.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testCaseSensitive() throws IOException {
+    public void testCaseSensitive() {
         verifyOneTaskWhenCheckingCase("todo", 25);
         verifyOneTaskWhenCheckingCase("ToDo", 27);
     }
 
-    private void verifyOneTaskWhenCheckingCase(final String tag, final int lineNumber) throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
-        Collection<Task> result = new TaskScanner(null, tag, null, false).scan(new InputStreamReader(file));
-        assignProperties(result);
+    private void verifyOneTaskWhenCheckingCase(final String tag, final int lineNumber) {
+        Collection<Task> result = scan(TEST_FILE, null, tag, null, false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
         Task task = result.iterator().next();
         verifyTask(task, Priority.NORMAL, tag, lineNumber, "");
@@ -121,15 +149,10 @@ public class TaskScannerTest {
 
     /**
      * Checks case insensitivity.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testCaseInsensitive() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
-
-        Collection<Task> result = new TaskScanner(null, "todo", null, true).scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void testCaseInsensitive() {
+        Collection<Task> result = scan(TEST_FILE, null, "todo", null, true);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 9, result.size());
         for (Task task : result) {
             assertEquals("Tag name should be case insensitive", "TODO", task.getType());
@@ -138,48 +161,24 @@ public class TaskScannerTest {
 
     /**
      * Checks case insensitivity.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testCaseInsensitive2() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
-
-        Collection<Task> result = new TaskScanner(null, "Todo, TodoS", null, true).scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void testCaseInsensitive2() {
+        Collection<Task> result = scan(TEST_FILE, null, "Todo, TodoS", null, true);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 12, result.size());
     }
 
     /**
      * Checks whether we find the two task in the test file.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void scanFileWithTasksAndDefaults() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
-
-        Collection<Task> result = new TaskScanner().scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void scanFileWithTasksAndDefaults() {
+        Collection<Task> result = scan(FILE_WITH_TASKS);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         Iterator<Task> iterator = result.iterator();
         assertEquals(WRONG_MESSAGE_ERROR, PRIORITY_NORMAL, iterator.next().getDetailMessage());
         assertEquals(WRONG_MESSAGE_ERROR, PRIORITY_HIGH, iterator.next().getDetailMessage());
-    }
-
-    /**
-     * Checks whether we assign the right priorities for the test file.
-     *
-     * @throws IOException if we can't read the file
-     */
-    @Test
-    public void testPriorities() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
-
-        Collection<Task> result = new TaskScanner().scan(new InputStreamReader(file));
-        assignProperties(result);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
@@ -189,15 +188,10 @@ public class TaskScannerTest {
 
     /**
      * Checks whether we find one high priority task in the test file.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testHighPriority() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
-
-        Collection<Task> result = new TaskScanner(FIXME, null, null, false).scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void testHighPriority() {
+        Collection<Task> result = scan(FILE_WITH_TASKS, FIXME, null, null, false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -208,15 +202,10 @@ public class TaskScannerTest {
 
     /**
      * Checks whether we correctly strip whitespace from the message.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testTwoItemsWithWhiteSpaceAndHighPriority() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
-
-        Collection<Task> result = new TaskScanner(" FIXME , TODO ", null, null, false).scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void testTwoItemsWithWhiteSpaceAndHighPriority() {
+        Collection<Task> result = scan(FILE_WITH_TASKS, " FIXME , TODO ", null, null, false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -227,15 +216,10 @@ public class TaskScannerTest {
 
     /**
      * Checks whether we find two high priority tasks with different identifiers in the test file.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testTwoItemsWithHighPriority() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
-
-        Collection<Task> result = new TaskScanner("FIXME,TODO", null, null, false).scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void testTwoItemsWithHighPriority() {
+        Collection<Task> result = scan(FILE_WITH_TASKS, "FIXME,TODO", null, null, false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -246,18 +230,16 @@ public class TaskScannerTest {
 
     /**
      * Checks whether we set the type of the task to the actual tag.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testTagsIdentification() throws IOException {
+    public void testTagsIdentification() {
         String text = "FIXME: this is a fixme";
-        Collection<Task> result = new TaskScanner("FIXME,TODO", null, null, false).scan(new StringReader(text));
+        Collection<Task> result = scan(new StringReader(text), "FIXME,TODO", null, null, false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
         Task task = result.iterator().next();
         assertEquals("Type is not the found token", FIXME, task.getType());
 
-        result = new TaskScanner(null, "XXX, HELP, FIXME, TODO", null, false).scan(new StringReader(text));
+        result = scan(new StringReader(text), null, "XXX, HELP, FIXME, TODO", null, false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
 
         task = result.iterator().next();
@@ -266,15 +248,10 @@ public class TaskScannerTest {
 
     /**
      * Checks whether we find all priority task in the test file.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void testAllPriorities() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(FILE_WITH_TASKS);
-
-        Collection<Task> result = new TaskScanner(FIXME, "FIXME,TODO", "TODO", false).scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void testAllPriorities() {
+        Collection<Task> result = scan(FILE_WITH_TASKS, FIXME, "FIXME,TODO", "TODO", false);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 4, result.size());
 
         AnnotationContainer container = createContainer(result);
@@ -285,15 +262,10 @@ public class TaskScannerTest {
 
     /**
      * Checks whether we find no task in the test file.
-     *
-     * @throws IOException if we can't read the file
      */
     @Test
-    public void scanFileWithoutTasks() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream("file-without-tasks.txt");
-
-        Collection<Task> result = new TaskScanner().scan(new InputStreamReader(file));
-        assignProperties(result);
+    public void scanFileWithoutTasks() {
+        Collection<Task> result = scan("file-without-tasks.txt");
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, result.size());
 
         AnnotationContainer container = createContainer(result);
