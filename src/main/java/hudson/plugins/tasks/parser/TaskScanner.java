@@ -31,6 +31,7 @@ public class TaskScanner {
 
     /** The regular expression patterns to be used to scan the files. One pattern per priority. */
     private final Map<Priority, Pattern> patterns = new HashMap<Priority, Pattern>();
+    private final boolean ignoreCase;
 
     private boolean isInvalidPattern;
     private final StringBuilder errorMessage = new StringBuilder();
@@ -55,6 +56,7 @@ public class TaskScanner {
      *            if case should be ignored during matching
      */
     public TaskScanner(final String high, final String normal, final String low, final boolean ignoreCase) {
+        this.ignoreCase = ignoreCase;
         if (StringUtils.isNotBlank(high)) {
             patterns.put(Priority.HIGH, compile(high, ignoreCase));
         }
@@ -141,7 +143,11 @@ public class TaskScanner {
                         Matcher matcher = patterns.get(priority).matcher(line);
                         if (matcher.matches() && matcher.groupCount() == 2) {
                             String message = matcher.group(2).trim();
-                            tasks.add(new Task(priority, lineNumber, matcher.group(1), StringUtils.remove(message, ":").trim()));
+                            String tag = matcher.group(1);
+                            if (ignoreCase) {
+                                tag = StringUtils.upperCase(tag);
+                            }
+                            tasks.add(new Task(priority, lineNumber, tag, StringUtils.remove(message, ":").trim()));
                         }
                     }
                 }

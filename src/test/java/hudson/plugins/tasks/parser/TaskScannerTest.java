@@ -106,25 +106,17 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseSensitive() throws IOException {
-        InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
-
-        Collection<Task> result = new TaskScanner(null, "todo", null, false).scan(new InputStreamReader(file));
-        assignProperties(result);
-        assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+        verifyOneTaskWhenCheckingCase("todo", 25);
+        verifyOneTaskWhenCheckingCase("ToDo", 27);
     }
 
-    /**
-     * Checks case sensitivity.
-     *
-     * @throws IOException if we can't read the file
-     */
-    @Test
-    public void testCaseSensitive2() throws IOException {
+    private void verifyOneTaskWhenCheckingCase(final String tag, final int lineNumber) throws IOException {
         InputStream file = TaskScannerTest.class.getResourceAsStream(TEST_FILE);
-
-        Collection<Task> result = new TaskScanner(null, "ToDo", null, false).scan(new InputStreamReader(file));
+        Collection<Task> result = new TaskScanner(null, tag, null, false).scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, result.size());
+        Task task = result.iterator().next();
+        verifyTask(task, Priority.NORMAL, tag, lineNumber, "");
     }
 
     /**
@@ -139,6 +131,9 @@ public class TaskScannerTest {
         Collection<Task> result = new TaskScanner(null, "todo", null, true).scan(new InputStreamReader(file));
         assignProperties(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 9, result.size());
+        for (Task task : result) {
+            assertEquals("Tag name should be case insensitive", "TODO", task.getType());
+        }
     }
 
     /**
