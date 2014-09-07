@@ -40,7 +40,7 @@ public class TaskScanner {
      * Creates a new instance of {@link TaskScanner}.
      */
     public TaskScanner() {
-        this("FIXME", "TODO", "@deprecated", false);
+        this("FIXME", "TODO", "@deprecated", false, false);
     }
 
     /**
@@ -54,17 +54,20 @@ public class TaskScanner {
      *            tag identifiers indicating low priority
      * @param ignoreCase
      *            if case should be ignored during matching
+     * @param asRegexp
+     *            if tag identifiers should be treated as regular expression
      */
-    public TaskScanner(final String high, final String normal, final String low, final boolean ignoreCase) {
+    public TaskScanner(final String high, final String normal, final String low,
+                       final boolean ignoreCase, final boolean asRegexp) {
         this.ignoreCase = ignoreCase;
         if (StringUtils.isNotBlank(high)) {
-            patterns.put(Priority.HIGH, compile(high, ignoreCase));
+            patterns.put(Priority.HIGH, compile(high, ignoreCase, asRegexp));
         }
         if (StringUtils.isNotBlank(normal)) {
-            patterns.put(Priority.NORMAL, compile(normal, ignoreCase));
+            patterns.put(Priority.NORMAL, compile(normal, ignoreCase, asRegexp));
         }
         if (StringUtils.isNotBlank(low)) {
-            patterns.put(Priority.LOW, compile(low, ignoreCase));
+            patterns.put(Priority.LOW, compile(low, ignoreCase, asRegexp));
         }
     }
 
@@ -75,10 +78,16 @@ public class TaskScanner {
      *            the identifiers to scan for
      * @param ignoreCase
      *            specifies if case should be ignored
+     * @param asRegexp
+     *            if tag identifiers should be treated as regular expression
      * @return the compiled pattern
      */
-    private Pattern compile(final String tagIdentifiers, final boolean ignoreCase) {
+    private Pattern compile(final String tagIdentifiers, final boolean ignoreCase, final boolean asRegexp) {
         try {
+            if (asRegexp) {
+                return Pattern.compile(tagIdentifiers);
+            }
+
             String[] tags;
             if (tagIdentifiers.indexOf(',') == -1) {
                 tags = new String[] {tagIdentifiers};

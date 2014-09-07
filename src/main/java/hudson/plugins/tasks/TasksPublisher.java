@@ -1,22 +1,22 @@
 package hudson.plugins.tasks;
 
-import hudson.Launcher;
-import hudson.matrix.MatrixAggregator;
-import hudson.matrix.MatrixBuild;
-import hudson.model.Action;
-import hudson.model.BuildListener;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.plugins.analysis.core.HealthAwarePublisher;
-import hudson.plugins.analysis.core.BuildResult;
-import hudson.plugins.analysis.util.PluginLogger;
-import hudson.plugins.tasks.parser.TasksParserResult;
-import hudson.plugins.tasks.parser.WorkspaceScanner;
-
 import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import hudson.Launcher;
+import hudson.matrix.MatrixAggregator;
+import hudson.matrix.MatrixBuild;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.Action;
+import hudson.model.BuildListener;
+import hudson.plugins.analysis.core.BuildResult;
+import hudson.plugins.analysis.core.HealthAwarePublisher;
+import hudson.plugins.analysis.util.PluginLogger;
+import hudson.plugins.tasks.parser.TasksParserResult;
+import hudson.plugins.tasks.parser.WorkspaceScanner;
 
 /**
  * Publishes the results of the task scanner (freestyle project type).
@@ -37,6 +37,8 @@ public class TasksPublisher extends HealthAwarePublisher {
     private final String low;
     /** Tag identifiers indicating case sensitivity. */
     private final boolean ignoreCase;
+    /** If the identifiers should be treated as regular expression. */
+    private final boolean asRegexp;
     /** Ant file-set pattern of files to work with. */
     private final String pattern;
     /** Ant file-set pattern of files to exclude from work. */
@@ -45,10 +47,6 @@ public class TasksPublisher extends HealthAwarePublisher {
     /**
      * Creates a new instance of <code>TasksPublisher</code>.
      *
-     * @param pattern
-     *            Ant file-set pattern of files to scan for open tasks in
-     * @param excludePattern
-     *            Ant file-set pattern of files to exclude from scan
      * @param healthy
      *            Report health as 100% when the number of open tasks is less
      *            than this value
@@ -58,6 +56,8 @@ public class TasksPublisher extends HealthAwarePublisher {
      * @param thresholdLimit
      *            determines which warning priorities should be considered when
      *            evaluating the build stability and health
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
      * @param useDeltaValues
      *            determines whether the absolute annotations delta or the
      *            actual annotations set difference should be used to evaluate
@@ -111,8 +111,12 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            tag identifiers indicating low priority
      * @param ignoreCase
      *            if case should be ignored during matching
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
+     * @param asRegexp
+     *            if the identifiers should be treated as regular expression
+     * @param pattern
+     *            Ant file-set pattern of files to scan for open tasks in
+     * @param excludePattern
+     *            Ant file-set pattern of files to exclude from scan
      */
     // CHECKSTYLE:OFF
     @SuppressWarnings("PMD.ExcessiveParameterList")
@@ -124,7 +128,7 @@ public class TasksPublisher extends HealthAwarePublisher {
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
             final boolean canRunOnFailed, final boolean useStableBuildAsReference, final boolean shouldDetectModules, final boolean canComputeNew,
-            final String high, final String normal, final String low, final boolean ignoreCase,
+            final String high, final String normal, final String low, final boolean ignoreCase, final boolean asRegexp,
             final String pattern, final String excludePattern) {
         super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
@@ -138,6 +142,7 @@ public class TasksPublisher extends HealthAwarePublisher {
         this.normal = normal;
         this.low = low;
         this.ignoreCase = ignoreCase;
+        this.asRegexp = asRegexp;
     }
     // CHECKSTYLE:ON
 
@@ -195,6 +200,15 @@ public class TasksPublisher extends HealthAwarePublisher {
         return ignoreCase;
     }
 
+    /**
+     * Returns whether the identifiers should be treated as regular expression.
+     *
+     * @return <code>true</code> if the identifiers should be treated as regular expression
+     */
+    public boolean getAsRegexp() {
+        return asRegexp;
+    }
+
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
         return new TasksProjectAction(project);
@@ -204,7 +218,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     protected BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
         TasksParserResult project;
         WorkspaceScanner scanner = new WorkspaceScanner(StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
-                getExcludePattern(), getDefaultEncoding(), high, normal, low, ignoreCase, shouldDetectModules());
+                getExcludePattern(), getDefaultEncoding(), high, normal, low, ignoreCase, shouldDetectModules(), asRegexp);
         project = build.getWorkspace().act(scanner);
 
         logger.logLines(project.getLogMessages());

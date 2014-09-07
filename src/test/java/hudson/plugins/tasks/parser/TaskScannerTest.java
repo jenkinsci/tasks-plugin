@@ -36,6 +36,53 @@ public class TaskScannerTest {
     /** Error message. */
     private static final String WRONG_NUMBER_OF_TASKS_ERROR = "Wrong number of tasks found.";
 
+    /**
+     * Parses tasks using a regular expression.
+     *
+     * @see <a href="http://issues.jenkins-ci.org/browse/JENKINS-17225">Issue 17225</a>
+     */
+    @Test
+    public void testRegularExpressionsIssue17225() {
+        Collection<Task> result = scan("regexp.txt", 5, "^.*(TODO(?:[0-9]*))(.*)$", null, "", false, true);
+        Iterator<Task> warnings = result.iterator();
+        Task task;
+        task = warnings.next();
+        int line = 1;
+        verifyTask(task, Priority.HIGH, "TODO1", line++, "erstes");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO2", line++, "zweites");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO3", line++, "drittes");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO4", line++, "viertes");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO20", line++, "zwanzigstes");
+    }
+
+    /**
+     * Parses tasks using a regular expression.
+     *
+     * @throws IOException
+     *      if the file could not be read
+     * @see <a href="http://issues.jenkins-ci.org/browse/JENKINS-17225">Issue 17225</a>
+     */
+    @Test
+    public void testRegularExpressionAsTag() throws IOException {
+        Collection<Task> result = scan("regexp.txt", 5, "^.*(TODO(?:[0-9]*))(.*)$", null, "", false, true);
+        Iterator<Task> warnings = result.iterator();
+        Task task;
+        task = warnings.next();
+        int line = 1;
+        verifyTask(task, Priority.HIGH, "TODO1", line++, "erstes");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO2", line++, "zweites");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO3", line++, "drittes");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO4", line++, "viertes");
+        task = warnings.next();
+        verifyTask(task, Priority.HIGH, "TODO20", line++, "zwanzigstes");
+    }
 
     /**
      * Parses a warning log with characters in different locale.
@@ -49,7 +96,7 @@ public class TaskScannerTest {
         InputStream file = TaskScannerTest.class.getResourceAsStream("issue22744.java");
         InputStreamReader reader = new InputStreamReader(file, "windows-1251");
 
-        Collection<Task> result = scan(reader, 2, "FIXME", "TODO", "", false);
+        Collection<Task> result = scan(reader, 2, "FIXME", "TODO", "", false, false);
 
         Iterator<Task> warnings = result.iterator();
         Task task = warnings.next();
@@ -72,7 +119,7 @@ public class TaskScannerTest {
      */
     @Test
     public void issue12782() {
-        scan("issue12782.txt", 3, "!!!!!", "!!!", "", false);
+        scan("issue12782.txt", 3, "!!!!!", "!!!", "", false, false);
     }
 
     /**
@@ -80,7 +127,7 @@ public class TaskScannerTest {
      */
     @Test
     public void scanFileWithWords() {
-        Collection<Task> result = scan("tasks-words-test.txt", 12, "WARNING", "TODO", "@todo", false);
+        Collection<Task> result = scan("tasks-words-test.txt", 12, "WARNING", "TODO", "@todo", false, false);
 
         ParserResult parserResult = new ParserResult();
         parserResult.addAnnotations(result);
@@ -100,7 +147,7 @@ public class TaskScannerTest {
     }
 
     private void verifyOneTaskWhenCheckingCase(final String tag, final int lineNumber) {
-        Collection<Task> result = scan(TEST_FILE, 1, null, tag, null, false);
+        Collection<Task> result = scan(TEST_FILE, 1, null, tag, null, false, false);
         Task task = result.iterator().next();
         verifyTask(task, Priority.NORMAL, tag, lineNumber, "");
     }
@@ -110,7 +157,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseInsensitive() {
-        Collection<Task> result = scan(TEST_FILE, 9, null, "todo", null, true);
+        Collection<Task> result = scan(TEST_FILE, 9, null, "todo", null, true, false);
         for (Task task : result) {
             assertEquals("Tag name should be case insensitive", "TODO", task.getType());
         }
@@ -121,7 +168,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testCaseInsensitive2() {
-        Collection<Task> result = scan(TEST_FILE, 12, null, "Todo, TodoS", null, true);
+        Collection<Task> result = scan(TEST_FILE, 12, null, "Todo, TodoS", null, true, false);
     }
 
     /**
@@ -146,7 +193,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testHighPriority() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, 1, FIXME, null, null, false);
+        Collection<Task> result = scan(FILE_WITH_TASKS, 1, FIXME, null, null, false, false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
@@ -159,7 +206,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testTwoItemsWithWhiteSpaceAndHighPriority() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, 2, " FIXME , TODO ", null, null, false);
+        Collection<Task> result = scan(FILE_WITH_TASKS, 2, " FIXME , TODO ", null, null, false, false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.HIGH));
@@ -172,7 +219,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testTwoItemsWithHighPriority() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, 2, "FIXME,TODO", null, null, false);
+        Collection<Task> result = scan(FILE_WITH_TASKS, 2, "FIXME,TODO", null, null, false, false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 2, container.getNumberOfAnnotations(Priority.HIGH));
@@ -186,11 +233,11 @@ public class TaskScannerTest {
     @Test
     public void testTagsIdentification() {
         String text = "FIXME: this is a fixme";
-        Collection<Task> result = scan(new StringReader(text), 1, "FIXME,TODO", null, null, false);
+        Collection<Task> result = scan(new StringReader(text), 1, "FIXME,TODO", null, null, false, false);
         Task task = result.iterator().next();
         assertEquals("Type is not the found token", FIXME, task.getType());
 
-        result = scan(new StringReader(text), 1, null, "XXX, HELP, FIXME, TODO", null, false);
+        result = scan(new StringReader(text), 1, null, "XXX, HELP, FIXME, TODO", null, false, false);
 
         task = result.iterator().next();
         assertEquals("Type is not the found token", FIXME, task.getType());
@@ -201,7 +248,7 @@ public class TaskScannerTest {
      */
     @Test
     public void testAllPriorities() {
-        Collection<Task> result = scan(FILE_WITH_TASKS, 4, FIXME, "FIXME,TODO", "TODO", false);
+        Collection<Task> result = scan(FILE_WITH_TASKS, 4, FIXME, "FIXME,TODO", "TODO", false, false);
 
         AnnotationContainer container = createContainer(result);
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 1, container.getNumberOfAnnotations(Priority.HIGH));
@@ -223,18 +270,20 @@ public class TaskScannerTest {
         assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, 0, container.getNumberOfAnnotations(Priority.LOW));
     }
 
-    private Collection<Task> scan(final String fileName,
-                                  final int expectedNumberOfTasks, final String high, final String normal, final String low, final boolean ignoreCase) {
+    private Collection<Task> scan(final String fileName, final int expectedNumberOfTasks,
+                                  final String high, final String normal, final String low,
+                                  final boolean ignoreCase, final boolean asRegexp) {
         InputStream file = TaskScannerTest.class.getResourceAsStream(fileName);
         InputStreamReader reader = new InputStreamReader(file);
 
-        return scan(reader, expectedNumberOfTasks, high, normal, low, ignoreCase);
+        return scan(reader, expectedNumberOfTasks, high, normal, low, ignoreCase, asRegexp);
     }
 
-    private Collection<Task> scan(final Reader reader,
-                                  final int expectedNumberOfTasks, final String high, final String normal, final String low, final boolean ignoreCase) {
+    private Collection<Task> scan(final Reader reader, final int expectedNumberOfTasks,
+                                  final String high, final String normal, final String low,
+                                  final boolean ignoreCase, final boolean asRegexp) {
         try {
-            Collection<Task> tasks = new TaskScanner(high, normal, low, ignoreCase).scan(reader);
+            Collection<Task> tasks = new TaskScanner(high, normal, low, ignoreCase, asRegexp).scan(reader);
             assignProperties(tasks);
             assertEquals(WRONG_NUMBER_OF_TASKS_ERROR, expectedNumberOfTasks, tasks.size());
 

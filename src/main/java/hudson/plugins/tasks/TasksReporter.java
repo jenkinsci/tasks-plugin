@@ -1,17 +1,5 @@
 package hudson.plugins.tasks;
 
-import hudson.FilePath;
-import hudson.maven.MavenAggregatedReport;
-import hudson.maven.MavenBuildProxy;
-import hudson.maven.MojoInfo;
-import hudson.maven.MavenBuild;
-import hudson.maven.MavenModule;
-import hudson.plugins.analysis.core.HealthAwareReporter;
-import hudson.plugins.analysis.core.ParserResult;
-import hudson.plugins.analysis.util.PluginLogger;
-import hudson.plugins.tasks.parser.TasksParserResult;
-import hudson.plugins.tasks.parser.WorkspaceScanner;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +7,18 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
+
+import hudson.FilePath;
+import hudson.maven.MavenAggregatedReport;
+import hudson.maven.MavenBuild;
+import hudson.maven.MavenBuildProxy;
+import hudson.maven.MavenModule;
+import hudson.maven.MojoInfo;
+import hudson.plugins.analysis.core.HealthAwareReporter;
+import hudson.plugins.analysis.core.ParserResult;
+import hudson.plugins.analysis.util.PluginLogger;
+import hudson.plugins.tasks.parser.TasksParserResult;
+import hudson.plugins.tasks.parser.WorkspaceScanner;
 
 /**
  * Publishes the results of the task scanner (maven 2 project type).
@@ -44,6 +44,8 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     private final String low;
     /** Tag identifiers indicating case sensitivity. */
     private final boolean ignoreCase;
+    /** If the identifiers should be treated as regular expression. */
+    private final boolean asRegexp;
 
     /**
      * Creates a new instance of <code>TasksReporter</code>.
@@ -105,6 +107,8 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
      *            tag identifiers indicating low priority
      * @param ignoreCase
      *            if case should be ignored during matching
+     * @param asRegexp
+     *            if the identifiers should be treated as regular expression
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
      * @param useStableBuildAsReference
@@ -123,7 +127,8 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
             final String high, final String normal, final String low,
-            final boolean ignoreCase, final boolean canRunOnFailed, final boolean useStableBuildAsReference, final boolean canComputeNew) {
+            final boolean ignoreCase, final boolean asRegexp, final boolean canRunOnFailed,
+            final boolean useStableBuildAsReference, final boolean canComputeNew) {
         super(healthy, unHealthy, thresholdLimit, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
@@ -136,6 +141,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
         this.normal = normal;
         this.low = low;
         this.ignoreCase = ignoreCase;
+        this.asRegexp = asRegexp;
     }
     // CHECKSTYLE:ON
 
@@ -193,6 +199,15 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
         return ignoreCase;
     }
 
+    /**
+     * Returns whether the identifiers should be treated as regular expression.
+     *
+     * @return <code>true</code> if the identifiers should be treated as regular expression
+     */
+    public boolean getAsRegexp() {
+        return asRegexp;
+    }
+
     @Override
     protected boolean acceptGoal(final String goal) {
         return true;
@@ -206,7 +221,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
         WorkspaceScanner workspaceScanner = new WorkspaceScanner(
                 StringUtils.defaultIfEmpty(pattern, DEFAULT_PATTERN),
                 excludePattern, getDefaultEncoding(), high, normal, low, ignoreCase, pom.getName(),
-                pom.getModules());
+                pom.getModules(), asRegexp);
         TasksParserResult project = basedir.act(workspaceScanner);
 
         project.setLog(project.getLogMessages()

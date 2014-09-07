@@ -51,6 +51,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     private final String defaultEncoding;
     /** Determines whether module names should be derived from Maven or Ant. */
     private final boolean shouldDetectModules;
+    private final boolean asRegexp;
 
     private transient StringPluginLogger stringLogger;
 
@@ -71,12 +72,15 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            tag identifiers indicating low priority
      * @param ignoreCase
      *            if case should be ignored during matching
+     * @param asRegexp
+     *            if the identifiers should be treated as regular expression
      * @param shouldDetectModules
      *            determines whether module names should be derived from Maven POM or Ant build files
      */
     // CHECKSTYLE:OFF
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
-            final String high, final String normal, final String low, final boolean ignoreCase, final boolean shouldDetectModules) {
+            final String high, final String normal, final String low, final boolean ignoreCase,
+            final boolean shouldDetectModules, final boolean asRegexp) {
         this.filePattern = filePattern;
         this.excludeFilePattern = excludeFilePattern;
         this.defaultEncoding = defaultEncoding;
@@ -85,6 +89,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         this.low = low;
         this.ignoreCase = ignoreCase;
         this.shouldDetectModules = shouldDetectModules;
+        this.asRegexp = asRegexp;
     }
     // CHECKSTYLE:ON
 
@@ -118,14 +123,16 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            tag identifiers indicating low priority
      * @param caseSensitive
      *            determines whether the scanner should work case sensitive
+     * @param asRegexp
+     *            if the identifiers should be treated as regular expression
      * @param moduleName
      *            the maven module name
      */
     // CHECKSTYLE:OFF
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
             final String high, final String normal, final String low, final boolean caseSensitive,
-            final String moduleName) {
-        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive, false);
+            final String moduleName, final boolean asRegexp) {
+        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive, false, asRegexp);
 
         this.moduleName = moduleName;
     }
@@ -148,6 +155,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
      *            tag identifiers indicating low priority
      * @param caseSensitive
      *            determines whether the scanner should work case sensitive
+     * @param asRegexp
+     *            if the identifiers should be treated as regular expression
      * @param moduleName
      *            the maven module name
      * @param modules
@@ -156,8 +165,8 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     // CHECKSTYLE:OFF
     public WorkspaceScanner(final String filePattern, final String excludeFilePattern, final String defaultEncoding,
             final String high, final String normal, final String low, final boolean caseSensitive,
-            final String moduleName, final List<String> modules) {
-        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive, moduleName);
+            final String moduleName, final List<String> modules, final boolean asRegexp) {
+        this(filePattern, excludeFilePattern, defaultEncoding, high, normal, low, caseSensitive, moduleName, asRegexp);
 
         StringBuilder excludes = new StringBuilder(excludeFilePattern);
         for (String folder : modules) {
@@ -192,7 +201,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
     public TasksParserResult invoke(final File workspace, final VirtualChannel channel) throws IOException, InterruptedException {
         String[] files = findFiles(workspace);
 
-        TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase);
+        TaskScanner taskScanner = new TaskScanner(high, normal, low, ignoreCase, asRegexp);
         TasksParserResult result = new TasksParserResult(files.length);
         ModuleDetector moduleDetector = createModuleDetector(workspace);
         log("Found " + files.length + " files to scan for tasks");
