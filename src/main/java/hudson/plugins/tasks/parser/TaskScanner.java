@@ -71,6 +71,14 @@ public class TaskScanner {
         }
     }
 
+    public boolean isInvalidPattern() {
+        return isInvalidPattern;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage.toString();
+    }
+
     /**
      * Compiles a regular expression pattern to scan for tag identifiers.
      *

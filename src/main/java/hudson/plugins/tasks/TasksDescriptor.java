@@ -1,7 +1,17 @@
 package hudson.plugins.tasks;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Collection;
+
+import org.apache.commons.lang3.StringUtils;
+import org.kohsuke.stapler.QueryParameter;
+
 import hudson.Extension;
 import hudson.plugins.analysis.core.PluginDescriptor;
+import hudson.plugins.tasks.parser.Task;
+import hudson.plugins.tasks.parser.TaskScanner;
+import hudson.util.FormValidation;
 
 /**
  * Descriptor for the class {@link TasksPublisher}. Used as a singleton. The
@@ -44,5 +54,51 @@ public final class TasksDescriptor extends PluginDescriptor {
     @Override
     public String getSummaryIconUrl() {
         return ICONS_PREFIX + "tasks-48x48.png";
+    }
+
+    /**
+     * Validates the example text that will be scanned for open tasks.
+     *
+     * @param example the text to be scanned for open tasks
+     * @param high
+     *            tag identifiers indicating high priority
+     * @param normal
+     *            tag identifiers indicating normal priority
+     * @param low
+     *            tag identifiers indicating low priority
+     * @param ignoreCase
+     *            if case should be ignored during matching
+     * @param asRegexp
+     *            if the identifiers should be treated as regular expression
+     * @return validation result
+     * @throws IOException if an error occurs
+     */
+    public FormValidation doCheckExample(@QueryParameter final String example,
+                                         @QueryParameter final String high,
+                                         @QueryParameter final String normal,
+                                         @QueryParameter final String low,
+                                         @QueryParameter final boolean ignoreCase,
+                                         @QueryParameter final boolean asRegexp) throws IOException {
+        if (StringUtils.isEmpty(example)) {
+            return FormValidation.ok();
+        }
+
+        TaskScanner scanner = new TaskScanner(high, normal, low, ignoreCase, asRegexp);
+        if (scanner.isInvalidPattern()) {
+            return  FormValidation.error(scanner.getErrorMessage());
+        }
+
+        Collection<Task> tasks = scanner.scan(new StringReader(example));
+        if (tasks.isEmpty()) {
+            return FormValidation.warning(Messages.Validation_NoTask());
+        }
+        else if (tasks.size() != 1) {
+            return FormValidation.warning(Messages.Validation_MultipleTasks(tasks.size()));
+        }
+        else {
+            Task task = tasks.iterator().next();
+            return FormValidation.ok(Messages.Validation_OneTask(task.getType(),
+                    task.getDetailMessage()));
+        }
     }
 }

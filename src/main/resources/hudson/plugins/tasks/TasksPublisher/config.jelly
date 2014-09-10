@@ -3,7 +3,7 @@
       xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:u="/util" xmlns:c="/hudson/plugins/tasks/config">
 
   <c:patterns />
-  <c:tasks descriptor="TasksPublisher"/>
+  <c:tasks />
   <f:advanced>
     <u:advanced id="tasks"/>
   </f:advanced>
