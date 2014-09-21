@@ -1,9 +1,10 @@
 package hudson.plugins.tasks.parser;
 
+import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.export.Exported;
+
 import hudson.plugins.analysis.util.model.AbstractAnnotation;
 import hudson.plugins.analysis.util.model.Priority;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * A serializable Java Bean class representing an open task.
@@ -39,6 +40,7 @@ public class Task extends AbstractAnnotation {
      *
      * @return the detail message of the task
      */
+    @Exported
     public String getDetailMessage() {
         return super.getMessage();
     }
