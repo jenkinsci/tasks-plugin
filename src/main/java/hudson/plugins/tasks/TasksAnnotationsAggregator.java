@@ -1,18 +1,18 @@
 package hudson.plugins.tasks;
 
+import java.io.IOException;
+
+import org.apache.commons.lang.StringUtils;
+
 import hudson.Launcher;
 import hudson.matrix.MatrixAggregator;
-import hudson.matrix.MatrixRun;
 import hudson.matrix.MatrixBuild;
+import hudson.matrix.MatrixRun;
 import hudson.model.BuildListener;
 import hudson.plugins.analysis.core.AnnotationsAggregator;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.TasksParserResult;
-
-import java.io.IOException;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Aggregates {@link TasksResultAction}s of {@link MatrixRun}s into
@@ -32,6 +32,7 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
     private String normalTags = StringUtils.EMPTY;
     /** Tag identifiers indicating low priority. */
     private String lowTags = StringUtils.EMPTY;
+    private final boolean usePreviousBuildAsReference;
     private final boolean useStableBuildAsReference;
 
     /**
@@ -47,17 +48,21 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
      *            health descriptor
      * @param defaultEncoding
      *            the default encoding to be used when reading and parsing files
+     * @param usePreviousBuildAsReference
+     *            determines whether the previous build should be used as the
+     *            reference build
      * @param useStableBuildAsReference
      *            determines whether only stable builds should be used as
      *            reference builds or not
      */
     public TasksAnnotationsAggregator(final MatrixBuild build, final Launcher launcher, final BuildListener listener,
             final HealthDescriptor healthDescriptor, final String defaultEncoding,
-            final boolean useStableBuildAsReference) {
+            final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference) {
         super(build, launcher, listener);
 
         this.healthDescriptor = healthDescriptor;
         this.defaultEncoding = defaultEncoding;
+        this.usePreviousBuildAsReference = usePreviousBuildAsReference;
         this.useStableBuildAsReference = useStableBuildAsReference;
     }
 
@@ -79,7 +84,8 @@ public class TasksAnnotationsAggregator extends MatrixAggregator {
 
     @Override
     public boolean endBuild() throws InterruptedException, IOException {
-        TasksResult result = new TasksResult(build, defaultEncoding, totals, useStableBuildAsReference, highTags, normalTags, lowTags);
+        TasksResult result = new TasksResult(build, defaultEncoding, totals,
+                usePreviousBuildAsReference, useStableBuildAsReference, highTags, normalTags, lowTags);
 
         build.addAction(new TasksResultAction(build, healthDescriptor, result));
 

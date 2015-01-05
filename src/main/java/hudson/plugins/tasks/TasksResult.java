@@ -1,18 +1,18 @@
 package hudson.plugins.tasks; // NOPMD
 
-import hudson.model.AbstractBuild;
-import hudson.plugins.analysis.core.BuildHistory;
-import hudson.plugins.analysis.core.ResultAction;
-import hudson.plugins.analysis.core.BuildResult;
-import hudson.plugins.analysis.util.model.Priority;
-import hudson.plugins.tasks.parser.Task;
-import hudson.plugins.tasks.parser.TasksParserResult;
-
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
+
+import hudson.model.AbstractBuild;
+import hudson.plugins.analysis.core.BuildHistory;
+import hudson.plugins.analysis.core.BuildResult;
+import hudson.plugins.analysis.core.ResultAction;
+import hudson.plugins.analysis.util.model.Priority;
+import hudson.plugins.tasks.parser.Task;
+import hudson.plugins.tasks.parser.TasksParserResult;
 
 /**
  * Represents the results of the task scanner. One instance of this class is persisted for
@@ -38,6 +38,8 @@ public class TasksResult extends BuildResult {
      *            the default encoding to be used when reading and parsing files
      * @param result
      *            the parsed annotations
+     * @param usePreviousBuildAsReference
+     *            determines whether to always use the previous build as the reference build
      * @param useStableBuildAsReference
      *            determines whether only stable builds should be used as
      *            reference builds or not
@@ -48,10 +50,11 @@ public class TasksResult extends BuildResult {
      * @param lowTags
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
-            final TasksParserResult result, final boolean useStableBuildAsReference,
+    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
+            final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
             final String highTags, final String normalTags, final String lowTags) {
-        this(build, defaultEncoding, result, useStableBuildAsReference, highTags, normalTags, lowTags, TasksResultAction.class);
+        this(build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference,
+                highTags, normalTags, lowTags, TasksResultAction.class);
     }
 
     /**
@@ -63,6 +66,8 @@ public class TasksResult extends BuildResult {
      *            the default encoding to be used when reading and parsing files
      * @param result
      *            the parsed annotations
+     * @param usePreviousBuildAsReference
+     *            determines whether to always use the previous build as the reference build
      * @param useStableBuildAsReference
      *            determines whether only stable builds should be used as
      *            reference builds or not
@@ -76,12 +81,13 @@ public class TasksResult extends BuildResult {
      *            the type of the result action
      */
     // CHECKSTYLE:OFF
-    protected TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding,
-            final TasksParserResult result, final boolean useStableBuildAsReference,
+    protected TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
+            final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
             final String highTags, final String normalTags, final String lowTags,
             final Class<? extends ResultAction<TasksResult>> actionType) {
         // CHECKSTYLE:ON
-        super(build, new BuildHistory(build, actionType, useStableBuildAsReference), result, defaultEncoding);
+        super(build, new BuildHistory(build, actionType, usePreviousBuildAsReference, useStableBuildAsReference),
+                result, defaultEncoding);
 
         this.highTags = highTags;
         this.normalTags = normalTags;

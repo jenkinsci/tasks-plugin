@@ -85,7 +85,7 @@ public class MavenTasksResultAction extends TasksResultAction implements Aggrega
     @Override
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
         return new MavenTasksResultAction(build, getHealthDescriptor(), defaultEncoding, high, normal, low,
-                new TasksResult(build, defaultEncoding, new TasksParserResult(), false, high, normal, low));
+                new TasksResult(build, defaultEncoding, new TasksParserResult(), false, false, high, normal, low));
     }
 
     @Override

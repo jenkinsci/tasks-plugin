@@ -22,6 +22,8 @@ public class TasksReporterResult extends TasksResult {
      *            the default encoding to be used when reading and parsing files
      * @param result
      *            the parsed annotations
+     * @param usePreviousBuildAsReference
+     *            determines whether to always use the previous build as the reference build
      * @param useStableBuildAsReference
      *            determines whether only stable builds should be used as
      *            reference builds or not
@@ -33,8 +35,10 @@ public class TasksReporterResult extends TasksResult {
      *            tag identifiers indicating low priority
      */
     public TasksReporterResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
-            final boolean useStableBuildAsReference, final String highTags, final String normalTags, final String lowTags) {
-        super(build, defaultEncoding, result, useStableBuildAsReference, highTags, normalTags, lowTags, TasksMavenResultAction.class);
+            final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
+            final String highTags, final String normalTags, final String lowTags) {
+        super(build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference,
+                highTags, normalTags, lowTags, TasksMavenResultAction.class);
     }
 
     @Override

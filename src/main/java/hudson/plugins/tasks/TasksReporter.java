@@ -111,6 +111,8 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
      *            if the identifiers should be treated as regular expression
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
+     * @param usePreviousBuildAsReference
+     *            determines whether to always use the previous build as the reference build
      * @param useStableBuildAsReference
      *            determines whether only stable builds should be used as reference builds or not
      * @param canComputeNew
@@ -126,15 +128,15 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
             final String unstableNewAll, final String unstableNewHigh, final String unstableNewNormal, final String unstableNewLow,
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
-            final String high, final String normal, final String low,
-            final boolean ignoreCase, final boolean asRegexp, final boolean canRunOnFailed,
-            final boolean useStableBuildAsReference, final boolean canComputeNew) {
+            final String high, final String normal, final String low, final boolean ignoreCase, final boolean asRegexp,
+            final boolean canRunOnFailed, final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
+            final boolean canComputeNew) {
         super(healthy, unHealthy, thresholdLimit, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, useStableBuildAsReference, canComputeNew, "TASKS");
+                canRunOnFailed, usePreviousBuildAsReference, useStableBuildAsReference, canComputeNew, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -234,7 +236,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     @edu.umd.cs.findbugs.annotations.SuppressWarnings("BC")
     protected TasksResult createResult(final MavenBuild build, final ParserResult project) {
         return new TasksReporterResult(build, getDefaultEncoding(), (TasksParserResult)project,
-                useOnlyStableBuildsAsReference(), high, normal, low);
+                usePreviousBuildAsStable(), useOnlyStableBuildsAsReference(), high, normal, low);
     }
 
     @Override

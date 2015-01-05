@@ -1,20 +1,20 @@
 package hudson.plugins.tasks;
 
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Lists;
+
 import hudson.maven.MavenAggregatedReport;
 import hudson.maven.MavenBuild;
 import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
 import hudson.maven.MavenModuleSetBuild;
-import hudson.model.Action;
 import hudson.model.AbstractBuild;
+import hudson.model.Action;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.MavenResultAction;
 import hudson.plugins.tasks.parser.TasksParserResult;
-
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Lists;
 
 /**
  * A {@link TasksResultAction} for native Maven jobs. This action
@@ -77,7 +77,7 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     @Override
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
         return new TasksMavenResultAction(build, getHealthDescriptor(), getDefaultEncoding(), high, normal, low,
-                new TasksResult(build, high, new TasksParserResult(), false, high, normal, low));
+                new TasksResult(build, high, new TasksParserResult(), false, false, high, normal, low));
     }
 
     @Override
@@ -93,7 +93,8 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     @Override
     protected TasksResult createResult(final TasksResult existingResult, final TasksResult additionalResult) {
         return new TasksReporterResult(getOwner(), additionalResult.getDefaultEncoding(),
-                aggregate(existingResult, additionalResult), existingResult.useOnlyStableBuildsAsReference(),
+                aggregate(existingResult, additionalResult),
+                existingResult.usePreviousBuildAsStable(), existingResult.useOnlyStableBuildsAsReference(),
                 high, normal, low);
     }
 

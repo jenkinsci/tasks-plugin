@@ -35,7 +35,7 @@ public class TasksMavenResult extends TasksResult {
     @SuppressWarnings("deprecation")
     public TasksMavenResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
             final String highTags, final String normalTags, final String lowTags) {
-        super(build, defaultEncoding, result, false, highTags, normalTags, lowTags, MavenTasksResultAction.class);
+        super(build, defaultEncoding, result, false, false, highTags, normalTags, lowTags, MavenTasksResultAction.class);
     }
 
     @SuppressWarnings("deprecation")

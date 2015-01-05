@@ -96,6 +96,8 @@ public class TasksPublisher extends HealthAwarePublisher {
      *            annotation threshold
      * @param canRunOnFailed
      *            determines whether the plug-in can run for failed builds, too
+     * @param usePreviousBuildAsReference
+     *            determines whether to always use the previous build as the reference build
      * @param useStableBuildAsReference
      *            determines whether only stable builds should be used as reference builds or not
      * @param canComputeNew
@@ -127,15 +129,16 @@ public class TasksPublisher extends HealthAwarePublisher {
             final String unstableNewAll, final String unstableNewHigh, final String unstableNewNormal, final String unstableNewLow,
             final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
             final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
-            final boolean canRunOnFailed, final boolean useStableBuildAsReference, final boolean shouldDetectModules, final boolean canComputeNew,
-            final String high, final String normal, final String low, final boolean ignoreCase, final boolean asRegexp,
-            final String pattern, final String excludePattern) {
+            final boolean canRunOnFailed, final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
+            final boolean shouldDetectModules, final boolean canComputeNew, final String high, final String normal, final String low,
+            final boolean ignoreCase, final boolean asRegexp, final String pattern, final String excludePattern) {
         super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
                 unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
                 unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
                 failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
                 failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, useStableBuildAsReference, shouldDetectModules, canComputeNew, true, "TASKS");
+                canRunOnFailed, usePreviousBuildAsReference, useStableBuildAsReference,
+                shouldDetectModules, canComputeNew, true, "TASKS");
         this.pattern = pattern;
         this.excludePattern = excludePattern;
         this.high = high;
@@ -224,8 +227,9 @@ public class TasksPublisher extends HealthAwarePublisher {
         logger.logLines(project.getLogMessages());
         logger.log(String.format("Found %d open tasks.", project.getNumberOfAnnotations()));
 
-        TasksResult result = new TasksResult(build, getDefaultEncoding(), project, useOnlyStableBuildsAsReference(), high, normal, low);
-        build.getActions().add(new TasksResultAction(build, this, result));
+        TasksResult result = new TasksResult(build, getDefaultEncoding(), project,
+                usePreviousBuildAsReference(), useOnlyStableBuildsAsReference(), high, normal, low);
+        build.addAction(new TasksResultAction(build, this, result));
 
         return result;
     }
@@ -238,6 +242,7 @@ public class TasksPublisher extends HealthAwarePublisher {
     @Override
     public MatrixAggregator createAggregator(final MatrixBuild build, final Launcher launcher,
             final BuildListener listener) {
-        return new TasksAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding(), useOnlyStableBuildsAsReference());
+        return new TasksAnnotationsAggregator(build, launcher, listener, this, getDefaultEncoding(),
+                usePreviousBuildAsReference(), useOnlyStableBuildsAsReference());
     }
 }
