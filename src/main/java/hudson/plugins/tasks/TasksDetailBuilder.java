@@ -1,12 +1,13 @@
 package hudson.plugins.tasks;
 
+import java.util.Collection;
+
 import hudson.model.AbstractBuild;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.FixedWarningsDetail;
 import hudson.plugins.analysis.views.TabDetail;
-
-import java.util.Collection;
 
 /**
  * Creates detail objects for the selected element of a tasks container.
@@ -14,6 +15,11 @@ import java.util.Collection;
  * @author Ulli Hafner
  */
 public class TasksDetailBuilder extends DetailFactory {
+    @Override
+    protected void attachLabelProvider(final AnnotationContainer container) {
+        container.setLabelProvider(new TaskAnnotationsLabelProvider(container.getPackageCategoryTitle()));
+    }
+
     @Override
     protected TabDetail createTabDetail(final AbstractBuild<?, ?> owner,
             final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding) {

@@ -10,6 +10,7 @@ import hudson.model.AbstractBuild;
 import hudson.plugins.analysis.core.BuildHistory;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ResultAction;
+import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.Task;
 import hudson.plugins.tasks.parser.TasksParserResult;
@@ -96,6 +97,11 @@ public class TasksResult extends BuildResult {
         numberOfFiles = result.getNumberOfScannedFiles();
 
         serializeAnnotations(result.getAnnotations());
+    }
+
+    @Override
+    protected void attachLabelProvider(final AnnotationContainer container) {
+        container.setLabelProvider(new TaskAnnotationsLabelProvider(container.getPackageCategoryTitle()));
     }
 
     @Override
