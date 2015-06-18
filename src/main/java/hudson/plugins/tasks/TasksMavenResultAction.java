@@ -77,7 +77,8 @@ public class TasksMavenResultAction extends MavenResultAction<TasksResult> {
     @Override
     public MavenAggregatedReport createAggregatedAction(final MavenModuleSetBuild build, final Map<MavenModule, List<MavenBuild>> moduleBuilds) {
         return new TasksMavenResultAction(build, getHealthDescriptor(), getDefaultEncoding(), high, normal, low,
-                new TasksResult(build, high, new TasksParserResult(), false, false, high, normal, low));
+                new TasksResult(build, high, new TasksParserResult(),
+                        usePreviousBuildAsStable(), useOnlyStableBuildsAsReference(), high, normal, low));
     }
 
     @Override
