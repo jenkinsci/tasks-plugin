@@ -37,8 +37,12 @@ public class WorkflowCompatibilityTest {
         "node {" +
         "  step([$class: 'TasksPublisher', pattern: '**/tasks.txt', high: 'FIXME', normal: 'TODO'])" +
         "}"));
+
+        // Build must be success, since there are no thresholds set
         j.assertBuildStatusSuccess(job.scheduleBuild2(0));
         TasksResultAction result = job.getLastBuild().getAction(TasksResultAction.class);
+
+        // The result has to report exactly 2 annotations coming from two tasks markers in the original file
         assertTrue(result.getResult().getAnnotations().size() == 2);
     }
 
@@ -56,8 +60,12 @@ public class WorkflowCompatibilityTest {
         "node {" +
         "  step([$class: 'TasksPublisher', pattern: '**/tasks.txt', high: 'FIXME', normal: 'TODO', failedTotalAll: '0', usePreviousBuildAsReference: false])" +
         "}"));
+
+        // The build must fail, since there is a failing threshold set (failedTotalAll: '0') 
         j.assertBuildStatus(Result.FAILURE, job.scheduleBuild2(0).get());
         TasksResultAction result = job.getLastBuild().getAction(TasksResultAction.class);
+
+        // The result has to report exactly 2 annotations coming from two tasks markers in the original file
         assertTrue(result.getResult().getAnnotations().size() == 2);
     }
 
@@ -75,8 +83,12 @@ public class WorkflowCompatibilityTest {
         "node {" +
         "  step([$class: 'TasksPublisher', pattern: '**/tasks.txt', high: 'FIXME', normal: 'TODO', unstableTotalAll: '0', usePreviousBuildAsReference: false])" +
         "}"));
+
+        // The build must report unstability, since there is an unstable threshold set (unstableTotalAll: '0') 
         j.assertBuildStatus(Result.UNSTABLE, job.scheduleBuild2(0).get());
         TasksResultAction result = job.getLastBuild().getAction(TasksResultAction.class);
+
+        // The result has to report exactly 2 annotations coming from two tasks markers in the original file
         assertTrue(result.getResult().getAnnotations().size() == 2);
     }
 }
