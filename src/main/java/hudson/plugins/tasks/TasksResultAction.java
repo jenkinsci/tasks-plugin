@@ -1,6 +1,8 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
+
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.PluginDescriptor;
 import hudson.plugins.analysis.core.AbstractResultAction;
@@ -17,17 +19,18 @@ import hudson.plugins.analysis.core.AbstractResultAction;
  * @author Ulli Hafner
  */
 public class TasksResultAction extends AbstractResultAction<TasksResult>  {
+
     /**
      * Creates a new instance of <code>TasksResultAction</code>.
      *
      * @param owner
-     *            the associated build of this action
+     *            the associated owner of this action
      * @param healthDescriptor
      *            health descriptor to use
      * @param result
      *            the result in this build
      */
-    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final TasksResult result) {
+    public TasksResultAction(final Run<?, ?> owner, final HealthDescriptor healthDescriptor, final TasksResult result) {
         super(owner, new TasksHealthDescriptor(healthDescriptor), result);
     }
 
@@ -49,5 +52,21 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
     @Override
     public String getSingleItemTooltip() {
         return Messages.Tasks_ResultAction_OneWarning();
+    }
+
+    /**
+     * Creates a new instance of <code>TasksResultAction</code>.
+     *
+     * @param owner
+     *            the associated build of this action
+     * @param healthDescriptor
+     *            health descriptor to use
+     * @param result
+     *            the result in this build
+     * @deprecated use {@link #TasksResultAction(Run, HealthDescriptor, TasksResult)} instead
+     */
+    @Deprecated
+    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final TasksResult result) {
+        this((Run<?, ?>) owner, healthDescriptor, result);
     }
 }

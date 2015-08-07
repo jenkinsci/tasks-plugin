@@ -6,11 +6,12 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 
+import jenkins.MasterToSlaveFileCallable;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.FileSet;
 
 import hudson.FilePath;
-import hudson.FilePath.FileCallable;
 
 import hudson.plugins.analysis.util.ContextHashCode;
 import hudson.plugins.analysis.util.EncodingValidator;
@@ -28,7 +29,7 @@ import hudson.remoting.VirtualChannel;
  * @author Ulli Hafner
  */
 // CHECKSTYLE:COUPLING-OFF
-public class WorkspaceScanner implements FileCallable<TasksParserResult> {
+public class WorkspaceScanner extends MasterToSlaveFileCallable<TasksParserResult> {
     /** Generated ID. */
     private static final long serialVersionUID = -4355362392102020724L;
     /** Ant file-set pattern to define the files to scan. */
@@ -244,7 +245,7 @@ public class WorkspaceScanner implements FileCallable<TasksParserResult> {
         return result;
     }
 
-    private InputStreamReader readFile(final File originalFile) throws IOException {
+    private InputStreamReader readFile(final File originalFile) throws IOException, InterruptedException {
         return new InputStreamReader(new FilePath(originalFile).read(),
                     EncodingValidator.defaultCharset(defaultEncoding));
     }

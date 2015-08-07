@@ -7,9 +7,11 @@ import org.apache.commons.lang.StringUtils;
 import com.thoughtworks.xstream.XStream;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
+
 import hudson.plugins.analysis.core.BuildHistory;
-import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ResultAction;
+import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.Task;
@@ -51,7 +53,7 @@ public class TasksResult extends BuildResult {
      * @param lowTags
      *            tag identifiers indicating low priority
      */
-    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
+    public TasksResult(final Run<?, ?> build, final String defaultEncoding, final TasksParserResult result,
             final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
             final String highTags, final String normalTags, final String lowTags) {
         this(build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference,
@@ -82,7 +84,7 @@ public class TasksResult extends BuildResult {
      *            the type of the result action
      */
     // CHECKSTYLE:OFF
-    protected TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
+    protected TasksResult(final Run<?, ?> build, final String defaultEncoding, final TasksParserResult result,
             final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
             final String highTags, final String normalTags, final String lowTags,
             final Class<? extends ResultAction<TasksResult>> actionType) {
@@ -216,4 +218,47 @@ public class TasksResult extends BuildResult {
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int normalPriorityTasks;
+
+    /**
+     * @deprecated use {@link #TasksResult(Run, String, TasksParserResult, boolean, boolean, String, String, String)} instead
+     */
+    @Deprecated
+    protected TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
+            final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
+            final String highTags, final String normalTags, final String lowTags,
+            final Class<? extends ResultAction<TasksResult>> actionType) {
+        // CHECKSTYLE:ON
+        this((Run<?, ?>) build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference, 
+                highTags, normalTags, lowTags, actionType);
+    }
+    
+    /**
+     * Creates a new instance of {@link TasksResult}.
+     *
+     * @param build
+     *            the current build as owner of this action
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param result
+     *            the parsed annotations
+     * @param usePreviousBuildAsReference
+     *            determines whether to always use the previous build as the reference build
+     * @param useStableBuildAsReference
+     *            determines whether only stable builds should be used as
+     *            reference builds or not
+     * @param highTags
+     *            tag identifiers indicating high priority
+     * @param normalTags
+     *            tag identifiers indicating normal priority
+     * @param lowTags
+     *            tag identifiers indicating low priority
+     * @deprecated use {@link #TasksResult(Run, String, TasksParserResult, boolean, boolean, String, String, String)} instead
+     */
+    @Deprecated
+    public TasksResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
+            final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
+            final String highTags, final String normalTags, final String lowTags) {
+        this((Run<?, ?>) build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference,
+                highTags, normalTags, lowTags);
+    }
 }
