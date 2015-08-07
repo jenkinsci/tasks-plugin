@@ -1,6 +1,8 @@
 package hudson.plugins.tasks;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
+
 import hudson.plugins.analysis.util.model.FileAnnotation;
 import hudson.plugins.analysis.views.DetailFactory;
 import hudson.plugins.analysis.views.FixedWarningsDetail;
@@ -28,13 +30,31 @@ public class FixedTasksDetail extends FixedWarningsDetail {
      * @param header
      *            header to be shown on detail page
      */
-    public FixedTasksDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> fixedTasks, final String defaultEncoding, final String header) {
+    public FixedTasksDetail(final Run<?, ?> owner, final Collection<FileAnnotation> fixedTasks, final String defaultEncoding, final String header) {
         super(owner, new DetailFactory(), fixedTasks, defaultEncoding, header);
     }
 
     @Override
     public String getDisplayName() {
         return Messages.FixedTasksDetail_Name();
+    }
+
+    /**
+     * Creates a new instance of {@link FixedTasksDetail}.
+     *
+     * @param owner
+     *            the current results object as owner of this action
+     * @param fixedTasks
+     *            all fixed tasks in this build
+     * @param defaultEncoding
+     *            the default encoding to be used when reading and parsing files
+     * @param header
+     *            header to be shown on detail page
+     * @deprecated use {@link #FixedTasksDetail(Run, Collection, String, String)} instead
+     */
+    @Deprecated
+    public FixedTasksDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> fixedTasks, final String defaultEncoding, final String header) {
+        this((Run<?, ?>) owner, fixedTasks, defaultEncoding, header);
     }
 }
 
