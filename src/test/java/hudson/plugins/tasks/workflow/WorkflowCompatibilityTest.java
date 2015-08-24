@@ -1,18 +1,19 @@
 package hudson.plugins.tasks.workflow;
 
+import static org.junit.Assert.*;
+
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import hudson.FilePath;
-
 import hudson.model.Result;
 
+import hudson.plugins.tasks.TasksPublisher;
 import hudson.plugins.tasks.TasksResultAction;
 
-import static org.junit.Assert.*;
+import hudson.FilePath;
 
 /**
  * Test workflow compatibility.
@@ -43,7 +44,7 @@ public class WorkflowCompatibilityTest {
         TasksResultAction result = job.getLastBuild().getAction(TasksResultAction.class);
 
         // The result has to report exactly 2 annotations coming from two tasks markers in the original file
-        assertTrue(result.getResult().getAnnotations().size() == 2);
+        assertEquals(result.getResult().getAnnotations().size(), 2);
     }
 
     /**
@@ -61,12 +62,12 @@ public class WorkflowCompatibilityTest {
         "  step([$class: 'TasksPublisher', pattern: '**/tasks.txt', high: 'FIXME', normal: 'TODO', failedTotalAll: '0', usePreviousBuildAsReference: false])" +
         "}"));
 
-        // The build must fail, since there is a failing threshold set (failedTotalAll: '0') 
+        // The build must fail, since there is a failing threshold set (failedTotalAll: '0')
         j.assertBuildStatus(Result.FAILURE, job.scheduleBuild2(0).get());
         TasksResultAction result = job.getLastBuild().getAction(TasksResultAction.class);
 
         // The result has to report exactly 2 annotations coming from two tasks markers in the original file
-        assertTrue(result.getResult().getAnnotations().size() == 2);
+        assertEquals(result.getResult().getAnnotations().size(), 2);
     }
 
     /**
@@ -84,11 +85,11 @@ public class WorkflowCompatibilityTest {
         "  step([$class: 'TasksPublisher', pattern: '**/tasks.txt', high: 'FIXME', normal: 'TODO', unstableTotalAll: '0', usePreviousBuildAsReference: false])" +
         "}"));
 
-        // The build must report unstability, since there is an unstable threshold set (unstableTotalAll: '0') 
+        // The build must report unstability, since there is an unstable threshold set (unstableTotalAll: '0')
         j.assertBuildStatus(Result.UNSTABLE, job.scheduleBuild2(0).get());
         TasksResultAction result = job.getLastBuild().getAction(TasksResultAction.class);
 
         // The result has to report exactly 2 annotations coming from two tasks markers in the original file
-        assertTrue(result.getResult().getAnnotations().size() == 2);
+        assertEquals(result.getResult().getAnnotations().size(), 2);
     }
 }
