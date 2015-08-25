@@ -1,6 +1,5 @@
 package hudson.plugins.tasks;
 
-import hudson.model.AbstractBuild;
 import hudson.model.Run;
 
 import hudson.plugins.analysis.core.HealthDescriptor;
@@ -54,19 +53,4 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
         return Messages.Tasks_ResultAction_OneWarning();
     }
 
-    /**
-     * Creates a new instance of <code>TasksResultAction</code>.
-     *
-     * @param owner
-     *            the associated build of this action
-     * @param healthDescriptor
-     *            health descriptor to use
-     * @param result
-     *            the result in this build
-     * @deprecated use {@link #TasksResultAction(Run, HealthDescriptor, TasksResult)} instead
-     */
-    @Deprecated
-    public TasksResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final TasksResult result) {
-        this((Run<?, ?>) owner, healthDescriptor, result);
-    }
 }

@@ -1,6 +1,5 @@
 package hudson.plugins.tasks;
 
-import hudson.model.AbstractBuild;
 import hudson.model.Run;
 
 import hudson.plugins.analysis.core.ResultAction;
@@ -46,36 +45,6 @@ public class TasksReporterResult extends TasksResult {
     @Override
     protected Class<? extends ResultAction<? extends BuildResult>> getResultActionType() {
         return TasksMavenResultAction.class;
-    }
-
-    /**
-     * Creates a new instance of {@link TasksReporterResult}.
-     *
-     * @param build
-     *            the current build as owner of this action
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
-     * @param result
-     *            the parsed annotations
-     * @param usePreviousBuildAsReference
-     *            determines whether to always use the previous build as the reference build
-     * @param useStableBuildAsReference
-     *            determines whether only stable builds should be used as
-     *            reference builds or not
-     * @param highTags
-     *            tag identifiers indicating high priority
-     * @param normalTags
-     *            tag identifiers indicating normal priority
-     * @param lowTags
-     *            tag identifiers indicating low priority
-     * @deprecated use {@link #TasksReporterResult(Run, String, TasksParserResult, boolean, boolean, String, String, String)} instead
-     */
-    @Deprecated
-    public TasksReporterResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final TasksParserResult result,
-            final boolean usePreviousBuildAsReference, final boolean useStableBuildAsReference,
-            final String highTags, final String normalTags, final String lowTags) {
-        this((Run<?, ?>) build, defaultEncoding, result, usePreviousBuildAsReference, useStableBuildAsReference,
-                highTags, normalTags, lowTags);
     }
 }
 

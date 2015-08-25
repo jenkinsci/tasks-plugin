@@ -1,6 +1,5 @@
 package hudson.plugins.tasks;
 
-import hudson.model.AbstractBuild;
 import hudson.model.Run;
 
 import hudson.plugins.analysis.util.model.FileAnnotation;
@@ -47,24 +46,6 @@ public class TasksTabDetail extends TabDetail {
     @Override
     public String getFixed() {
         return "tasks-fixed.jelly";
-    }
-
-    /**
-     * Creates a new instance of <code>ModuleDetail</code>.
-     *
-     * @param owner
-     *            current build as owner of this action.
-     * @param annotations
-     *            the container to show the details for
-     * @param url
-     *            URL to render the content of this tab
-     * @param defaultEncoding
-     *            the default encoding to be used when reading and parsing files
-     * @deprecated use {@link #TasksTabDetail(Run, Collection, String, String)} instead
-     */
-    @Deprecated
-    public TasksTabDetail(final AbstractBuild<?, ?> owner, final Collection<FileAnnotation> annotations, final String url, final String defaultEncoding) {
-        this((Run<?, ?>) owner, annotations, url, defaultEncoding);
     }
 }
 
