@@ -201,19 +201,19 @@ public class TasksResult extends BuildResult {
 
     // Backward compatibility. Do not remove.
     // CHECKSTYLE:OFF
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SE")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int numberOfTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SE")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int highPriorityTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SE")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int lowPriorityTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("SE")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int normalPriorityTasks;

@@ -233,10 +233,10 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     }
 
     @Override
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("BC")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("BC")
     protected TasksResult createResult(final MavenBuild build, final ParserResult project) {
         return new TasksReporterResult(build, getDefaultEncoding(), (TasksParserResult)project,
-                usePreviousBuildAsStable(), useOnlyStableBuildsAsReference(), high, normal, low);
+                usePreviousBuildAsReference(), useOnlyStableBuildsAsReference(), high, normal, low);
     }
 
     @Override
@@ -256,27 +256,27 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
 
     // Backward compatibility. Do not remove.
     // CHECKSTYLE:OFF
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient boolean isThresholdEnabled;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient boolean isHealthyReportEnabled;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int healthyTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int unHealthyTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int minimumTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient String height;
