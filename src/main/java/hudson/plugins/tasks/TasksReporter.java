@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import hudson.FilePath;
 import hudson.maven.MavenAggregatedReport;
 import hudson.maven.MavenBuild;
@@ -233,7 +235,7 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
     }
 
     @Override
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("BC")
+    @SuppressFBWarnings("BC")
     protected TasksResult createResult(final MavenBuild build, final ParserResult project) {
         return new TasksReporterResult(build, getDefaultEncoding(), (TasksParserResult)project,
                 usePreviousBuildAsReference(), useOnlyStableBuildsAsReference(), high, normal, low);
@@ -256,27 +258,27 @@ public class TasksReporter extends HealthAwareReporter<TasksResult> {
 
     // Backward compatibility. Do not remove.
     // CHECKSTYLE:OFF
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
+    @SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient boolean isThresholdEnabled;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
+    @SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient boolean isHealthyReportEnabled;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
+    @SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int healthyTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
+    @SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int unHealthyTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
+    @SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient int minimumTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("")
+    @SuppressFBWarnings("")
     @SuppressWarnings({"all", "PMD"})
     @Deprecated
     private transient String height;

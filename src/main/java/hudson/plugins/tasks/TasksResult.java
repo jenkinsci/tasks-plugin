@@ -6,11 +6,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
 
-import hudson.model.Run;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import hudson.model.Run;
 import hudson.plugins.analysis.core.BuildHistory;
-import hudson.plugins.analysis.core.ResultAction;
 import hudson.plugins.analysis.core.BuildResult;
+import hudson.plugins.analysis.core.ResultAction;
 import hudson.plugins.analysis.util.model.AnnotationContainer;
 import hudson.plugins.analysis.util.model.Priority;
 import hudson.plugins.tasks.parser.Task;
@@ -201,19 +202,19 @@ public class TasksResult extends BuildResult {
 
     // Backward compatibility. Do not remove.
     // CHECKSTYLE:OFF
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
+    @SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int numberOfTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
+    @SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int highPriorityTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
+    @SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int lowPriorityTasks;
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("SE")
+    @SuppressFBWarnings("SE")
     @SuppressWarnings("PMD")
     @Deprecated
     private transient int normalPriorityTasks;
