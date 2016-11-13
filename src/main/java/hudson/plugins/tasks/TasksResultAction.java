@@ -1,5 +1,8 @@
 package hudson.plugins.tasks;
 
+import java.util.Collection;
+
+import hudson.model.Action;
 import hudson.model.Run;
 
 import hudson.plugins.analysis.core.HealthDescriptor;
@@ -53,4 +56,8 @@ public class TasksResultAction extends AbstractResultAction<TasksResult>  {
         return Messages.Tasks_ResultAction_OneWarning();
     }
 
+    @Override
+    public Collection<? extends Action> getProjectActions() {
+        return asSet(new TasksProjectAction(getJob()));
+    }
 }

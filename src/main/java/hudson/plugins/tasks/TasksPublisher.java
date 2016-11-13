@@ -10,12 +10,8 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.matrix.MatrixAggregator;
 import hudson.matrix.MatrixBuild;
-
-import hudson.model.AbstractProject;
-import hudson.model.Run;
-import hudson.model.Action;
 import hudson.model.BuildListener;
-
+import hudson.model.Run;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.HealthAwarePublisher;
 import hudson.plugins.analysis.util.PluginLogger;
@@ -176,11 +172,6 @@ public class TasksPublisher extends HealthAwarePublisher {
     @DataBoundSetter
     public void setAsRegexp(boolean asRegexp) {
         this.asRegexp = asRegexp;
-    }
-
-    @Override
-    public Action getProjectAction(final AbstractProject<?, ?> project) {
-        return new TasksProjectAction(project);
     }
 
     @Override

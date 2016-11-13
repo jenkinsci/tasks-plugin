@@ -1,4 +1,4 @@
-rm -rf $JENKINS_HOME/plugins/warnings*
+rm -rf $JENKINS_HOME/plugins/tasks*
 
 mvn install || { echo "Build failed"; exit 1; }
  

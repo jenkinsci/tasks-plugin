@@ -1,8 +1,8 @@
 package hudson.plugins.tasks;
 
-import hudson.model.AbstractProject;
-import hudson.plugins.analysis.core.ResultAction;
+import hudson.model.Job;
 import hudson.plugins.analysis.core.AbstractProjectAction;
+import hudson.plugins.analysis.core.ResultAction;
 
 /**
  * Entry point to visualize the task scanner trend graph. Drawing of the graph is
@@ -14,24 +14,24 @@ public class TasksProjectAction extends AbstractProjectAction<ResultAction<Tasks
     /**
      * Instantiates a new {@link TasksProjectAction}.
      *
-     * @param project
-     *            the project that owns this action
+     * @param job
+     *            the job that owns this action
      */
-    public TasksProjectAction(final AbstractProject<?, ?> project) {
-        this(project, TasksResultAction.class);
+    public TasksProjectAction(final Job<?, ?> job) {
+        this(job, TasksResultAction.class);
     }
 
     /**
      * Instantiates a new {@link TasksProjectAction}.
      *
-     * @param project
-     *            the project that owns this action
+     * @param job
+     *            the job that owns this action
      * @param type
      *            the result action type
      */
-    public TasksProjectAction(final AbstractProject<?, ?> project,
+    public TasksProjectAction(final Job<?, ?> job,
             final Class<? extends ResultAction<TasksResult>> type) {
-        super(project, type, Messages._Tasks_ProjectAction_Name(), Messages._Tasks_Trend_Name(),
+        super(job, type, Messages._Tasks_ProjectAction_Name(), Messages._Tasks_Trend_Name(),
                 TasksDescriptor.PLUGIN_ID, TasksDescriptor.ICON_URL, TasksDescriptor.RESULT_URL);
     }
 }
