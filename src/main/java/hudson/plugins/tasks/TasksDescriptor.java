@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.QueryParameter;
 
 import hudson.Extension;
@@ -19,7 +20,7 @@ import hudson.util.FormValidation;
  *
  * @author Ulli Hafner
  */
-@Extension(ordinal = 100)
+@Extension(ordinal = 100) @Symbol("openTasks")
 public final class TasksDescriptor extends PluginDescriptor {
     private static final String ICONS_PREFIX = "/plugin/tasks/icons/";
     /** The ID of this plug-in is used as URL. */
