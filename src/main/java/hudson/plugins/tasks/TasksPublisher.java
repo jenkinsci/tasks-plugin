@@ -184,6 +184,8 @@ public class TasksPublisher extends HealthAwarePublisher {
         logger.logLines(project.getLogMessages());
         logger.log(String.format("Found %d open tasks.", project.getNumberOfAnnotations()));
 
+        blame(project.getAnnotations(), build, workspace);
+
         TasksResult result = new TasksResult(build, getDefaultEncoding(), project,
                 usePreviousBuildAsReference(), useOnlyStableBuildsAsReference(), high, normal, low);
         build.addAction(new TasksResultAction(build, this, result));
