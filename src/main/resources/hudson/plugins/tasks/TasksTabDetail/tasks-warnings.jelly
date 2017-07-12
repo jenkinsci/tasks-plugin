@@ -6,7 +6,6 @@
   <table class="pane sortable" id="warnings">
     <tr>
       <td class="pane-header">${%File}</td>
-      <td class="pane-header">${%Line}</td>
       <td class="pane-header">${%Priority}</td>
       <td class="pane-header">${%Type}</td>
       <td class="pane-header">${%Message}</td>
@@ -18,18 +17,6 @@
             <div tooltip="${warning.message}">
               <u:sourceLink it="${it}" warning="${warning}"/>
             </div>
-          </td>
-          <td class="pane">
-            <div tooltip="${warning.message}">
-              <j:choose>
-                <j:when test="${warning.primaryLineNumber &lt; 1}">
-                  -
-                </j:when>
-                <j:otherwise>
-                  ${warning.primaryLineNumber}
-                </j:otherwise>
-              </j:choose>
-             </div>
           </td>
           <td class="pane">
             <div tooltip="${warning.message}"> ${warning.priority.localizedString} </div>
