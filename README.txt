@@ -1,9 +1,8 @@
-  This Jenkins plug-in scans for open tasks in a specified set of files in the project modules
-  and visualizes the results. You can specify the regular expressions that should be used to
-  identify the parsers for each project.
+This plug-in is not supported anymore. It will be incorporated into "Jenkins Warnings Plug-in" and the 
+associated "Static Analysis Model and Parsers" library soon.
 
-  See: http://wiki.jenkins-ci.org/x/XoAs
+References:
+- https://github.com/jenkinsci/analysis-model
+- https://github.com/jenkinsci/warnings-plugin
 
-  All source code is licensed under the MIT license.
 
-  Maintainer: Dr. Ullrich Hafner
