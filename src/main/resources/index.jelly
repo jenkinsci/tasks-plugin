@@ -1,4 +1,4 @@
 <div>
-  This plug-in scans for open tasks in a specified set of files in the project modules
-  and visualizes the results.
+  The Task Scanner Plug-in reached end-of-life. All functionality has been integrated
+  into the <a href="https://wiki.jenkins.io/x/1YTeCQ">Warnings Next Generation Plugin</a>.
 </div>
